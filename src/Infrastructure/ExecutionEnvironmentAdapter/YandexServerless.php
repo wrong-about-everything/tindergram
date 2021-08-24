@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\ExecutionEnvironmentAdapter;
+namespace TG\Infrastructure\ExecutionEnvironmentAdapter;
 
 use Exception;
-use RC\Infrastructure\Logging\LogItem\FromThrowable;
-use RC\Infrastructure\Logging\Logs;
-use RC\Infrastructure\UserStory\LazySafetyNet;
-use RC\Infrastructure\UserStory\Response;
-use RC\Infrastructure\UserStory\Response\RestfulHttp\FromUserStoryResponse;
-use RC\Infrastructure\UserStory\UserStory;
+use TG\Infrastructure\Logging\LogItem\FromThrowable;
+use TG\Infrastructure\Logging\Logs;
+use TG\Infrastructure\UserStory\LazySafetyNet;
+use TG\Infrastructure\UserStory\Response;
+use TG\Infrastructure\UserStory\Response\RestfulHttp\FromUserStoryResponse;
+use TG\Infrastructure\UserStory\UserStory;
 use Throwable;
 
 class YandexServerless

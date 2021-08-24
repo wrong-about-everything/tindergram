@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\UserStory\Response\RestfulHttp;
+namespace TG\Infrastructure\UserStory\Response\RestfulHttp;
 
-use RC\Infrastructure\ExecutionEnvironmentAdapter\RawPhpFpmWebService\HttpResponseHeaderFromUserStoryResponseHeader;
-use RC\Infrastructure\Http\Response\Header;
-use RC\Infrastructure\UserStory\Header as UserStoryResponseHeader;
+use TG\Infrastructure\ExecutionEnvironmentAdapter\RawPhpFpmWebService\HttpResponseHeaderFromUserStoryResponseHeader;
+use TG\Infrastructure\Http\Response\Header;
+use TG\Infrastructure\UserStory\Header as UserStoryResponseHeader;
 
 class HttpHeaderFromUserStoryHeader extends Header
 {

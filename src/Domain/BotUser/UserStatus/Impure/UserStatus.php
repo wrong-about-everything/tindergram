@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace RC\Domain\BotUser\UserStatus\Impure;
+namespace TG\Domain\BotUser\UserStatus\Impure;
 
-use RC\Infrastructure\ImpureInteractions\ImpureValue;
+use TG\Infrastructure\ImpureInteractions\ImpureValue;
 
 abstract class UserStatus
 {

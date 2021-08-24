@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace RC\Tests\Unit\Domain\Matches;
+namespace TG\Tests\Unit\Domain\Matches;
 
 use PHPUnit\Framework\TestCase;
-use RC\Domain\Matches\ReadModel\Pure\FromArray;
-use RC\Domain\Matches\ReadModel\Pure\WithMatchedDropoutsWithinTheSameSegment;
+use TG\Domain\Matches\ReadModel\Pure\FromArray;
+use TG\Domain\Matches\ReadModel\Pure\WithMatchedDropoutsWithinTheSameSegment;
 
 class WithMatchedDropoutsWithinTheSameSegmentTest extends TestCase
 {

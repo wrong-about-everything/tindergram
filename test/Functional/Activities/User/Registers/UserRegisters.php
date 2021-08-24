@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace RC\Tests\Functional\Activities\User\Registers;
+namespace TG\Tests\Functional\Activities\User\Registers;
 
 use PHPUnit\Framework\TestCase;
 

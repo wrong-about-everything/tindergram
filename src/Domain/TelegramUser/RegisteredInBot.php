@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace RC\Domain\TelegramUser;
+namespace TG\Domain\TelegramUser;
 
-use RC\Infrastructure\ImpureInteractions\ImpureValue;
-use RC\Infrastructure\ImpureInteractions\ImpureValue\Successful;
-use RC\Infrastructure\ImpureInteractions\PureValue\Emptie;
-use RC\Infrastructure\ImpureInteractions\PureValue\Present;
-use RC\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
-use RC\Infrastructure\SqlDatabase\Agnostic\Query\Selecting;
-use RC\Domain\Bot\BotId\BotId;
-use RC\Infrastructure\TelegramBot\UserId\Pure\InternalTelegramUserId;
+use TG\Infrastructure\ImpureInteractions\ImpureValue;
+use TG\Infrastructure\ImpureInteractions\ImpureValue\Successful;
+use TG\Infrastructure\ImpureInteractions\PureValue\Emptie;
+use TG\Infrastructure\ImpureInteractions\PureValue\Present;
+use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
+use TG\Infrastructure\SqlDatabase\Agnostic\Query\Selecting;
+use TG\Domain\Bot\BotId\BotId;
+use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId;
 
 class RegisteredInBot implements TelegramUser
 {

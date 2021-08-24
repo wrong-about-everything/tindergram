@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\UserStory;
+namespace TG\Infrastructure\UserStory;
 
-use RC\Infrastructure\Http\Request\Inbound\Request;
-use RC\Infrastructure\Http\Request\Method\Get;
-use RC\Infrastructure\Http\Request\Url\Query\FromUrl;
-use RC\Infrastructure\Routing\MatchResult;
+use TG\Infrastructure\Http\Request\Inbound\Request;
+use TG\Infrastructure\Http\Request\Method\Get;
+use TG\Infrastructure\Http\Request\Url\Query\FromUrl;
+use TG\Infrastructure\Routing\MatchResult;
 
 class ByRoute implements UserStory
 {

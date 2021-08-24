@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\Logging\Severity;
+namespace TG\Infrastructure\Logging\Severity;
 
-use RC\Infrastructure\Logging\Severity;
+use TG\Infrastructure\Logging\Severity;
 
 class Error implements Severity
 {

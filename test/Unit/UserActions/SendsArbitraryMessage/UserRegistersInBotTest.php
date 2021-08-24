@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace RC\Tests\Unit\UserActions\SendsArbitraryMessage;
+namespace TG\Tests\Unit\UserActions\SendsArbitraryMessage;
 
 use Meringue\ISO8601DateTime;
 use Meringue\ISO8601DateTime\FromISO8601;
@@ -12,59 +12,59 @@ use Meringue\Timeline\Point\Now;
 use Meringue\Timeline\Point\Past;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
-use RC\Domain\About\Impure\FromBotUser as AboutBotUser;
-use RC\Domain\BotUser\ByTelegramUserId;
-use RC\Domain\Experience\ExperienceId\Impure\FromBotUser as ExperienceFromBotUser;
-use RC\Domain\Experience\ExperienceId\Impure\FromPure as ImpureExperienceFromPure;
-use RC\Domain\Experience\ExperienceId\Pure\Experience as UserExperience;
-use RC\Domain\Experience\ExperienceId\Pure\LessThanAYear;
-use RC\Domain\Experience\ExperienceName\LessThanAYearName;
-use RC\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\ApplicationConnection;
-use RC\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\RootConnection;
-use RC\Domain\Position\PositionId\Impure\FromBotUser;
-use RC\Domain\Position\PositionId\Impure\FromPure;
-use RC\Domain\Position\PositionId\Pure\Position as UserPosition;
-use RC\Domain\Position\PositionId\Pure\ProductDesigner;
-use RC\Domain\Position\PositionId\Pure\ProductManager;
-use RC\Domain\Position\PositionName\ProductDesignerName;
-use RC\Domain\Position\PositionName\ProductManagerName;
-use RC\Domain\RegistrationQuestion\RegistrationQuestionId\Impure\FromString as RegistrationQuestionIdFromString;
-use RC\Domain\RegistrationQuestion\RegistrationQuestionId\Impure\RegistrationQuestionId;
-use RC\Domain\RegistrationQuestion\RegistrationQuestionType\Pure\About;
-use RC\Domain\RegistrationQuestion\RegistrationQuestionType\Pure\RegistrationQuestionType;
-use RC\Domain\TelegramBot\UserMessage\Pure\Skipped;
-use RC\Domain\TelegramUser\UserId\FromUuid as UserIdFromUuid;
-use RC\Domain\TelegramUser\UserId\TelegramUserId;
-use RC\Domain\RegistrationQuestion\RegistrationQuestionType\Pure\Experience;
-use RC\Domain\RegistrationQuestion\RegistrationQuestionType\Pure\Position;
-use RC\Domain\BotUser\UserStatus\Impure\FromBotUser as UserStatusFromBotUser;
-use RC\Domain\BotUser\UserStatus\Impure\FromPure as ImpureUserStatusFromPure;
-use RC\Domain\BotUser\UserStatus\Pure\Registered;
-use RC\Domain\BotUser\UserStatus\Pure\RegistrationIsInProgress;
-use RC\Domain\BotUser\UserStatus\Pure\UserStatus;
-use RC\Infrastructure\Http\Request\Outbound\Request;
-use RC\Infrastructure\Http\Request\Url\ParsedQuery\FromQuery;
-use RC\Infrastructure\Http\Request\Url\Query\FromUrl;
-use RC\Infrastructure\Http\Transport\HttpTransport;
-use RC\Infrastructure\Http\Transport\Indifferent;
-use RC\Infrastructure\Logging\Logs\DevNull;
-use RC\Domain\Bot\BotId\BotId;
-use RC\Domain\Bot\BotId\FromUuid;
-use RC\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
-use RC\Infrastructure\SqlDatabase\Agnostic\Query\Selecting;
-use RC\Infrastructure\TelegramBot\UserId\Pure\FromInteger;
-use RC\Infrastructure\TelegramBot\UserId\Pure\InternalTelegramUserId;
-use RC\Infrastructure\Uuid\Fixed;
-use RC\Infrastructure\Uuid\FromString;
-use RC\Tests\Infrastructure\Environment\Reset;
-use RC\Tests\Infrastructure\Stub\Table\Bot;
-use RC\Tests\Infrastructure\Stub\Table\BotUser;
-use RC\Tests\Infrastructure\Stub\Table\MeetingRound;
-use RC\Tests\Infrastructure\Stub\Table\RegistrationQuestion;
-use RC\Tests\Infrastructure\Stub\Table\TelegramUser;
-use RC\Tests\Infrastructure\Stub\Table\UserRegistrationProgress;
-use RC\Tests\Infrastructure\Stub\TelegramMessage\UserMessage;
-use RC\UserActions\SendsArbitraryMessage\SendsArbitraryMessage;
+use TG\Domain\About\Impure\FromBotUser as AboutBotUser;
+use TG\Domain\BotUser\ByTelegramUserId;
+use TG\Domain\Experience\ExperienceId\Impure\FromBotUser as ExperienceFromBotUser;
+use TG\Domain\Experience\ExperienceId\Impure\FromPure as ImpureExperienceFromPure;
+use TG\Domain\Experience\ExperienceId\Pure\Experience as UserExperience;
+use TG\Domain\Experience\ExperienceId\Pure\LessThanAYear;
+use TG\Domain\Experience\ExperienceName\LessThanAYearName;
+use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\ApplicationConnection;
+use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\RootConnection;
+use TG\Domain\Position\PositionId\Impure\FromBotUser;
+use TG\Domain\Position\PositionId\Impure\FromPure;
+use TG\Domain\Position\PositionId\Pure\Position as UserPosition;
+use TG\Domain\Position\PositionId\Pure\ProductDesigner;
+use TG\Domain\Position\PositionId\Pure\ProductManager;
+use TG\Domain\Position\PositionName\ProductDesignerName;
+use TG\Domain\Position\PositionName\ProductManagerName;
+use TG\Domain\RegistrationQuestion\RegistrationQuestionId\Impure\FromString as RegistrationQuestionIdFromString;
+use TG\Domain\RegistrationQuestion\RegistrationQuestionId\Impure\RegistrationQuestionId;
+use TG\Domain\RegistrationQuestion\RegistrationQuestionType\Pure\About;
+use TG\Domain\RegistrationQuestion\RegistrationQuestionType\Pure\RegistrationQuestionType;
+use TG\Domain\TelegramBot\UserMessage\Pure\Skipped;
+use TG\Domain\TelegramUser\UserId\FromUuid as UserIdFromUuid;
+use TG\Domain\TelegramUser\UserId\TelegramUserId;
+use TG\Domain\RegistrationQuestion\RegistrationQuestionType\Pure\Experience;
+use TG\Domain\RegistrationQuestion\RegistrationQuestionType\Pure\Position;
+use TG\Domain\BotUser\UserStatus\Impure\FromBotUser as UserStatusFromBotUser;
+use TG\Domain\BotUser\UserStatus\Impure\FromPure as ImpureUserStatusFromPure;
+use TG\Domain\BotUser\UserStatus\Pure\Registered;
+use TG\Domain\BotUser\UserStatus\Pure\RegistrationIsInProgress;
+use TG\Domain\BotUser\UserStatus\Pure\UserStatus;
+use TG\Infrastructure\Http\Request\Outbound\Request;
+use TG\Infrastructure\Http\Request\Url\ParsedQuery\FromQuery;
+use TG\Infrastructure\Http\Request\Url\Query\FromUrl;
+use TG\Infrastructure\Http\Transport\HttpTransport;
+use TG\Infrastructure\Http\Transport\Indifferent;
+use TG\Infrastructure\Logging\Logs\DevNull;
+use TG\Domain\Bot\BotId\BotId;
+use TG\Domain\Bot\BotId\FromUuid;
+use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
+use TG\Infrastructure\SqlDatabase\Agnostic\Query\Selecting;
+use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\FromInteger;
+use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId;
+use TG\Infrastructure\Uuid\Fixed;
+use TG\Infrastructure\Uuid\FromString;
+use TG\Tests\Infrastructure\Environment\Reset;
+use TG\Tests\Infrastructure\Stub\Table\Bot;
+use TG\Tests\Infrastructure\Stub\Table\BotUser;
+use TG\Tests\Infrastructure\Stub\Table\MeetingRound;
+use TG\Tests\Infrastructure\Stub\Table\RegistrationQuestion;
+use TG\Tests\Infrastructure\Stub\Table\TelegramUser;
+use TG\Tests\Infrastructure\Stub\Table\UserRegistrationProgress;
+use TG\Tests\Infrastructure\Stub\TelegramMessage\UserMessage;
+use TG\UserActions\SendsArbitraryMessage\SendsArbitraryMessage;
 
 class UserRegistersInBotTest extends TestCase
 {
@@ -105,7 +105,7 @@ class UserRegistersInBotTest extends TestCase
         $this->assertTrue($response->isSuccessful());
         $this->assertCount(1, $transport->sentRequests());
         $this->assertEquals(
-            'К сожалению, мы пока не можем принять ответ в виде текста. Поэтому выберите, пожалуйста, один из вариантов ответа. Если ни один не подходит — напишите в @gorgonzola_support_bot',
+            'К сожалению, мы пока не можем принять ответ в виде текста. Поэтому выберите, пожалуйста, один из вариантов ответа. Если ни один не подходит — напишите в @tindergram_support_bot',
             (new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['text']
         );
         $this->assertReplyButtons($transport->sentRequests()[0]);
@@ -137,7 +137,7 @@ class UserRegistersInBotTest extends TestCase
         $this->assertTrue($response->isSuccessful());
         $this->assertCount(1, $transport->sentRequests());
         $this->assertEquals(
-            'К сожалению, мы пока не можем принять ответ в виде текста. Поэтому выберите, пожалуйста, один из вариантов ответа. Если ни один не подходит — напишите в @gorgonzola_support_bot',
+            'К сожалению, мы пока не можем принять ответ в виде текста. Поэтому выберите, пожалуйста, один из вариантов ответа. Если ни один не подходит — напишите в @tindergram_support_bot',
             (new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['text']
         );
     }
@@ -161,7 +161,7 @@ class UserRegistersInBotTest extends TestCase
         $this->assertUserIs($this->telegramUserId(), $this->botId(), new Registered(), $connection);
         $this->assertCount(1, $transport->sentRequests());
         $this->assertEquals(
-            'Поздравляю, вы зарегистрировались! Если хотите что-то спросить или уточнить, смело пишите на @gorgonzola_support_bot',
+            'Поздравляю, вы зарегистрировались! Если хотите что-то спросить или уточнить, смело пишите на @tindergram_support_bot',
             (new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['text']
         );
     }
@@ -185,7 +185,7 @@ class UserRegistersInBotTest extends TestCase
         $this->assertUserIs($this->telegramUserId(), $this->botId(), new Registered(), $connection);
         $this->assertCount(1, $transport->sentRequests());
         $this->assertEquals(
-            'Поздравляю, вы зарегистрировались! Если хотите что-то спросить или уточнить, смело пишите на @gorgonzola_support_bot',
+            'Поздравляю, вы зарегистрировались! Если хотите что-то спросить или уточнить, смело пишите на @tindergram_support_bot',
             (new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['text']
         );
     }
@@ -209,7 +209,7 @@ class UserRegistersInBotTest extends TestCase
         $this->assertUserIs($this->telegramUserId(), $this->botId(), new Registered(), $connection);
         $this->assertCount(1, $transport->sentRequests());
         $this->assertEquals(
-            'Поздравляю, вы зарегистрировались! Если хотите что-то спросить или уточнить, смело пишите на @gorgonzola_support_bot',
+            'Поздравляю, вы зарегистрировались! Если хотите что-то спросить или уточнить, смело пишите на @tindergram_support_bot',
             (new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['text']
         );
     }
@@ -227,7 +227,7 @@ class UserRegistersInBotTest extends TestCase
         $this->assertTrue($response->isSuccessful());
         $this->assertCount(1, $transport->sentRequests());
         $this->assertEquals(
-            'Хотите что-то уточнить? Смело пишите на @gorgonzola_support_bot!',
+            'Хотите что-то уточнить? Смело пишите на @tindergram_support_bot!',
             (new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['text']
         );
     }

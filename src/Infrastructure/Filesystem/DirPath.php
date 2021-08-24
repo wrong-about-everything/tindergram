@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\Filesystem;
+namespace TG\Infrastructure\Filesystem;
 
-use RC\Infrastructure\ImpureInteractions\ImpureValue;
+use TG\Infrastructure\ImpureInteractions\ImpureValue;
 
 abstract class DirPath
 {

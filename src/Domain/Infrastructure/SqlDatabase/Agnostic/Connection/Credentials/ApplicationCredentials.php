@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace RC\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\Credentials;
+namespace TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\Credentials;
 
-use RC\Infrastructure\SqlDatabase\Agnostic\Connection\Credentials;
+use TG\Infrastructure\SqlDatabase\Agnostic\Connection\Credentials;
 
 class ApplicationCredentials implements Credentials
 {

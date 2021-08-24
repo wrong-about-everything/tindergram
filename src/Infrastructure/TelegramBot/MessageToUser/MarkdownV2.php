@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\TelegramBot\MessageToUser;
+namespace TG\Infrastructure\TelegramBot\MessageToUser;
 
 class MarkdownV2 implements MessageToUser
 {

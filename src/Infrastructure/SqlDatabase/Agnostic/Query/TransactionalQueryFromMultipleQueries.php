@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\SqlDatabase\Agnostic\Query;
+namespace TG\Infrastructure\SqlDatabase\Agnostic\Query;
 
 use Exception;
-use RC\Infrastructure\Exception\StateCarrying;
-use RC\Infrastructure\ImpureInteractions\Error\AlarmDeclineWithDefaultUserMessage;
-use RC\Infrastructure\ImpureInteractions\ImpureValue;
-use RC\Infrastructure\ImpureInteractions\ImpureValue\Combined;
-use RC\Infrastructure\ImpureInteractions\ImpureValue\Failed as FailedImpureValue;
-use RC\Infrastructure\ImpureInteractions\ImpureValue\Successful;
-use RC\Infrastructure\ImpureInteractions\PureValue\Emptie;
-use RC\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
-use RC\Infrastructure\SqlDatabase\Agnostic\Query;
+use TG\Infrastructure\Exception\StateCarrying;
+use TG\Infrastructure\ImpureInteractions\Error\AlarmDeclineWithDefaultUserMessage;
+use TG\Infrastructure\ImpureInteractions\ImpureValue;
+use TG\Infrastructure\ImpureInteractions\ImpureValue\Combined;
+use TG\Infrastructure\ImpureInteractions\ImpureValue\Failed as FailedImpureValue;
+use TG\Infrastructure\ImpureInteractions\ImpureValue\Successful;
+use TG\Infrastructure\ImpureInteractions\PureValue\Emptie;
+use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
+use TG\Infrastructure\SqlDatabase\Agnostic\Query;
 use Throwable;
 
 class TransactionalQueryFromMultipleQueries implements Query

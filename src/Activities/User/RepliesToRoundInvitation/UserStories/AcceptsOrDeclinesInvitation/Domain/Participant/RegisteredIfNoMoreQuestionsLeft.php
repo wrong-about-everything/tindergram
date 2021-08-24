@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace RC\Activities\User\RepliesToRoundInvitation\UserStories\AcceptsOrDeclinesInvitation\Domain\Participant;
+namespace TG\Activities\User\RepliesToRoundInvitation\UserStories\AcceptsOrDeclinesInvitation\Domain\Participant;
 
-use RC\Domain\Participant\ParticipantId\Impure\FromReadModelParticipant;
-use RC\Domain\Participant\ReadModel\ByInvitationId;
-use RC\Domain\Participant\WriteModel\Participant;
-use RC\Domain\Participant\WriteModel\Registered;
-use RC\Domain\RoundInvitation\InvitationId\Impure\InvitationId;
-use RC\Domain\RoundRegistrationQuestion\NextRoundRegistrationQuestion;
-use RC\Infrastructure\ImpureInteractions\ImpureValue;
-use RC\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
+use TG\Domain\Participant\ParticipantId\Impure\FromReadModelParticipant;
+use TG\Domain\Participant\ReadModel\ByInvitationId;
+use TG\Domain\Participant\WriteModel\Participant;
+use TG\Domain\Participant\WriteModel\Registered;
+use TG\Domain\RoundInvitation\InvitationId\Impure\InvitationId;
+use TG\Domain\RoundRegistrationQuestion\NextRoundRegistrationQuestion;
+use TG\Infrastructure\ImpureInteractions\ImpureValue;
+use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
 
 class RegisteredIfNoMoreQuestionsLeft implements Participant
 {

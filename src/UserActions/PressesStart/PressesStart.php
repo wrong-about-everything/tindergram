@@ -2,31 +2,31 @@
 
 declare(strict_types=1);
 
-namespace RC\UserActions\PressesStart;
+namespace TG\UserActions\PressesStart;
 
-use RC\Domain\SentReplyToUser\FillInYourUserNameAndFirstName;
-use RC\Domain\SentReplyToUser\InCaseOfAnyUncertainty;
-use RC\Domain\BotUser\UserStatus\Impure\FromBotUser;
-use RC\Domain\BotUser\UserStatus\Impure\FromPure as ImpureUserStatusFromPure;
-use RC\Domain\BotUser\UserStatus\Impure\UserStatus;
-use RC\Domain\BotUser\UserStatus\Pure\Registered;
-use RC\Domain\BotUser\UserStatus\Pure\RegistrationIsInProgress;
-use RC\Infrastructure\Logging\LogItem\FromNonSuccessfulImpureValue;
-use RC\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
-use RC\Domain\Bot\BotId\FromUuid;
-use RC\Infrastructure\Http\Transport\HttpTransport;
-use RC\Infrastructure\Logging\LogItem\InformationMessage;
-use RC\Infrastructure\Logging\Logs;
-use RC\Domain\Bot\BotToken\Impure\ByBotId;
-use RC\Domain\SentReplyToUser\Sorry;
-use RC\Domain\BotUser\AddedIfNotYet;
-use RC\Infrastructure\TelegramBot\UserId\Pure\FromParsedTelegramMessage;
-use RC\Infrastructure\UserStory\Body\Emptie;
-use RC\Infrastructure\UserStory\Existent;
-use RC\Infrastructure\UserStory\Response;
-use RC\Infrastructure\UserStory\Response\Successful;
-use RC\Infrastructure\Uuid\FromString as UuidFromString;
-use RC\Activities\User\RegistersInBot\UserStories\NonRegisteredUserPressesStart\NonRegisteredUserPressesStart;
+use TG\Domain\SentReplyToUser\FillInYourUserNameAndFirstName;
+use TG\Domain\SentReplyToUser\InCaseOfAnyUncertainty;
+use TG\Domain\BotUser\UserStatus\Impure\FromBotUser;
+use TG\Domain\BotUser\UserStatus\Impure\FromPure as ImpureUserStatusFromPure;
+use TG\Domain\BotUser\UserStatus\Impure\UserStatus;
+use TG\Domain\BotUser\UserStatus\Pure\Registered;
+use TG\Domain\BotUser\UserStatus\Pure\RegistrationIsInProgress;
+use TG\Infrastructure\Logging\LogItem\FromNonSuccessfulImpureValue;
+use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
+use TG\Domain\Bot\BotId\FromUuid;
+use TG\Infrastructure\Http\Transport\HttpTransport;
+use TG\Infrastructure\Logging\LogItem\InformationMessage;
+use TG\Infrastructure\Logging\Logs;
+use TG\Domain\Bot\BotToken\Impure\ByBotId;
+use TG\Domain\SentReplyToUser\Sorry;
+use TG\Domain\BotUser\AddedIfNotYet;
+use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\FromParsedTelegramMessage;
+use TG\Infrastructure\UserStory\Body\Emptie;
+use TG\Infrastructure\UserStory\Existent;
+use TG\Infrastructure\UserStory\Response;
+use TG\Infrastructure\UserStory\Response\Successful;
+use TG\Infrastructure\Uuid\FromString as UuidFromString;
+use TG\Activities\User\RegistersInBot\UserStories\NonRegisteredUserPressesStart\NonRegisteredUserPressesStart;
 
 class PressesStart extends Existent
 {

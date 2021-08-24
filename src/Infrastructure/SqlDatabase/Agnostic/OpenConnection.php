@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\SqlDatabase\Agnostic;
+namespace TG\Infrastructure\SqlDatabase\Agnostic;
 
 use PDO;
 use Exception;

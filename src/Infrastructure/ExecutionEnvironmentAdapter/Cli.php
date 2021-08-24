@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\ExecutionEnvironmentAdapter;
+namespace TG\Infrastructure\ExecutionEnvironmentAdapter;
 
 class Cli
 {

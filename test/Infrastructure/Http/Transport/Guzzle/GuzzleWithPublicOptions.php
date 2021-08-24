@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace RC\Tests\Infrastructure\Http\Transport\Guzzle;
+namespace TG\Tests\Infrastructure\Http\Transport\Guzzle;
 
 use GuzzleHttp\ClientInterface;
-use RC\Infrastructure\Http\Transport\Guzzle\Guzzle;
+use TG\Infrastructure\Http\Transport\Guzzle\Guzzle;
 
 class GuzzleWithPublicOptions extends Guzzle
 {

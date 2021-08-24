@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\HumanReadableDateTime;
+namespace TG\Infrastructure\HumanReadableDateTime;
 
 use DateTime;
 use IntlDateFormatter;
@@ -16,7 +16,7 @@ use Meringue\ISO8601DateTime\Tomorrow;
 use Meringue\ISO8601Interval\Floating\NDays;
 use Meringue\ISO8601Interval\WithFixedStartDateTime\FromRange;
 use Meringue\ISO8601Interval\WithFixedStartDateTime\FromStartDateTimeAndInterval;
-use RC\Domain\RussianGrammar\AccusativeDayOfWeekWithPreposition\FromISODateTime;
+use TG\Domain\RussianGrammar\AccusativeDayOfWeekWithPreposition\FromISODateTime;
 
 class AccusativeDateTimeInMoscowTimeZone
 {

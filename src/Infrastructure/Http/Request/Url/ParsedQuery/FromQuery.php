@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\Http\Request\Url\ParsedQuery;
+namespace TG\Infrastructure\Http\Request\Url\ParsedQuery;
 
-use RC\Infrastructure\Http\Request\Url\ParsedQuery;
-use RC\Infrastructure\Http\Request\Url\Query;
+use TG\Infrastructure\Http\Request\Url\ParsedQuery;
+use TG\Infrastructure\Http\Request\Url\Query;
 
 class FromQuery implements ParsedQuery
 {

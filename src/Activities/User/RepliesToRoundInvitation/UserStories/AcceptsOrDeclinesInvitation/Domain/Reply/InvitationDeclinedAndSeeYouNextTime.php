@@ -2,23 +2,23 @@
 
 declare(strict_types=1);
 
-namespace RC\Activities\User\RepliesToRoundInvitation\UserStories\AcceptsOrDeclinesInvitation\Domain\Reply;
+namespace TG\Activities\User\RepliesToRoundInvitation\UserStories\AcceptsOrDeclinesInvitation\Domain\Reply;
 
-use RC\Domain\Bot\BotToken\Impure\BotToken;
-use RC\Domain\Bot\BotToken\Pure\FromImpure;
-use RC\Infrastructure\Http\Request\Method\Post;
-use RC\Infrastructure\Http\Request\Outbound\OutboundRequest;
-use RC\Infrastructure\Http\Request\Url\Query\FromArray;
-use RC\Infrastructure\Http\Transport\HttpTransport;
-use RC\Infrastructure\ImpureInteractions\Error\SilentDeclineWithDefaultUserMessage;
-use RC\Infrastructure\ImpureInteractions\ImpureValue;
-use RC\Infrastructure\ImpureInteractions\ImpureValue\Failed;
-use RC\Infrastructure\ImpureInteractions\ImpureValue\Successful;
-use RC\Infrastructure\ImpureInteractions\PureValue\Emptie;
-use RC\Domain\SentReplyToUser\SentReplyToUser;
-use RC\Infrastructure\TelegramBot\BotApiUrl;
-use RC\Infrastructure\TelegramBot\Method\SendMessage;
-use RC\Infrastructure\TelegramBot\UserId\Pure\InternalTelegramUserId;
+use TG\Domain\Bot\BotToken\Impure\BotToken;
+use TG\Domain\Bot\BotToken\Pure\FromImpure;
+use TG\Infrastructure\Http\Request\Method\Post;
+use TG\Infrastructure\Http\Request\Outbound\OutboundRequest;
+use TG\Infrastructure\Http\Request\Url\Query\FromArray;
+use TG\Infrastructure\Http\Transport\HttpTransport;
+use TG\Infrastructure\ImpureInteractions\Error\SilentDeclineWithDefaultUserMessage;
+use TG\Infrastructure\ImpureInteractions\ImpureValue;
+use TG\Infrastructure\ImpureInteractions\ImpureValue\Failed;
+use TG\Infrastructure\ImpureInteractions\ImpureValue\Successful;
+use TG\Infrastructure\ImpureInteractions\PureValue\Emptie;
+use TG\Domain\SentReplyToUser\SentReplyToUser;
+use TG\Infrastructure\TelegramBot\BotApiUrl;
+use TG\Infrastructure\TelegramBot\Method\SendMessage;
+use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId;
 
 class InvitationDeclinedAndSeeYouNextTime implements SentReplyToUser
 {
@@ -59,7 +59,7 @@ class InvitationDeclinedAndSeeYouNextTime implements SentReplyToUser
                             new SendMessage(),
                             new FromArray([
                                 'chat_id' => $this->telegramUserId->value(),
-                                'text' => 'Хорошо, тогда до следующего раза! Если хотите что-то спросить или уточнить, смело пишите на @gorgonzola_support_bot',
+                                'text' => 'Хорошо, тогда до следующего раза! Если хотите что-то спросить или уточнить, смело пишите на @tindergram_support_bot',
                                 'reply_markup' => json_encode(['remove_keyboard' => true])
                             ]),
                             new FromImpure($this->botToken)

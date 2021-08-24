@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\Logging\LogItem;
+namespace TG\Infrastructure\Logging\LogItem;
 
 use Meringue\Timeline\Point\Now;
-use RC\Infrastructure\ImpureInteractions\Severity\Alarm;
-use RC\Infrastructure\Logging\LogItem;
-use RC\Infrastructure\ImpureInteractions\ImpureValue;
+use TG\Infrastructure\ImpureInteractions\Severity\Alarm;
+use TG\Infrastructure\Logging\LogItem;
+use TG\Infrastructure\ImpureInteractions\ImpureValue;
 use Exception;
-use RC\Infrastructure\Logging\Severity;
-use RC\Infrastructure\Logging\Severity\Error;
-use RC\Infrastructure\Logging\Severity\Info;
+use TG\Infrastructure\Logging\Severity;
+use TG\Infrastructure\Logging\Severity\Error;
+use TG\Infrastructure\Logging\Severity\Info;
 
 class FromNonSuccessfulImpureValue implements LogItem
 {

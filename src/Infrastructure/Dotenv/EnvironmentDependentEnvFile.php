@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\Dotenv;
+namespace TG\Infrastructure\Dotenv;
 
 use Dotenv\Dotenv as OneAndOnly;
-use RC\Infrastructure\Filesystem\DirPath;
-use RC\Infrastructure\Filesystem\Filename\PortableFromString;
-use RC\Infrastructure\Filesystem\FilePath\FromDirAndFileName;
-use RC\Infrastructure\Http\Request\Inbound\Request;
+use TG\Infrastructure\Filesystem\DirPath;
+use TG\Infrastructure\Filesystem\Filename\PortableFromString;
+use TG\Infrastructure\Filesystem\FilePath\FromDirAndFileName;
+use TG\Infrastructure\Http\Request\Inbound\Request;
 
 class EnvironmentDependentEnvFile implements DotEnv
 {

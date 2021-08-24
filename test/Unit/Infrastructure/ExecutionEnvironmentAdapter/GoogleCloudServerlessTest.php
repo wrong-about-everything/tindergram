@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace RC\Tests\Unit\Infrastructure\ExecutionEnvironmentAdapter;
+namespace TG\Tests\Unit\Infrastructure\ExecutionEnvironmentAdapter;
 
 use GuzzleHttp\Psr7\ServerRequest;
 use PHPUnit\Framework\TestCase;
-use RC\Domain\UserStory\Body\TelegramFallbackResponseBody;
-use RC\Infrastructure\ExecutionEnvironmentAdapter\GoogleServerless;
-use RC\Infrastructure\Logging\Logs\DevNull;
-use RC\Infrastructure\UserStory\Body\Arrray;
-use RC\Infrastructure\UserStory\Response\NonRetryableServerError;
-use RC\Infrastructure\UserStory\Response\Successful;
-use RC\Tests\Infrastructure\UserStories\FromResponse;
-use RC\Tests\Infrastructure\UserStories\ThrowingException;
+use TG\Domain\UserStory\Body\TelegramFallbackResponseBody;
+use TG\Infrastructure\ExecutionEnvironmentAdapter\GoogleServerless;
+use TG\Infrastructure\Logging\Logs\DevNull;
+use TG\Infrastructure\UserStory\Body\Arrray;
+use TG\Infrastructure\UserStory\Response\NonRetryableServerError;
+use TG\Infrastructure\UserStory\Response\Successful;
+use TG\Tests\Infrastructure\UserStories\FromResponse;
+use TG\Tests\Infrastructure\UserStories\ThrowingException;
 
 class GoogleCloudServerlessTest extends TestCase
 {
@@ -75,7 +75,7 @@ class GoogleCloudServerlessTest extends TestCase
             $response->getStatusCode()
         );
         $this->assertEquals(
-            json_encode('Простите, у нас что-то сломалось. Скорее всего, мы об этом уже знаем, но на всякий случай, напишите пожалуйста об этом в @gorgonzola_support_bot.'),
+            json_encode('Простите, у нас что-то сломалось. Скорее всего, мы об этом уже знаем, но на всякий случай, напишите пожалуйста об этом в @tindergram_support_bot.'),
             $response->getBody()->getContents()
         );
     }

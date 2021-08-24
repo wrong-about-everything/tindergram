@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace RC\Tests\Unit\Activities\Admin;
+namespace TG\Tests\Unit\Activities\Admin;
 
 use Meringue\ISO8601DateTime;
 use Meringue\ISO8601Interval\Floating\OneMinute;
@@ -10,25 +10,25 @@ use Meringue\Timeline\Point\Future;
 use Meringue\Timeline\Point\Now;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
-use RC\Activities\Admin\SeesMatches;
-use RC\Domain\Bot\BotId\BotId;
-use RC\Domain\Bot\BotId\FromUuid;
-use RC\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\ApplicationConnection;
-use RC\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\RootConnection;
-use RC\Domain\MeetingRound\MeetingRoundId\Pure\FromString as MeetingRoundIdFromString;
-use RC\Domain\MeetingRound\MeetingRoundId\Pure\MeetingRoundId;
-use RC\Domain\Participant\Status\Pure\Registered;
-use RC\Domain\UserInterest\InterestId\Pure\Single\Networking;
-use RC\Domain\UserInterest\InterestName\Pure\DayDreaming;
-use RC\Infrastructure\Logging\Logs\DevNull;
-use RC\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
-use RC\Infrastructure\Uuid\FromString;
-use RC\Tests\Infrastructure\Environment\Reset;
-use RC\Tests\Infrastructure\Stub\Table\Bot;
-use RC\Tests\Infrastructure\Stub\Table\BotUser;
-use RC\Tests\Infrastructure\Stub\Table\MeetingRound;
-use RC\Tests\Infrastructure\Stub\Table\MeetingRoundParticipant;
-use RC\Tests\Infrastructure\Stub\Table\TelegramUser;
+use TG\Activities\Admin\SeesMatches;
+use TG\Domain\Bot\BotId\BotId;
+use TG\Domain\Bot\BotId\FromUuid;
+use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\ApplicationConnection;
+use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\RootConnection;
+use TG\Domain\MeetingRound\MeetingRoundId\Pure\FromString as MeetingRoundIdFromString;
+use TG\Domain\MeetingRound\MeetingRoundId\Pure\MeetingRoundId;
+use TG\Domain\Participant\Status\Pure\Registered;
+use TG\Domain\UserInterest\InterestId\Pure\Single\Networking;
+use TG\Domain\UserInterest\InterestName\Pure\DayDreaming;
+use TG\Infrastructure\Logging\Logs\DevNull;
+use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
+use TG\Infrastructure\Uuid\FromString;
+use TG\Tests\Infrastructure\Environment\Reset;
+use TG\Tests\Infrastructure\Stub\Table\Bot;
+use TG\Tests\Infrastructure\Stub\Table\BotUser;
+use TG\Tests\Infrastructure\Stub\Table\MeetingRound;
+use TG\Tests\Infrastructure\Stub\Table\MeetingRoundParticipant;
+use TG\Tests\Infrastructure\Stub\Table\TelegramUser;
 
 class SeesMatchesTest extends TestCase
 {

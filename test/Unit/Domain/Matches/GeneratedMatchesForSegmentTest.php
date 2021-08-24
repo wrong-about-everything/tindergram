@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace RC\Tests\Unit\Domain\Matches;
+namespace TG\Tests\Unit\Domain\Matches;
 
 use PHPUnit\Framework\TestCase;
-use RC\Domain\Matches\ReadModel\Pure\GeneratedMatchesForSegment;
+use TG\Domain\Matches\ReadModel\Pure\GeneratedMatchesForSegment;
 
 class GeneratedMatchesForSegmentTest extends TestCase
 {

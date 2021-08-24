@@ -2,9 +2,9 @@
 
 declare(strict_types = 1);
 
-namespace RC\Infrastructure\Http\Response\Code;
+namespace TG\Infrastructure\Http\Response\Code;
 
-use RC\Infrastructure\Http\Response\Code;
+use TG\Infrastructure\Http\Response\Code;
 
 class FromInteger extends Code
 {

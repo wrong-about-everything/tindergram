@@ -2,22 +2,22 @@
 
 declare(strict_types=1);
 
-namespace RC\Domain\SentReplyToUser;
+namespace TG\Domain\SentReplyToUser;
 
-use RC\Infrastructure\Http\Request\Method\Post;
-use RC\Infrastructure\Http\Request\Outbound\OutboundRequest;
-use RC\Infrastructure\Http\Request\Url\Query\FromArray;
-use RC\Infrastructure\Http\Transport\HttpTransport;
-use RC\Infrastructure\ImpureInteractions\Error\SilentDeclineWithDefaultUserMessage;
-use RC\Infrastructure\ImpureInteractions\ImpureValue;
-use RC\Infrastructure\ImpureInteractions\ImpureValue\Failed;
-use RC\Infrastructure\ImpureInteractions\ImpureValue\Successful;
-use RC\Infrastructure\ImpureInteractions\PureValue\Emptie;
-use RC\Infrastructure\TelegramBot\BotApiUrl;
-use RC\Domain\Bot\BotToken\Pure\FromImpure;
-use RC\Domain\Bot\BotToken\Impure\BotToken;
-use RC\Infrastructure\TelegramBot\Method\SendMessage;
-use RC\Infrastructure\TelegramBot\UserId\Pure\InternalTelegramUserId;
+use TG\Infrastructure\Http\Request\Method\Post;
+use TG\Infrastructure\Http\Request\Outbound\OutboundRequest;
+use TG\Infrastructure\Http\Request\Url\Query\FromArray;
+use TG\Infrastructure\Http\Transport\HttpTransport;
+use TG\Infrastructure\ImpureInteractions\Error\SilentDeclineWithDefaultUserMessage;
+use TG\Infrastructure\ImpureInteractions\ImpureValue;
+use TG\Infrastructure\ImpureInteractions\ImpureValue\Failed;
+use TG\Infrastructure\ImpureInteractions\ImpureValue\Successful;
+use TG\Infrastructure\ImpureInteractions\PureValue\Emptie;
+use TG\Infrastructure\TelegramBot\BotApiUrl;
+use TG\Domain\Bot\BotToken\Pure\FromImpure;
+use TG\Domain\Bot\BotToken\Impure\BotToken;
+use TG\Infrastructure\TelegramBot\Method\SendMessage;
+use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId;
 
 class NoRoundsAhead implements SentReplyToUser
 {
@@ -58,7 +58,7 @@ class NoRoundsAhead implements SentReplyToUser
                             new SendMessage(),
                             new FromArray([
                                 'chat_id' => $this->telegramUserId->value(),
-                                'text' => 'Раунд встреч уже идёт или уже прошёл. Мы пришлём вам приглашение на новый раунд, как только о нём станет известно. Если хотите что-то спросить или уточнить, смело пишите на @gorgonzola_support_bot',
+                                'text' => 'Раунд встреч уже идёт или уже прошёл. Мы пришлём вам приглашение на новый раунд, как только о нём станет известно. Если хотите что-то спросить или уточнить, смело пишите на @tindergram_support_bot',
                             ]),
                             new FromImpure($this->botToken)
                         ),

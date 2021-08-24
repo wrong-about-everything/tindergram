@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace RC\Tests\Unit\Infrastructure\SqlDatabase\Agnostic\Connection;
+namespace TG\Tests\Unit\Infrastructure\SqlDatabase\Agnostic\Connection;
 
 use PHPUnit\Framework\TestCase;
-use RC\Infrastructure\SqlDatabase\Agnostic\Connection\Credentials\DefaultCredentials;
-use RC\Infrastructure\SqlDatabase\Agnostic\Connection\DatabaseName\SpecifiedDatabaseName;
-use RC\Infrastructure\SqlDatabase\Agnostic\Connection\DefaultConnection;
-use RC\Infrastructure\SqlDatabase\Agnostic\Connection\Host\FromString;
-use RC\Infrastructure\SqlDatabase\Agnostic\Connection\Port\FromString as PortFromString;
+use TG\Infrastructure\SqlDatabase\Agnostic\Connection\Credentials\DefaultCredentials;
+use TG\Infrastructure\SqlDatabase\Agnostic\Connection\DatabaseName\SpecifiedDatabaseName;
+use TG\Infrastructure\SqlDatabase\Agnostic\Connection\DefaultConnection;
+use TG\Infrastructure\SqlDatabase\Agnostic\Connection\Host\FromString;
+use TG\Infrastructure\SqlDatabase\Agnostic\Connection\Port\FromString as PortFromString;
 use Throwable;
 
 class DefaultConnectionTest extends TestCase
@@ -21,8 +21,8 @@ class DefaultConnectionTest extends TestCase
                 new DefaultConnection(
                     new FromString(getenv('DB_HOST')),
                     new PortFromString(getenv('DB_PORT')),
-                    new SpecifiedDatabaseName('rc'),
-                    new DefaultCredentials('rc', '123456')
+                    new SpecifiedDatabaseName('tg'),
+                    new DefaultCredentials('tg', '123456')
                 )
             ;
             $pdo = $connection->value();

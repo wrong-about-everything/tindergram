@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\Http\Response\Header;
+namespace TG\Infrastructure\Http\Response\Header;
 
-use RC\Infrastructure\Http\Response\Header;
-use RC\Infrastructure\Http\Response\Header\ContentTypeValue\Value;
+use TG\Infrastructure\Http\Response\Header;
+use TG\Infrastructure\Http\Response\Header\ContentTypeValue\Value;
 
 class ContentType extends Header
 {

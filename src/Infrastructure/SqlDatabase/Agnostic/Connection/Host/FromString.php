@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\SqlDatabase\Agnostic\Connection\Host;
+namespace TG\Infrastructure\SqlDatabase\Agnostic\Connection\Host;
 
-use RC\Infrastructure\SqlDatabase\Agnostic\Connection\Host;
+use TG\Infrastructure\SqlDatabase\Agnostic\Connection\Host;
 use Exception;
 
 class FromString implements Host

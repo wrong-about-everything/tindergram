@@ -2,28 +2,28 @@
 
 declare(strict_types=1);
 
-namespace RC\Activities\User\RepliesToRoundInvitation\UserStories\AnswersRoundRegistrationQuestion\Domain\Participant;
+namespace TG\Activities\User\RepliesToRoundInvitation\UserStories\AnswersRoundRegistrationQuestion\Domain\Participant;
 
 use Exception;
-use RC\Domain\Participant\WriteModel\Participant;
-use RC\Domain\RoundRegistrationQuestion\Type\Impure\FromPure;
-use RC\Domain\RoundRegistrationQuestion\Type\Impure\FromRoundRegistrationQuestion;
-use RC\Domain\RoundRegistrationQuestion\Type\Pure\NetworkingOrSomeSpecificArea;
-use RC\Domain\RoundRegistrationQuestion\Type\Pure\SpecificAreaChoosing;
-use RC\Domain\UserInterest\InterestId\Pure\Single\FromInterestName;
-use RC\Domain\UserInterest\InterestName\Pure\FromString as InterestNameFromString;
-use RC\Domain\RoundInvitation\InvitationId\Impure\InvitationId;
-use RC\Domain\RoundRegistrationQuestion\RoundRegistrationQuestion;
-use RC\Domain\RoundRegistrationQuestion\RoundRegistrationQuestionId\Impure\FromRoundRegistrationQuestion as RoundRegistrationQuestionId;
-use RC\Domain\RoundRegistrationQuestion\RoundRegistrationQuestionId\Pure\FromImpure;
-use RC\Domain\RoundRegistrationQuestion\RoundRegistrationQuestionId\Pure\RoundRegistrationQuestionId as PureRoundRegistrationQuestionId;
-use RC\Infrastructure\ImpureInteractions\ImpureValue;
-use RC\Infrastructure\ImpureInteractions\ImpureValue\Successful;
-use RC\Infrastructure\ImpureInteractions\PureValue\Emptie;
-use RC\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
-use RC\Infrastructure\SqlDatabase\Agnostic\Query\SingleMutating;
-use RC\Infrastructure\SqlDatabase\Agnostic\Query\TransactionalQueryFromMultipleQueries;
-use RC\Infrastructure\TelegramBot\UserMessage\Pure\UserMessage;
+use TG\Domain\Participant\WriteModel\Participant;
+use TG\Domain\RoundRegistrationQuestion\Type\Impure\FromPure;
+use TG\Domain\RoundRegistrationQuestion\Type\Impure\FromRoundRegistrationQuestion;
+use TG\Domain\RoundRegistrationQuestion\Type\Pure\NetworkingOrSomeSpecificArea;
+use TG\Domain\RoundRegistrationQuestion\Type\Pure\SpecificAreaChoosing;
+use TG\Domain\UserInterest\InterestId\Pure\Single\FromInterestName;
+use TG\Domain\UserInterest\InterestName\Pure\FromString as InterestNameFromString;
+use TG\Domain\RoundInvitation\InvitationId\Impure\InvitationId;
+use TG\Domain\RoundRegistrationQuestion\RoundRegistrationQuestion;
+use TG\Domain\RoundRegistrationQuestion\RoundRegistrationQuestionId\Impure\FromRoundRegistrationQuestion as RoundRegistrationQuestionId;
+use TG\Domain\RoundRegistrationQuestion\RoundRegistrationQuestionId\Pure\FromImpure;
+use TG\Domain\RoundRegistrationQuestion\RoundRegistrationQuestionId\Pure\RoundRegistrationQuestionId as PureRoundRegistrationQuestionId;
+use TG\Infrastructure\ImpureInteractions\ImpureValue;
+use TG\Infrastructure\ImpureInteractions\ImpureValue\Successful;
+use TG\Infrastructure\ImpureInteractions\PureValue\Emptie;
+use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
+use TG\Infrastructure\SqlDatabase\Agnostic\Query\SingleMutating;
+use TG\Infrastructure\SqlDatabase\Agnostic\Query\TransactionalQueryFromMultipleQueries;
+use TG\Infrastructure\TelegramBot\UserMessage\Pure\UserMessage;
 
 class ParticipantAnsweredRoundRegistrationQuestion implements Participant
 {

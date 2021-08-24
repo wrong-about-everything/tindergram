@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\Http\Request\Inbound;
+namespace TG\Infrastructure\Http\Request\Inbound;
 
 use Psr\Http\Message\ServerRequestInterface;
-use RC\Infrastructure\Http\Request\Inbound\Composite as CompositeRequest;
-use RC\Infrastructure\Http\Request\Method;
-use RC\Infrastructure\Http\Request\Method\FromString as HttpMethodFromString;
-use RC\Infrastructure\Http\Request\Url;
-use RC\Infrastructure\Http\Request\Url\FromString;
+use TG\Infrastructure\Http\Request\Inbound\Composite as CompositeRequest;
+use TG\Infrastructure\Http\Request\Method;
+use TG\Infrastructure\Http\Request\Method\FromString as HttpMethodFromString;
+use TG\Infrastructure\Http\Request\Url;
+use TG\Infrastructure\Http\Request\Url\FromString;
 
 class FromPsrHttpRequest implements Request
 {

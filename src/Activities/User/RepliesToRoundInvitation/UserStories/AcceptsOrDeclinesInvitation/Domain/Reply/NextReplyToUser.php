@@ -2,32 +2,32 @@
 
 declare(strict_types=1);
 
-namespace RC\Activities\User\RepliesToRoundInvitation\UserStories\AcceptsOrDeclinesInvitation\Domain\Reply;
+namespace TG\Activities\User\RepliesToRoundInvitation\UserStories\AcceptsOrDeclinesInvitation\Domain\Reply;
 
-use RC\Activities\User\RepliesToRoundInvitation\Domain\Reply\NextRoundRegistrationQuestionReplyToUser;
-use RC\Activities\User\RepliesToRoundInvitation\Domain\Reply\RoundRegistrationCongratulations;
-use RC\Activities\User\RepliesToRoundInvitation\UserStories\AcceptsOrDeclinesInvitation\Domain\Participant\RegisteredIfNoMoreQuestionsLeft;
-use RC\Domain\Bot\BotId\BotId;
-use RC\Domain\Bot\BotToken\Impure\ByBotId;
-use RC\Domain\MeetingRound\MeetingRoundId\Impure\FromInvitation as MeetingRoundIdFromInvitation;
-use RC\Domain\MeetingRound\ReadModel\ById as MeetingRoundById;
-use RC\Domain\Participant\ParticipantId\Impure\FromWriteModelParticipant;
-use RC\Domain\Participant\ReadModel\ById;
-use RC\Domain\Participant\Status\Impure\FromPure;
-use RC\Domain\Participant\Status\Impure\FromReadModelParticipant;
-use RC\Domain\Participant\Status\Pure\Registered;
-use RC\Domain\RoundInvitation\InvitationId\Impure\InvitationId;
-use RC\Domain\RoundInvitation\InvitationId\Pure\FromImpure;
-use RC\Domain\RoundInvitation\ReadModel\ById as InvitationById;
-use RC\Domain\RoundInvitation\ReadModel\ByImpureId;
-use RC\Domain\RoundInvitation\Status\Impure\FromInvitation;
-use RC\Domain\RoundInvitation\Status\Impure\FromPure as ImpureInvitationStatusFromPure;
-use RC\Domain\RoundInvitation\Status\Pure\Declined;
-use RC\Infrastructure\Http\Transport\HttpTransport;
-use RC\Infrastructure\ImpureInteractions\ImpureValue;
-use RC\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
-use RC\Domain\SentReplyToUser\SentReplyToUser;
-use RC\Infrastructure\TelegramBot\UserId\Pure\InternalTelegramUserId;
+use TG\Activities\User\RepliesToRoundInvitation\Domain\Reply\NextRoundRegistrationQuestionReplyToUser;
+use TG\Activities\User\RepliesToRoundInvitation\Domain\Reply\RoundRegistrationCongratulations;
+use TG\Activities\User\RepliesToRoundInvitation\UserStories\AcceptsOrDeclinesInvitation\Domain\Participant\RegisteredIfNoMoreQuestionsLeft;
+use TG\Domain\Bot\BotId\BotId;
+use TG\Domain\Bot\BotToken\Impure\ByBotId;
+use TG\Domain\MeetingRound\MeetingRoundId\Impure\FromInvitation as MeetingRoundIdFromInvitation;
+use TG\Domain\MeetingRound\ReadModel\ById as MeetingRoundById;
+use TG\Domain\Participant\ParticipantId\Impure\FromWriteModelParticipant;
+use TG\Domain\Participant\ReadModel\ById;
+use TG\Domain\Participant\Status\Impure\FromPure;
+use TG\Domain\Participant\Status\Impure\FromReadModelParticipant;
+use TG\Domain\Participant\Status\Pure\Registered;
+use TG\Domain\RoundInvitation\InvitationId\Impure\InvitationId;
+use TG\Domain\RoundInvitation\InvitationId\Pure\FromImpure;
+use TG\Domain\RoundInvitation\ReadModel\ById as InvitationById;
+use TG\Domain\RoundInvitation\ReadModel\ByImpureId;
+use TG\Domain\RoundInvitation\Status\Impure\FromInvitation;
+use TG\Domain\RoundInvitation\Status\Impure\FromPure as ImpureInvitationStatusFromPure;
+use TG\Domain\RoundInvitation\Status\Pure\Declined;
+use TG\Infrastructure\Http\Transport\HttpTransport;
+use TG\Infrastructure\ImpureInteractions\ImpureValue;
+use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
+use TG\Domain\SentReplyToUser\SentReplyToUser;
+use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId;
 
 class NextReplyToUser implements SentReplyToUser
 {

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace RC\Tests\Unit\Infrastructure\Http\Request\Inbound;
+namespace TG\Tests\Unit\Infrastructure\Http\Request\Inbound;
 
 use GuzzleHttp\Psr7\ServerRequest;
 use PHPUnit\Framework\TestCase;
-use RC\Infrastructure\Http\Request\Inbound\FromPsrHttpRequest;
-use RC\Infrastructure\Http\Request\Method\Post;
+use TG\Infrastructure\Http\Request\Inbound\FromPsrHttpRequest;
+use TG\Infrastructure\Http\Request\Method\Post;
 
 class FromPsrHttpRequestTest extends TestCase
 {

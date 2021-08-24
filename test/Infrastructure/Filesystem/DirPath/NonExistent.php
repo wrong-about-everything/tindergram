@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace RC\Tests\Infrastructure\Filesystem\DirPath;
+namespace TG\Tests\Infrastructure\Filesystem\DirPath;
 
-use RC\Infrastructure\Filesystem\DirPath;
-use RC\Infrastructure\ImpureInteractions\ImpureValue;
-use RC\Infrastructure\ImpureInteractions\ImpureValue\Successful;
-use RC\Infrastructure\ImpureInteractions\PureValue\Present;
+use TG\Infrastructure\Filesystem\DirPath;
+use TG\Infrastructure\ImpureInteractions\ImpureValue;
+use TG\Infrastructure\ImpureInteractions\ImpureValue\Successful;
+use TG\Infrastructure\ImpureInteractions\PureValue\Present;
 
 class NonExistent extends DirPath
 {

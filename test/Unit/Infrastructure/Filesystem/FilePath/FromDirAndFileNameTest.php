@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace RC\Tests\Unit\Infrastructure\Filesystem\FilePath;
+namespace TG\Tests\Unit\Infrastructure\Filesystem\FilePath;
 
 use PHPUnit\Framework\TestCase;
-use RC\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\RootConnection;
-use RC\Infrastructure\Filesystem\DirPath\Created;
-use RC\Infrastructure\Filesystem\DirPath\FromNestedDirectoryNames;
-use RC\Infrastructure\Filesystem\FileContents\Emptie;
-use RC\Infrastructure\Filesystem\Filename\PortableFromString;
-use RC\Infrastructure\Filesystem\FilePath\Created as CreatedFile;
-use RC\Infrastructure\Filesystem\FilePath\FromDirAndFileName;
-use RC\Tests\Infrastructure\Environment\Reset;
-use RC\Tests\Infrastructure\Filesystem\DirPath\NonExistent;
-use RC\Tests\Infrastructure\Filesystem\DirPath\Tmp;
+use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\RootConnection;
+use TG\Infrastructure\Filesystem\DirPath\Created;
+use TG\Infrastructure\Filesystem\DirPath\FromNestedDirectoryNames;
+use TG\Infrastructure\Filesystem\FileContents\Emptie;
+use TG\Infrastructure\Filesystem\Filename\PortableFromString;
+use TG\Infrastructure\Filesystem\FilePath\Created as CreatedFile;
+use TG\Infrastructure\Filesystem\FilePath\FromDirAndFileName;
+use TG\Tests\Infrastructure\Environment\Reset;
+use TG\Tests\Infrastructure\Filesystem\DirPath\NonExistent;
+use TG\Tests\Infrastructure\Filesystem\DirPath\Tmp;
 
 class FromDirAndFileNameTest extends TestCase
 {

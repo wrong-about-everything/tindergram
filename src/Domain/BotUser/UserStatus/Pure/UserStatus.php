@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace RC\Domain\BotUser\UserStatus\Pure;
+namespace TG\Domain\BotUser\UserStatus\Pure;
 
 abstract class UserStatus
 {

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace RC\Domain\Bot;
+namespace TG\Domain\Bot;
 
-use RC\Domain\Bot\BotId\BotId;
-use RC\Infrastructure\ImpureInteractions\ImpureValue;
-use RC\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
-use RC\Infrastructure\SqlDatabase\Agnostic\Query\Selecting;
+use TG\Domain\Bot\BotId\BotId;
+use TG\Infrastructure\ImpureInteractions\ImpureValue;
+use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
+use TG\Infrastructure\SqlDatabase\Agnostic\Query\Selecting;
 
 class ById implements Bot
 {

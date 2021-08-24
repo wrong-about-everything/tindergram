@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\SqlDatabase\Agnostic;
+namespace TG\Infrastructure\SqlDatabase\Agnostic;
 
-use RC\Infrastructure\ImpureInteractions\ImpureValue;
+use TG\Infrastructure\ImpureInteractions\ImpureValue;
 
 interface Query
 {

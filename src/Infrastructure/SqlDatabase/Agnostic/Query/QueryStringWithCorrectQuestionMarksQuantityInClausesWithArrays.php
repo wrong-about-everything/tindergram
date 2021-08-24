@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\SqlDatabase\Agnostic\Query;
+namespace TG\Infrastructure\SqlDatabase\Agnostic\Query;
 
 class QueryStringWithCorrectQuestionMarksQuantityInClausesWithArrays
 {

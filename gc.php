@@ -7,45 +7,38 @@ require_once __DIR__ . '/vendor/autoload.php';
 use Meringue\Timeline\Point\Now;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use RC\Activities\Admin\SeesMatches;
-use RC\Activities\Cron\AsksForFeedback\AsksForFeedback;
-use RC\Activities\Cron\SendsMatchesToParticipants\SendsMatchesToParticipants;
-use RC\Domain\Bot\BotId\FromQuery;
-use RC\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\ApplicationConnection;
-use RC\Domain\UserStory\Authorized;
-use RC\Domain\UserStory\Body\TelegramFallbackResponseBody;
-use RC\Infrastructure\Dotenv\EnvironmentDependentEnvFile;
-use RC\Infrastructure\ExecutionEnvironmentAdapter\GoogleServerless;
-use RC\Infrastructure\Filesystem\DirPath\ExistentFromAbsolutePathString as ExistentDirPathFromAbsolutePathString;
-use RC\Infrastructure\Filesystem\DirPath\FromNestedDirectoryNames;
-use RC\Infrastructure\Filesystem\Filename\PortableFromString;
-use RC\Infrastructure\Filesystem\FilePath\ExistentFromAbsolutePathString as ExistentFilePathFromAbsolutePathString;
-use RC\Infrastructure\Filesystem\FilePath\ExistentFromDirAndFileName;
-use RC\Infrastructure\Http\Request\Inbound\DefaultInbound;
-use RC\Infrastructure\Http\Request\Inbound\FromPsrHttpRequest;
-use RC\Infrastructure\Http\Request\Inbound\WithPathTakenFromQueryParam;
-use RC\Infrastructure\Http\Request\Method\Get;
-use RC\Infrastructure\Http\Request\Method\Post;
-use RC\Infrastructure\Http\Request\Url\Query;
-use RC\Infrastructure\Http\Transport\EnvironmentDependentTransport;
-use RC\Infrastructure\Logging\LogId;
-use RC\Infrastructure\Logging\Logs\EnvironmentDependentLogs;
-use RC\Infrastructure\Logging\Logs\File;
-use RC\Infrastructure\Logging\Logs\GoogleCloudLogs;
-use RC\Infrastructure\Routing\Route\ArbitraryTelegramUserMessageRoute;
-use RC\Infrastructure\Routing\Route\MatchingAnyPostRequest;
-use RC\Infrastructure\Routing\Route\RouteByMethodAndPathPattern;
-use RC\Infrastructure\Routing\Route\RouteByMethodAndPathPatternWithQuery;
-use RC\Infrastructure\Routing\Route\RouteByTelegramBotCommand;
-use RC\Infrastructure\TelegramBot\UserCommand\Start;
-use RC\Infrastructure\UserStory\ByRoute;
-use RC\Infrastructure\UserStory\Response\Successful;
-use RC\Infrastructure\Uuid\RandomUUID;
-use RC\Activities\Cron\InvitesToTakePartInANewRound\InvitesToTakePartInANewRound;
-use RC\Activities\Sample;
-use RC\Activities\SomeoneSentUnknownPostRequest;
-use RC\UserActions\PressesStart\PressesStart;
-use RC\UserActions\SendsArbitraryMessage\SendsArbitraryMessage;
+use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\ApplicationConnection;
+use TG\Domain\UserStory\Authorized;
+use TG\Domain\UserStory\Body\TelegramFallbackResponseBody;
+use TG\Infrastructure\Dotenv\EnvironmentDependentEnvFile;
+use TG\Infrastructure\ExecutionEnvironmentAdapter\GoogleServerless;
+use TG\Infrastructure\Filesystem\DirPath\ExistentFromAbsolutePathString as ExistentDirPathFromAbsolutePathString;
+use TG\Infrastructure\Filesystem\DirPath\FromNestedDirectoryNames;
+use TG\Infrastructure\Filesystem\Filename\PortableFromString;
+use TG\Infrastructure\Filesystem\FilePath\ExistentFromAbsolutePathString as ExistentFilePathFromAbsolutePathString;
+use TG\Infrastructure\Filesystem\FilePath\ExistentFromDirAndFileName;
+use TG\Infrastructure\Http\Request\Inbound\DefaultInbound;
+use TG\Infrastructure\Http\Request\Inbound\FromPsrHttpRequest;
+use TG\Infrastructure\Http\Request\Inbound\WithPathTakenFromQueryParam;
+use TG\Infrastructure\Http\Request\Method\Get;
+use TG\Infrastructure\Http\Request\Url\Query;
+use TG\Infrastructure\Http\Transport\EnvironmentDependentTransport;
+use TG\Infrastructure\Logging\LogId;
+use TG\Infrastructure\Logging\Logs\EnvironmentDependentLogs;
+use TG\Infrastructure\Logging\Logs\File;
+use TG\Infrastructure\Logging\Logs\GoogleCloudLogs;
+use TG\Infrastructure\Routing\Route\ArbitraryTelegramUserMessageRoute;
+use TG\Infrastructure\Routing\Route\MatchingAnyPostRequest;
+use TG\Infrastructure\Routing\Route\RouteByMethodAndPathPattern;
+use TG\Infrastructure\Routing\Route\RouteByTelegramBotCommand;
+use TG\Infrastructure\TelegramBot\UserCommand\Start;
+use TG\Infrastructure\UserStory\ByRoute;
+use TG\Infrastructure\UserStory\Response\Successful;
+use TG\Infrastructure\Uuid\RandomUUID;
+use TG\Activities\Sample;
+use TG\Activities\SomeoneSentUnknownPostRequest;
+use TG\UserActions\PressesStart\PressesStart;
+use TG\UserActions\SendsArbitraryMessage\SendsArbitraryMessage;
 
 (new EnvironmentDependentEnvFile(
     new ExistentDirPathFromAbsolutePathString(dirname(__FILE__)),
@@ -101,42 +94,6 @@ function entryPoint(ServerRequestInterface $request): ResponseInterface
                             new ArbitraryTelegramUserMessageRoute(),
                             function (array $parsedTelegramMessage, string $botId) use ($transport, $logs) {
                                 return new SendsArbitraryMessage(new Now(), $parsedTelegramMessage, $botId, $transport, new ApplicationConnection(), $logs);
-                            }
-                        ],
-                        [
-                            new RouteByMethodAndPathPatternWithQuery(
-                                new Post(),
-                                '/cron/invites_to_attend_a_new_round'
-                            ),
-                            function (Query $query) use ($transport, $logs) {
-                                return new InvitesToTakePartInANewRound(new FromQuery($query), $transport, new ApplicationConnection(), $logs);
-                            }
-                        ],
-                        [
-                            new RouteByMethodAndPathPatternWithQuery(
-                                new Post(),
-                                '/cron/sends_matches_to_participants'
-                            ),
-                            function (Query $query) use ($transport, $logs) {
-                                return new SendsMatchesToParticipants(new FromQuery($query), $transport, new ApplicationConnection(), $logs);
-                            }
-                        ],
-                        [
-                            new RouteByMethodAndPathPatternWithQuery(
-                                new Post(),
-                                '/cron/asks_for_feedback'
-                            ),
-                            function (Query $query) use ($transport, $logs) {
-                                return new AsksForFeedback(new FromQuery($query), $transport, new ApplicationConnection(), $logs);
-                            }
-                        ],
-                        [
-                            new RouteByMethodAndPathPatternWithQuery(
-                                new Get(),
-                                '/admin/sees_matches_to_participants'
-                            ),
-                            function (Query $query) use ($transport, $logs) {
-                                return new SeesMatches(new FromQuery($query), new ApplicationConnection(), $logs);
                             }
                         ],
                         [

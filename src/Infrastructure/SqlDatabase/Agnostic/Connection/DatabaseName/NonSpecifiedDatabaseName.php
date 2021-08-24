@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\SqlDatabase\Agnostic\Connection\DatabaseName;
+namespace TG\Infrastructure\SqlDatabase\Agnostic\Connection\DatabaseName;
 
 use Exception;
-use RC\Infrastructure\SqlDatabase\Agnostic\Connection\DatabaseName;
+use TG\Infrastructure\SqlDatabase\Agnostic\Connection\DatabaseName;
 
 class NonSpecifiedDatabaseName implements DatabaseName
 {

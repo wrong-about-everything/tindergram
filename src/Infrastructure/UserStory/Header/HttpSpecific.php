@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\UserStory\Header;
+namespace TG\Infrastructure\UserStory\Header;
 
-use RC\Infrastructure\Http\Response\Header as HttpResponseHeader;
-use RC\Infrastructure\UserStory\Header;
+use TG\Infrastructure\Http\Response\Header as HttpResponseHeader;
+use TG\Infrastructure\UserStory\Header;
 
 class HttpSpecific extends Header
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace RC\Tests\Unit\UserActions\SendsArbitraryMessage;
+namespace TG\Tests\Unit\UserActions\SendsArbitraryMessage;
 
 use Meringue\ISO8601DateTime;
 use Meringue\ISO8601Interval\Floating\OneHour;
@@ -10,48 +10,48 @@ use Meringue\Timeline\Point\Future;
 use Meringue\Timeline\Point\Now;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
-use RC\Domain\FeedbackInvitation\FeedbackInvitationId\Pure\FeedbackInvitationId;
-use RC\Domain\FeedbackInvitation\FeedbackInvitationId\Pure\FromString as FeedbackInvitationIdFromString;
-use RC\Domain\FeedbackInvitation\Status\Pure\Sent;
-use RC\Domain\FeedbackInvitation\Status\Pure\Status;
-use RC\Domain\FeedbackQuestion\FeedbackQuestionId\Pure\FeedbackQuestionId;
-use RC\Domain\FeedbackQuestion\FeedbackQuestionId\Pure\FromString as FeedbackQuestionIdFromString;
-use RC\Domain\MeetingRound\MeetingRoundId\Pure\FromString as MeetingRoundIdFromString;
-use RC\Domain\MeetingRound\MeetingRoundId\Pure\MeetingRoundId;
-use RC\Domain\Participant\ParticipantId\Pure\FromString as ParticipantIdFromString;
-use RC\Domain\Participant\ParticipantId\Pure\ParticipantId;
-use RC\Domain\BotUser\UserStatus\Pure\UserStatus;
-use RC\Domain\UserInterest\InterestId\Pure\Single\Networking;
-use RC\Domain\UserInterest\InterestId\Pure\Single\SpecificArea;
-use RC\Domain\BooleanAnswer\BooleanAnswerName\Sure;
-use RC\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\ApplicationConnection;
-use RC\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\RootConnection;
-use RC\Domain\TelegramUser\UserId\FromUuid as UserIdFromUuid;
-use RC\Domain\TelegramUser\UserId\TelegramUserId;
-use RC\Domain\BotUser\UserStatus\Pure\Registered;
-use RC\Infrastructure\Http\Request\Url\ParsedQuery\FromQuery;
-use RC\Infrastructure\Http\Request\Url\Query\FromUrl;
-use RC\Infrastructure\Http\Transport\HttpTransport;
-use RC\Infrastructure\Http\Transport\Indifferent;
-use RC\Infrastructure\Logging\Logs\DevNull;
-use RC\Domain\Bot\BotId\BotId;
-use RC\Domain\Bot\BotId\FromUuid;
-use RC\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
-use RC\Infrastructure\SqlDatabase\Agnostic\Query\Selecting;
-use RC\Infrastructure\TelegramBot\UserId\Pure\FromInteger;
-use RC\Infrastructure\TelegramBot\UserId\Pure\InternalTelegramUserId;
-use RC\Infrastructure\Uuid\Fixed;
-use RC\Infrastructure\Uuid\FromString;
-use RC\Tests\Infrastructure\Environment\Reset;
-use RC\Tests\Infrastructure\Stub\Table\Bot;
-use RC\Tests\Infrastructure\Stub\Table\BotUser;
-use RC\Tests\Infrastructure\Stub\Table\FeedbackInvitation;
-use RC\Tests\Infrastructure\Stub\Table\FeedbackQuestion;
-use RC\Tests\Infrastructure\Stub\Table\MeetingRound;
-use RC\Tests\Infrastructure\Stub\Table\MeetingRoundParticipant;
-use RC\Tests\Infrastructure\Stub\Table\TelegramUser;
-use RC\Tests\Infrastructure\Stub\TelegramMessage\UserMessage;
-use RC\UserActions\SendsArbitraryMessage\SendsArbitraryMessage;
+use TG\Domain\FeedbackInvitation\FeedbackInvitationId\Pure\FeedbackInvitationId;
+use TG\Domain\FeedbackInvitation\FeedbackInvitationId\Pure\FromString as FeedbackInvitationIdFromString;
+use TG\Domain\FeedbackInvitation\Status\Pure\Sent;
+use TG\Domain\FeedbackInvitation\Status\Pure\Status;
+use TG\Domain\FeedbackQuestion\FeedbackQuestionId\Pure\FeedbackQuestionId;
+use TG\Domain\FeedbackQuestion\FeedbackQuestionId\Pure\FromString as FeedbackQuestionIdFromString;
+use TG\Domain\MeetingRound\MeetingRoundId\Pure\FromString as MeetingRoundIdFromString;
+use TG\Domain\MeetingRound\MeetingRoundId\Pure\MeetingRoundId;
+use TG\Domain\Participant\ParticipantId\Pure\FromString as ParticipantIdFromString;
+use TG\Domain\Participant\ParticipantId\Pure\ParticipantId;
+use TG\Domain\BotUser\UserStatus\Pure\UserStatus;
+use TG\Domain\UserInterest\InterestId\Pure\Single\Networking;
+use TG\Domain\UserInterest\InterestId\Pure\Single\SpecificArea;
+use TG\Domain\BooleanAnswer\BooleanAnswerName\Sure;
+use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\ApplicationConnection;
+use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\RootConnection;
+use TG\Domain\TelegramUser\UserId\FromUuid as UserIdFromUuid;
+use TG\Domain\TelegramUser\UserId\TelegramUserId;
+use TG\Domain\BotUser\UserStatus\Pure\Registered;
+use TG\Infrastructure\Http\Request\Url\ParsedQuery\FromQuery;
+use TG\Infrastructure\Http\Request\Url\Query\FromUrl;
+use TG\Infrastructure\Http\Transport\HttpTransport;
+use TG\Infrastructure\Http\Transport\Indifferent;
+use TG\Infrastructure\Logging\Logs\DevNull;
+use TG\Domain\Bot\BotId\BotId;
+use TG\Domain\Bot\BotId\FromUuid;
+use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
+use TG\Infrastructure\SqlDatabase\Agnostic\Query\Selecting;
+use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\FromInteger;
+use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId;
+use TG\Infrastructure\Uuid\Fixed;
+use TG\Infrastructure\Uuid\FromString;
+use TG\Tests\Infrastructure\Environment\Reset;
+use TG\Tests\Infrastructure\Stub\Table\Bot;
+use TG\Tests\Infrastructure\Stub\Table\BotUser;
+use TG\Tests\Infrastructure\Stub\Table\FeedbackInvitation;
+use TG\Tests\Infrastructure\Stub\Table\FeedbackQuestion;
+use TG\Tests\Infrastructure\Stub\Table\MeetingRound;
+use TG\Tests\Infrastructure\Stub\Table\MeetingRoundParticipant;
+use TG\Tests\Infrastructure\Stub\Table\TelegramUser;
+use TG\Tests\Infrastructure\Stub\TelegramMessage\UserMessage;
+use TG\UserActions\SendsArbitraryMessage\SendsArbitraryMessage;
 
 class UserAnswersFeedbackQuestionsTest extends TestCase
 {
@@ -81,7 +81,7 @@ class UserAnswersFeedbackQuestionsTest extends TestCase
         $this->assertTrue($secondResponse->isSuccessful());
         $this->assertCount(2, $transport->sentRequests());
         $this->assertEquals(
-            'Спасибо за ответы! Если хотите что-то спросить или уточнить, смело пишите на @gorgonzola_support_bot',
+            'Спасибо за ответы! Если хотите что-то спросить или уточнить, смело пишите на @tindergram_support_bot',
             (new FromQuery(new FromUrl($transport->sentRequests()[1]->url())))->value()['text']
         );
         $this->assertParticipantAnswerIs($this->firstFeedbackQuestionId(), $this->participantId(), 'Шикардос!', $connection);
@@ -91,7 +91,7 @@ class UserAnswersFeedbackQuestionsTest extends TestCase
         $this->assertTrue($thirdResponse->isSuccessful());
         $this->assertCount(3, $transport->sentRequests());
         $this->assertEquals(
-            'Хотите что-то уточнить? Смело пишите на @gorgonzola_support_bot!',
+            'Хотите что-то уточнить? Смело пишите на @tindergram_support_bot!',
             (new FromQuery(new FromUrl($transport->sentRequests()[2]->url())))->value()['text']
         );
         $this->assertParticipantAnswerIs($this->firstFeedbackQuestionId(), $this->participantId(), 'Шикардос!', $connection);
@@ -101,7 +101,7 @@ class UserAnswersFeedbackQuestionsTest extends TestCase
         $this->assertTrue($fourthResponse->isSuccessful());
         $this->assertCount(4, $transport->sentRequests());
         $this->assertEquals(
-            'Хотите что-то уточнить? Смело пишите на @gorgonzola_support_bot!',
+            'Хотите что-то уточнить? Смело пишите на @tindergram_support_bot!',
             (new FromQuery(new FromUrl($transport->sentRequests()[3]->url())))->value()['text']
         );
         $this->assertParticipantAnswerIs($this->firstFeedbackQuestionId(), $this->participantId(), 'Шикардос!', $connection);
@@ -143,7 +143,7 @@ class UserAnswersFeedbackQuestionsTest extends TestCase
         $this->assertParticipantAnswerIs($this->firstFeedbackQuestionId(), $this->participantId(), 'кометы не падают', $connection);
         $this->assertCount(3, $transport->sentRequests());
         $this->assertEquals(
-            'Спасибо за ответы! Если хотите что-то спросить или уточнить, смело пишите на @gorgonzola_support_bot',
+            'Спасибо за ответы! Если хотите что-то спросить или уточнить, смело пишите на @tindergram_support_bot',
             (new FromQuery(new FromUrl($transport->sentRequests()[2]->url())))->value()['text']
         );
 
@@ -151,7 +151,7 @@ class UserAnswersFeedbackQuestionsTest extends TestCase
 
         $this->assertCount(4, $transport->sentRequests());
         $this->assertEquals(
-            'Хотите что-то уточнить? Смело пишите на @gorgonzola_support_bot!',
+            'Хотите что-то уточнить? Смело пишите на @tindergram_support_bot!',
             (new FromQuery(new FromUrl($transport->sentRequests()[3]->url())))->value()['text']
         );
         $this->assertParticipantAnswerIs($this->secondFeedbackQuestionId(), $this->participantId(), 'и всё нормально', $connection);
@@ -161,7 +161,7 @@ class UserAnswersFeedbackQuestionsTest extends TestCase
 
         $this->assertCount(5, $transport->sentRequests());
         $this->assertEquals(
-            'Хотите что-то уточнить? Смело пишите на @gorgonzola_support_bot!',
+            'Хотите что-то уточнить? Смело пишите на @tindergram_support_bot!',
             (new FromQuery(new FromUrl($transport->sentRequests()[4]->url())))->value()['text']
         );
         $this->assertParticipantAnswerIs($this->secondFeedbackQuestionId(), $this->participantId(), 'и всё нормально', $connection);

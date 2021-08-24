@@ -2,25 +2,25 @@
 
 declare(strict_types=1);
 
-namespace RC\Activities\Cron\InvitesToTakePartInANewRound;
+namespace TG\Activities\Cron\InvitesToTakePartInANewRound;
 
-use RC\Domain\Bot\BotId\BotId;
-use RC\Domain\Bot\ById;
-use RC\Domain\RoundInvitation\InvitationId\Pure\FromUuid;
-use RC\Infrastructure\Uuid\FromString as Uuid;
-use RC\Domain\RoundInvitation\WriteModel\Sent;
-use RC\Domain\RoundInvitation\Status\Pure\Sent as SentStatus;
-use RC\Infrastructure\Http\Transport\HttpTransport;
-use RC\Infrastructure\Logging\LogItem\InformationMessage;
-use RC\Infrastructure\Logging\Logs;
-use RC\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
-use RC\Infrastructure\SqlDatabase\Agnostic\Query\Selecting;
-use RC\Infrastructure\TelegramBot\UserId\Pure\FromInteger;
-use RC\Infrastructure\UserStory\Body\Emptie;
-use RC\Infrastructure\UserStory\Existent;
-use RC\Infrastructure\UserStory\Response;
-use RC\Infrastructure\UserStory\Response\Successful;
-use RC\Domain\RoundInvitation\WriteModel\WithPause;
+use TG\Domain\Bot\BotId\BotId;
+use TG\Domain\Bot\ById;
+use TG\Domain\RoundInvitation\InvitationId\Pure\FromUuid;
+use TG\Infrastructure\Uuid\FromString as Uuid;
+use TG\Domain\RoundInvitation\WriteModel\Sent;
+use TG\Domain\RoundInvitation\Status\Pure\Sent as SentStatus;
+use TG\Infrastructure\Http\Transport\HttpTransport;
+use TG\Infrastructure\Logging\LogItem\InformationMessage;
+use TG\Infrastructure\Logging\Logs;
+use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
+use TG\Infrastructure\SqlDatabase\Agnostic\Query\Selecting;
+use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\FromInteger;
+use TG\Infrastructure\UserStory\Body\Emptie;
+use TG\Infrastructure\UserStory\Existent;
+use TG\Infrastructure\UserStory\Response;
+use TG\Infrastructure\UserStory\Response\Successful;
+use TG\Domain\RoundInvitation\WriteModel\WithPause;
 
 class InvitesToTakePartInANewRound extends Existent
 {

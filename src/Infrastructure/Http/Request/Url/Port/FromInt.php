@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\Http\Request\Url\Port;
+namespace TG\Infrastructure\Http\Request\Url\Port;
 
-use RC\Infrastructure\Http\Request\Url\Port;
+use TG\Infrastructure\Http\Request\Url\Port;
 
 class FromInt implements Port
 {

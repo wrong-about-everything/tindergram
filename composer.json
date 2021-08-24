@@ -1,5 +1,5 @@
 {
-    "name": "rc/1",
+    "name": "tg/1",
     "description": "Hello, Vasya!",
     "require": {
         "ext-bcmath": "*",
@@ -21,12 +21,12 @@
     },
     "autoload": {
         "psr-4": {
-            "RC\\": "src/"
+            "TG\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "RC\\Tests\\": "test/"
+            "TG\\Tests\\": "test/"
         }
     }
 }

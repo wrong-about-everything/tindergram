@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace RC\Domain\SentReplyToUser\ReplyOptions;
+namespace TG\Domain\SentReplyToUser\ReplyOptions;
 
-use RC\Domain\RoundInvitation\InvitationId\Impure\InvitationId;
-use RC\Domain\RoundRegistrationQuestion\RoundRegistrationQuestion;
-use RC\Domain\RoundRegistrationQuestion\Type\Impure\FromPure;
-use RC\Domain\RoundRegistrationQuestion\Type\Impure\FromRoundRegistrationQuestion as RoundRegistrationQuestionType;
-use RC\Domain\RoundRegistrationQuestion\Type\Pure\NetworkingOrSomeSpecificArea;
-use RC\Domain\UserInterest\InterestId\Impure\Multiple\AvailableInterestIdsInRoundByInvitationId;
-use RC\Domain\UserInterest\InterestId\Pure\Single\FromInteger;
-use RC\Domain\UserInterest\InterestName\Pure\FromInterestId;
-use RC\Infrastructure\ImpureInteractions\ImpureValue;
-use RC\Infrastructure\ImpureInteractions\ImpureValue\Successful;
-use RC\Infrastructure\ImpureInteractions\PureValue\Present;
-use RC\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
+use TG\Domain\RoundInvitation\InvitationId\Impure\InvitationId;
+use TG\Domain\RoundRegistrationQuestion\RoundRegistrationQuestion;
+use TG\Domain\RoundRegistrationQuestion\Type\Impure\FromPure;
+use TG\Domain\RoundRegistrationQuestion\Type\Impure\FromRoundRegistrationQuestion as RoundRegistrationQuestionType;
+use TG\Domain\RoundRegistrationQuestion\Type\Pure\NetworkingOrSomeSpecificArea;
+use TG\Domain\UserInterest\InterestId\Impure\Multiple\AvailableInterestIdsInRoundByInvitationId;
+use TG\Domain\UserInterest\InterestId\Pure\Single\FromInteger;
+use TG\Domain\UserInterest\InterestName\Pure\FromInterestId;
+use TG\Infrastructure\ImpureInteractions\ImpureValue;
+use TG\Infrastructure\ImpureInteractions\ImpureValue\Successful;
+use TG\Infrastructure\ImpureInteractions\PureValue\Present;
+use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
 
 class FromRoundRegistrationQuestion implements ReplyOptions
 {

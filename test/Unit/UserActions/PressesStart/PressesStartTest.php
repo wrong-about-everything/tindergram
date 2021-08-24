@@ -2,41 +2,41 @@
 
 declare(strict_types=1);
 
-namespace RC\Tests\Unit\UserActions\PressesStart;
+namespace TG\Tests\Unit\UserActions\PressesStart;
 
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
-use RC\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\ApplicationConnection;
-use RC\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\RootConnection;
-use RC\Domain\BotUser\ByTelegramUserId;
-use RC\Domain\RegistrationQuestion\RegistrationQuestionType\Pure\Experience;
-use RC\Domain\RegistrationQuestion\RegistrationQuestionType\Pure\Position;
-use RC\Domain\TelegramUser\ByTelegramId;
-use RC\Domain\TelegramUser\RegisteredInBot;
-use RC\Domain\TelegramUser\UserId\FromUuid as UserIdFromUuid;
-use RC\Domain\TelegramUser\UserId\TelegramUserId;
-use RC\Domain\BotUser\UserStatus\Pure\Registered;
-use RC\Domain\BotUser\UserStatus\Pure\RegistrationIsInProgress;
-use RC\Infrastructure\Http\Request\Url\ParsedQuery\FromQuery;
-use RC\Infrastructure\Http\Request\Url\Query\FromUrl;
-use RC\Infrastructure\Http\Transport\Indifferent;
-use RC\Infrastructure\Logging\Logs\DevNull;
-use RC\Domain\Bot\BotId\BotId;
-use RC\Domain\Bot\BotId\FromUuid;
-use RC\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
-use RC\Infrastructure\TelegramBot\UserId\Pure\FromInteger;
-use RC\Infrastructure\TelegramBot\UserId\Pure\InternalTelegramUserId;
-use RC\Infrastructure\Uuid\Fixed;
-use RC\Infrastructure\Uuid\FromString;
-use RC\Tests\Infrastructure\Environment\Reset;
-use RC\Tests\Infrastructure\Stub\Table\Bot;
-use RC\Tests\Infrastructure\Stub\Table\RegistrationQuestion;
-use RC\Tests\Infrastructure\Stub\Table\TelegramUser;
-use RC\Tests\Infrastructure\Stub\TelegramMessage\StartCommandMessage;
-use RC\Tests\Infrastructure\Stub\Table\BotUser;
-use RC\Tests\Infrastructure\Stub\Table\UserRegistrationProgress;
-use RC\Tests\Infrastructure\Stub\TelegramMessage\StartCommandMessageWithEmptyUsername;
-use RC\UserActions\PressesStart\PressesStart;
+use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\ApplicationConnection;
+use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\RootConnection;
+use TG\Domain\BotUser\ByTelegramUserId;
+use TG\Domain\RegistrationQuestion\RegistrationQuestionType\Pure\Experience;
+use TG\Domain\RegistrationQuestion\RegistrationQuestionType\Pure\Position;
+use TG\Domain\TelegramUser\ByTelegramId;
+use TG\Domain\TelegramUser\RegisteredInBot;
+use TG\Domain\TelegramUser\UserId\FromUuid as UserIdFromUuid;
+use TG\Domain\TelegramUser\UserId\TelegramUserId;
+use TG\Domain\BotUser\UserStatus\Pure\Registered;
+use TG\Domain\BotUser\UserStatus\Pure\RegistrationIsInProgress;
+use TG\Infrastructure\Http\Request\Url\ParsedQuery\FromQuery;
+use TG\Infrastructure\Http\Request\Url\Query\FromUrl;
+use TG\Infrastructure\Http\Transport\Indifferent;
+use TG\Infrastructure\Logging\Logs\DevNull;
+use TG\Domain\Bot\BotId\BotId;
+use TG\Domain\Bot\BotId\FromUuid;
+use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
+use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\FromInteger;
+use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId;
+use TG\Infrastructure\Uuid\Fixed;
+use TG\Infrastructure\Uuid\FromString;
+use TG\Tests\Infrastructure\Environment\Reset;
+use TG\Tests\Infrastructure\Stub\Table\Bot;
+use TG\Tests\Infrastructure\Stub\Table\RegistrationQuestion;
+use TG\Tests\Infrastructure\Stub\Table\TelegramUser;
+use TG\Tests\Infrastructure\Stub\TelegramMessage\StartCommandMessage;
+use TG\Tests\Infrastructure\Stub\Table\BotUser;
+use TG\Tests\Infrastructure\Stub\Table\UserRegistrationProgress;
+use TG\Tests\Infrastructure\Stub\TelegramMessage\StartCommandMessageWithEmptyUsername;
+use TG\UserActions\PressesStart\PressesStart;
 
 class PressesStartTest extends TestCase
 {
@@ -328,7 +328,7 @@ t
         $this->assertUserExists($this->telegramUserId(), $this->botId(), $connection);
         $this->assertCount(1, $transport->sentRequests());
         $this->assertEquals(
-            'Хотите что-то уточнить? Смело пишите на @gorgonzola_support_bot!',
+            'Хотите что-то уточнить? Смело пишите на @tindergram_support_bot!',
             (new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['text']
         );
     }

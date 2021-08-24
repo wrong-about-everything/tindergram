@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace RC\Domain\TelegramUser;
+namespace TG\Domain\TelegramUser;
 
-use RC\Infrastructure\ImpureInteractions\ImpureValue;
+use TG\Infrastructure\ImpureInteractions\ImpureValue;
 
 interface TelegramUser
 {

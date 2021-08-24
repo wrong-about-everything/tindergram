@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\TelegramBot;
+namespace TG\Infrastructure\TelegramBot;
 
-use RC\Domain\Bot\BotToken\Pure\BotToken;
-use RC\Infrastructure\TelegramBot\Method\Method;
-use RC\Infrastructure\Http\Request\Url;
-use RC\Infrastructure\Http\Request\Url\Query;
+use TG\Domain\Bot\BotToken\Pure\BotToken;
+use TG\Infrastructure\TelegramBot\Method\Method;
+use TG\Infrastructure\Http\Request\Url;
+use TG\Infrastructure\Http\Request\Url\Query;
 
 class BotApiUrl extends Url
 {

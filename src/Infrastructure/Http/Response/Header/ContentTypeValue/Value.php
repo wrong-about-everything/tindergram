@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\Http\Response\Header\ContentTypeValue;
+namespace TG\Infrastructure\Http\Response\Header\ContentTypeValue;
 
 abstract class Value
 {

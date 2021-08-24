@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\ExecutionEnvironmentAdapter\RawPhpFpmWebService;
+namespace TG\Infrastructure\ExecutionEnvironmentAdapter\RawPhpFpmWebService;
 
-use RC\Infrastructure\ExecutionEnvironmentAdapter\RawPhpFpmWebService;
+use TG\Infrastructure\ExecutionEnvironmentAdapter\RawPhpFpmWebService;
 use SoapServer as NativePhpSoapServer;
 
 /**

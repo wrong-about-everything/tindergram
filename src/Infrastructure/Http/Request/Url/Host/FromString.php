@@ -2,10 +2,10 @@
 
 declare(strict_types = 1);
 
-namespace RC\Infrastructure\Http\Request\Url\Host;
+namespace TG\Infrastructure\Http\Request\Url\Host;
 
-use RC\Infrastructure\Http\Request\Url\Host;
-use RC\Infrastructure\Http\Request\Url\FromString as UrlFromString;
+use TG\Infrastructure\Http\Request\Url\Host;
+use TG\Infrastructure\Http\Request\Url\FromString as UrlFromString;
 use Exception;
 
 class FromString implements Host

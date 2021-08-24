@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace RC\Domain\BotUser\UserStatus\Impure;
+namespace TG\Domain\BotUser\UserStatus\Impure;
 
-use RC\Domain\BotUser\BotUser;
-use RC\Domain\BotUser\UserStatus\Pure\FromInteger;
-use RC\Domain\BotUser\UserStatus\Pure\NonExistent;
-use RC\Infrastructure\ImpureInteractions\ImpureValue;
+use TG\Domain\BotUser\BotUser;
+use TG\Domain\BotUser\UserStatus\Pure\FromInteger;
+use TG\Domain\BotUser\UserStatus\Pure\NonExistent;
+use TG\Infrastructure\ImpureInteractions\ImpureValue;
 
 class FromBotUser extends UserStatus
 {

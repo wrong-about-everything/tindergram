@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace RC\Tests\Infrastructure\Stub\Table;
+namespace TG\Tests\Infrastructure\Stub\Table;
 
 use Exception;
 use Ramsey\Uuid\Uuid;
-use RC\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
-use RC\Infrastructure\SqlDatabase\Agnostic\Query\SingleMutatingQueryWithMultipleValueSets;
+use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
+use TG\Infrastructure\SqlDatabase\Agnostic\Query\SingleMutatingQueryWithMultipleValueSets;
 
 class RoundRegistrationQuestion
 {

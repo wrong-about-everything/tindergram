@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\Http\Response\Inbound;
+namespace TG\Infrastructure\Http\Response\Inbound;
 
 use Psr\Http\Message\ResponseInterface;
-use RC\Infrastructure\Http\Response\Code\FromInteger;
-use RC\Infrastructure\Http\Response\Code;
+use TG\Infrastructure\Http\Response\Code\FromInteger;
+use TG\Infrastructure\Http\Response\Code;
 
 class FromPsrResponse implements Response
 {

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace RC\Tests\Unit\Infrastructure\ImpureInteractions\ImpureValue;
+namespace TG\Tests\Unit\Infrastructure\ImpureInteractions\ImpureValue;
 
 use PHPUnit\Framework\TestCase;
-use RC\Infrastructure\ImpureInteractions\Error\SilentDeclineWithDefaultUserMessage;
-use RC\Infrastructure\ImpureInteractions\ImpureValue\Combined;
-use RC\Infrastructure\ImpureInteractions\ImpureValue\Failed;
-use RC\Infrastructure\ImpureInteractions\ImpureValue\Successful;
-use RC\Infrastructure\ImpureInteractions\PureValue\Present;
+use TG\Infrastructure\ImpureInteractions\Error\SilentDeclineWithDefaultUserMessage;
+use TG\Infrastructure\ImpureInteractions\ImpureValue\Combined;
+use TG\Infrastructure\ImpureInteractions\ImpureValue\Failed;
+use TG\Infrastructure\ImpureInteractions\ImpureValue\Successful;
+use TG\Infrastructure\ImpureInteractions\PureValue\Present;
 
 class CombinedTest extends TestCase
 {

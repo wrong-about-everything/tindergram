@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\Routing\MatchResult;
+namespace TG\Infrastructure\Routing\MatchResult;
 
-use RC\Infrastructure\Routing\MatchResult;
+use TG\Infrastructure\Routing\MatchResult;
 
 class Match implements MatchResult
 {

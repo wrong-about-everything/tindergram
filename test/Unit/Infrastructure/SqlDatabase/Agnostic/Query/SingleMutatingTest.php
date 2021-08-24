@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace RC\Tests\Unit\Infrastructure\SqlDatabase\Agnostic\Query;
+namespace TG\Tests\Unit\Infrastructure\SqlDatabase\Agnostic\Query;
 
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
-use RC\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\ApplicationConnection;
-use RC\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\RootConnection;
-use RC\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
-use RC\Infrastructure\SqlDatabase\Agnostic\Query\Selecting;
-use RC\Infrastructure\SqlDatabase\Agnostic\Query\SingleMutating;
-use RC\Infrastructure\SqlDatabase\Agnostic\Query\SingleMutatingQueryWithMultipleValueSets;
-use RC\Tests\Infrastructure\Environment\Reset;
+use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\ApplicationConnection;
+use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\RootConnection;
+use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
+use TG\Infrastructure\SqlDatabase\Agnostic\Query\Selecting;
+use TG\Infrastructure\SqlDatabase\Agnostic\Query\SingleMutating;
+use TG\Infrastructure\SqlDatabase\Agnostic\Query\SingleMutatingQueryWithMultipleValueSets;
+use TG\Tests\Infrastructure\Environment\Reset;
 
 class SingleMutatingTest extends TestCase
 {

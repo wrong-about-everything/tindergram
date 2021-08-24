@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\Filesystem\Filename;
+namespace TG\Infrastructure\Filesystem\Filename;
 
 use Exception;
-use RC\Infrastructure\Filesystem\Filename;
+use TG\Infrastructure\Filesystem\Filename;
 
 class PortableFromString extends Filename
 {

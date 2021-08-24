@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace RC\Activities\User\RepliesToFeedbackInvitation\UserStories\AnswersFeedbackQuestion\Domain\Participant;
+namespace TG\Activities\User\RepliesToFeedbackInvitation\UserStories\AnswersFeedbackQuestion\Domain\Participant;
 
-use RC\Domain\FeedbackInvitation\ReadModel\FeedbackInvitation;
-use RC\Domain\FeedbackQuestion\FeedbackQuestion;
-use RC\Domain\FeedbackQuestion\FeedbackQuestionId\Impure\FromFeedbackQuestion;
-use RC\Domain\FeedbackQuestion\FeedbackQuestionId\Impure\FeedbackQuestionId;
-use RC\Domain\Participant\ParticipantId\Impure\FromFeedbackInvitation;
-use RC\Domain\Participant\ParticipantId\Impure\ParticipantId;
-use RC\Domain\Participant\WriteModel\Participant;
-use RC\Infrastructure\ImpureInteractions\ImpureValue;
-use RC\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
-use RC\Infrastructure\SqlDatabase\Agnostic\Query\SingleMutating;
-use RC\Infrastructure\TelegramBot\UserMessage\Pure\UserMessage;
+use TG\Domain\FeedbackInvitation\ReadModel\FeedbackInvitation;
+use TG\Domain\FeedbackQuestion\FeedbackQuestion;
+use TG\Domain\FeedbackQuestion\FeedbackQuestionId\Impure\FromFeedbackQuestion;
+use TG\Domain\FeedbackQuestion\FeedbackQuestionId\Impure\FeedbackQuestionId;
+use TG\Domain\Participant\ParticipantId\Impure\FromFeedbackInvitation;
+use TG\Domain\Participant\ParticipantId\Impure\ParticipantId;
+use TG\Domain\Participant\WriteModel\Participant;
+use TG\Infrastructure\ImpureInteractions\ImpureValue;
+use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
+use TG\Infrastructure\SqlDatabase\Agnostic\Query\SingleMutating;
+use TG\Infrastructure\TelegramBot\UserMessage\Pure\UserMessage;
 
 class AnsweredFeedbackQuestion implements Participant
 {

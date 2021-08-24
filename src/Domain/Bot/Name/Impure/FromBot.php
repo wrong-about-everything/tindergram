@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace RC\Domain\Bot\Name\Impure;
+namespace TG\Domain\Bot\Name\Impure;
 
-use RC\Domain\Bot\Bot;
-use RC\Infrastructure\ImpureInteractions\ImpureValue;
-use RC\Infrastructure\ImpureInteractions\ImpureValue\Successful;
-use RC\Infrastructure\ImpureInteractions\PureValue\Present;
+use TG\Domain\Bot\Bot;
+use TG\Infrastructure\ImpureInteractions\ImpureValue;
+use TG\Infrastructure\ImpureInteractions\ImpureValue\Successful;
+use TG\Infrastructure\ImpureInteractions\PureValue\Present;
 
 class FromBot implements Name
 {

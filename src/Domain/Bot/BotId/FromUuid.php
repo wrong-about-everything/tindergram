@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace RC\Domain\Bot\BotId;
+namespace TG\Domain\Bot\BotId;
 
-use RC\Infrastructure\Uuid\UUID;
+use TG\Infrastructure\Uuid\UUID;
 
 class FromUuid extends BotId
 {

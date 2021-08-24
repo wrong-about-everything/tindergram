@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace RC\Tests\Unit\Infrastructure\Http\Transport;
+namespace TG\Tests\Unit\Infrastructure\Http\Transport;
 
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
-use RC\Infrastructure\Http\Request\Method\Post;
-use RC\Infrastructure\Http\Request\Outbound\OutboundRequest;
-use RC\Infrastructure\Http\Request\Url\FromString;
-use RC\Infrastructure\Http\Response\Code\Ok;
-use RC\Infrastructure\Http\Transport\WithLogging;
-use RC\Infrastructure\Logging\LogId;
-use RC\Infrastructure\Logging\Logs\InMemory;
-use RC\Infrastructure\Uuid\FromString as UuidFromString;
-use RC\Tests\Infrastructure\Http\Transport\FakeWithCodeHeadersAndBody;
-use RC\Tests\Infrastructure\Http\Transport\Sleepy;
+use TG\Infrastructure\Http\Request\Method\Post;
+use TG\Infrastructure\Http\Request\Outbound\OutboundRequest;
+use TG\Infrastructure\Http\Request\Url\FromString;
+use TG\Infrastructure\Http\Response\Code\Ok;
+use TG\Infrastructure\Http\Transport\WithLogging;
+use TG\Infrastructure\Logging\LogId;
+use TG\Infrastructure\Logging\Logs\InMemory;
+use TG\Infrastructure\Uuid\FromString as UuidFromString;
+use TG\Tests\Infrastructure\Http\Transport\FakeWithCodeHeadersAndBody;
+use TG\Tests\Infrastructure\Http\Transport\Sleepy;
 
 class WithLoggingTest extends TestCase
 {

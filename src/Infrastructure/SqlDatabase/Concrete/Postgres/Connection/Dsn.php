@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\SqlDatabase\Concrete\Postgres\Connection;
+namespace TG\Infrastructure\SqlDatabase\Concrete\Postgres\Connection;
 
-use RC\Infrastructure\SqlDatabase\Agnostic\Connection\DatabaseName;
-use RC\Infrastructure\SqlDatabase\Agnostic\Connection\Host;
-use RC\Infrastructure\SqlDatabase\Agnostic\Connection\Port;
+use TG\Infrastructure\SqlDatabase\Agnostic\Connection\DatabaseName;
+use TG\Infrastructure\SqlDatabase\Agnostic\Connection\Host;
+use TG\Infrastructure\SqlDatabase\Agnostic\Connection\Port;
 
 class Dsn
 {

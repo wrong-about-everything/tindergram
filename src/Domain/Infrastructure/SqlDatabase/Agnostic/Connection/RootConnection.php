@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace RC\Domain\Infrastructure\SqlDatabase\Agnostic\Connection;
+namespace TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection;
 
 use PDO;
-use RC\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\Credentials\RootCredentials;
-use RC\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
-use RC\Infrastructure\SqlDatabase\Agnostic\Connection\DatabaseName\SpecifiedDatabaseName;
-use RC\Infrastructure\SqlDatabase\Agnostic\Connection\Host\FromString as HostFromString;
-use RC\Infrastructure\SqlDatabase\Concrete\Postgres\Connection\Dsn;
-use RC\Infrastructure\SqlDatabase\Agnostic\Connection\Port\FromString as PortFromString;
+use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\Credentials\RootCredentials;
+use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
+use TG\Infrastructure\SqlDatabase\Agnostic\Connection\DatabaseName\SpecifiedDatabaseName;
+use TG\Infrastructure\SqlDatabase\Agnostic\Connection\Host\FromString as HostFromString;
+use TG\Infrastructure\SqlDatabase\Concrete\Postgres\Connection\Dsn;
+use TG\Infrastructure\SqlDatabase\Agnostic\Connection\Port\FromString as PortFromString;
 
 class RootConnection implements OpenConnection
 {

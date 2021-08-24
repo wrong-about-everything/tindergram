@@ -2,23 +2,23 @@
 
 declare(strict_types=1);
 
-namespace RC\Activities\Admin;
+namespace TG\Activities\Admin;
 
 use Meringue\Timeline\Point\Now;
-use RC\Domain\Bot\BotId\BotId;
-use RC\Domain\Matches\PositionExperienceParticipantsInterestsMatrix\FromRound;
-use RC\Domain\Matches\ReadModel\Impure\GeneratedMatchesForAllParticipants;
-use RC\Domain\Matches\ReadModel\Impure\Matches;
-use RC\Domain\MeetingRound\ReadModel\LatestNotYetStarted;
-use RC\Infrastructure\Logging\LogItem\FromNonSuccessfulImpureValue;
-use RC\Infrastructure\Logging\LogItem\InformationMessage;
-use RC\Infrastructure\Logging\Logs;
-use RC\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
-use RC\Infrastructure\UserStory\Body\Arrray;
-use RC\Infrastructure\UserStory\Existent;
-use RC\Infrastructure\UserStory\Response;
-use RC\Infrastructure\UserStory\Response\NonRetryableServerError;
-use RC\Infrastructure\UserStory\Response\Successful;
+use TG\Domain\Bot\BotId\BotId;
+use TG\Domain\Matches\PositionExperienceParticipantsInterestsMatrix\FromRound;
+use TG\Domain\Matches\ReadModel\Impure\GeneratedMatchesForAllParticipants;
+use TG\Domain\Matches\ReadModel\Impure\Matches;
+use TG\Domain\MeetingRound\ReadModel\LatestNotYetStarted;
+use TG\Infrastructure\Logging\LogItem\FromNonSuccessfulImpureValue;
+use TG\Infrastructure\Logging\LogItem\InformationMessage;
+use TG\Infrastructure\Logging\Logs;
+use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
+use TG\Infrastructure\UserStory\Body\Arrray;
+use TG\Infrastructure\UserStory\Existent;
+use TG\Infrastructure\UserStory\Response;
+use TG\Infrastructure\UserStory\Response\NonRetryableServerError;
+use TG\Infrastructure\UserStory\Response\Successful;
 
 class SeesMatches extends Existent
 {

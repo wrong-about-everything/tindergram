@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace RC\Tests\Unit\Infrastructure\Http\Transport\Guzzle;
+namespace TG\Tests\Unit\Infrastructure\Http\Transport\Guzzle;
 
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\RequestOptions;
 use PHPUnit\Framework\TestCase;
-use RC\Infrastructure\Http\Request\Method\Post;
-use RC\Infrastructure\Http\Request\Outbound\OutboundRequest;
-use RC\Infrastructure\Http\Request\Url\FromString;
-use RC\Infrastructure\Http\Transport\Guzzle\DefaultGuzzle;
-use RC\Infrastructure\Http\Transport\Guzzle\WithConnectTimeout;
-use RC\Tests\Infrastructure\Http\Transport\Guzzle\ClientStub;
-use RC\Tests\Infrastructure\Http\Transport\Guzzle\GuzzleWithPublicOptions;
+use TG\Infrastructure\Http\Request\Method\Post;
+use TG\Infrastructure\Http\Request\Outbound\OutboundRequest;
+use TG\Infrastructure\Http\Request\Url\FromString;
+use TG\Infrastructure\Http\Transport\Guzzle\DefaultGuzzle;
+use TG\Infrastructure\Http\Transport\Guzzle\WithConnectTimeout;
+use TG\Tests\Infrastructure\Http\Transport\Guzzle\ClientStub;
+use TG\Tests\Infrastructure\Http\Transport\Guzzle\GuzzleWithPublicOptions;
 
 class WithConnectTimeoutTest extends TestCase
 {

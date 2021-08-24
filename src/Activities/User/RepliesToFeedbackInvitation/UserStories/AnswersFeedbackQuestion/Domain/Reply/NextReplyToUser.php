@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace RC\Activities\User\RepliesToFeedbackInvitation\UserStories\AnswersFeedbackQuestion\Domain\Reply;
+namespace TG\Activities\User\RepliesToFeedbackInvitation\UserStories\AnswersFeedbackQuestion\Domain\Reply;
 
-use RC\Activities\User\RepliesToFeedbackInvitation\Domain\Reply\NextFeedbackQuestionReplyToUser;
-use RC\Activities\User\RepliesToFeedbackInvitation\Domain\Reply\ThanksForFeedback;
-use RC\Domain\Bot\BotId\BotId;
-use RC\Domain\FeedbackInvitation\ReadModel\FeedbackInvitation;
-use RC\Domain\FeedbackQuestion\FirstNonAnsweredFeedbackQuestion;
-use RC\Domain\Participant\ParticipantId\Impure\FromFeedbackInvitation as ParticipantIdFromFeedbackInvitation;
-use RC\Infrastructure\Http\Transport\HttpTransport;
-use RC\Infrastructure\ImpureInteractions\ImpureValue;
-use RC\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
-use RC\Domain\SentReplyToUser\SentReplyToUser;
-use RC\Infrastructure\TelegramBot\UserId\Pure\InternalTelegramUserId;
+use TG\Activities\User\RepliesToFeedbackInvitation\Domain\Reply\NextFeedbackQuestionReplyToUser;
+use TG\Activities\User\RepliesToFeedbackInvitation\Domain\Reply\ThanksForFeedback;
+use TG\Domain\Bot\BotId\BotId;
+use TG\Domain\FeedbackInvitation\ReadModel\FeedbackInvitation;
+use TG\Domain\FeedbackQuestion\FirstNonAnsweredFeedbackQuestion;
+use TG\Domain\Participant\ParticipantId\Impure\FromFeedbackInvitation as ParticipantIdFromFeedbackInvitation;
+use TG\Infrastructure\Http\Transport\HttpTransport;
+use TG\Infrastructure\ImpureInteractions\ImpureValue;
+use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
+use TG\Domain\SentReplyToUser\SentReplyToUser;
+use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId;
 
 class NextReplyToUser implements SentReplyToUser
 {

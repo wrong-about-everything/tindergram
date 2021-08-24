@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace RC\Domain\Bot\BotToken\Impure;
+namespace TG\Domain\Bot\BotToken\Impure;
 
-use RC\Infrastructure\ImpureInteractions\ImpureValue;
-use RC\Infrastructure\ImpureInteractions\ImpureValue\Successful;
-use RC\Infrastructure\ImpureInteractions\PureValue\Emptie;
-use RC\Infrastructure\ImpureInteractions\PureValue\Present;
-use RC\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
-use RC\Infrastructure\SqlDatabase\Agnostic\Query\Selecting;
-use RC\Domain\Bot\BotId\BotId;
+use TG\Infrastructure\ImpureInteractions\ImpureValue;
+use TG\Infrastructure\ImpureInteractions\ImpureValue\Successful;
+use TG\Infrastructure\ImpureInteractions\PureValue\Emptie;
+use TG\Infrastructure\ImpureInteractions\PureValue\Present;
+use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
+use TG\Infrastructure\SqlDatabase\Agnostic\Query\Selecting;
+use TG\Domain\Bot\BotId\BotId;
 
 class ByBotId extends BotToken
 {

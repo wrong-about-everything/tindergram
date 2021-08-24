@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace RC\Tests\Unit\Infrastructure\Http\Request\Url\Host;
+namespace TG\Tests\Unit\Infrastructure\Http\Request\Url\Host;
 
 use PHPUnit\Framework\TestCase;
-use RC\Infrastructure\Http\Request\Url\FromString as UrlFromString;
-use RC\Infrastructure\Http\Request\Url\Host\FromUrl as HostFromUrl;
+use TG\Infrastructure\Http\Request\Url\FromString as UrlFromString;
+use TG\Infrastructure\Http\Request\Url\Host\FromUrl as HostFromUrl;
 
 class FromUrlTest extends TestCase
 {

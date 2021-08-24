@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace RC\Tests\Unit\Infrastructure\Http\Request\Url\Query;
+namespace TG\Tests\Unit\Infrastructure\Http\Request\Url\Query;
 
 use PHPUnit\Framework\TestCase;
-use RC\Infrastructure\Http\Request\Url\Query\FromString;
+use TG\Infrastructure\Http\Request\Url\Query\FromString;
 
 class FromStringTest extends TestCase
 {

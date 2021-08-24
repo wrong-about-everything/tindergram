@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace RC\Tests\Infrastructure\Stub\Table;
+namespace TG\Tests\Infrastructure\Stub\Table;
 
 use Exception;
 use Ramsey\Uuid\Uuid;
-use RC\Domain\Experience\ExperienceId\Pure\LessThanAYear;
-use RC\Domain\Position\PositionId\Pure\ProductManager;
-use RC\Domain\BotUser\UserStatus\Pure\Registered;
-use RC\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
-use RC\Infrastructure\SqlDatabase\Agnostic\Query\SingleMutatingQueryWithMultipleValueSets;
+use TG\Domain\Experience\ExperienceId\Pure\LessThanAYear;
+use TG\Domain\Position\PositionId\Pure\ProductManager;
+use TG\Domain\BotUser\UserStatus\Pure\Registered;
+use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
+use TG\Infrastructure\SqlDatabase\Agnostic\Query\SingleMutatingQueryWithMultipleValueSets;
 
 class BotUser
 {

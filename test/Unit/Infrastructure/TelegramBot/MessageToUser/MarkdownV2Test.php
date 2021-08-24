@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace RC\Tests\Unit\Infrastructure\TelegramBot\MessageToUser;
+namespace TG\Tests\Unit\Infrastructure\TelegramBot\MessageToUser;
 
 use PHPUnit\Framework\TestCase;
-use RC\Infrastructure\TelegramBot\MessageToUser\MarkdownV2;
+use TG\Infrastructure\TelegramBot\MessageToUser\MarkdownV2;
 
 class MarkdownV2Test extends TestCase
 {

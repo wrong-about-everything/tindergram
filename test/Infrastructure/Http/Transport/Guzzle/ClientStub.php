@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace RC\Tests\Infrastructure\Http\Transport\Guzzle;
+namespace TG\Tests\Infrastructure\Http\Transport\Guzzle;
 
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Promise\FulfilledPromise;

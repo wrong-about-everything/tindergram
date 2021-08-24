@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace RC\Tests\Unit\Infrastructure\HumanReadableDateTime;
+namespace TG\Tests\Unit\Infrastructure\HumanReadableDateTime;
 
 use Meringue\ISO8601DateTime\FromISO8601;
 use Meringue\ISO8601DateTime\Tomorrow;
@@ -11,7 +11,7 @@ use Meringue\ISO8601Interval\Floating\OneHour;
 use Meringue\Timeline\Point\Future;
 use Meringue\Timeline\Point\Now;
 use PHPUnit\Framework\TestCase;
-use RC\Infrastructure\HumanReadableDateTime\AccusativeDateTimeInMoscowTimeZone;
+use TG\Infrastructure\HumanReadableDateTime\AccusativeDateTimeInMoscowTimeZone;
 
 class AccusativeDateTimeTest extends TestCase
 {

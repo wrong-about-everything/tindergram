@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace RC\Tests\Unit\Infrastructure\Routing\Route;
+namespace TG\Tests\Unit\Infrastructure\Routing\Route;
 
 use PHPUnit\Framework\TestCase;
-use RC\Infrastructure\Http\Request\Inbound\Composite;
-use RC\Infrastructure\Http\Request\Inbound\Request;
-use RC\Infrastructure\Http\Request\Method\Delete;
-use RC\Infrastructure\Http\Request\Method\Get;
-use RC\Infrastructure\Http\Request\Method\Post;
-use RC\Infrastructure\Http\Request\Method\Put;
-use RC\Infrastructure\Http\Request\Url\FromString;
-use RC\Infrastructure\Http\Request\Url\Query\FromString as QueryFromString;
-use RC\Infrastructure\Routing\Route;
-use RC\Infrastructure\Routing\Route\RouteByMethodAndPathPattern;
-use RC\Infrastructure\Routing\Route\RouteByMethodAndPathPatternWithQuery;
+use TG\Infrastructure\Http\Request\Inbound\Composite;
+use TG\Infrastructure\Http\Request\Inbound\Request;
+use TG\Infrastructure\Http\Request\Method\Delete;
+use TG\Infrastructure\Http\Request\Method\Get;
+use TG\Infrastructure\Http\Request\Method\Post;
+use TG\Infrastructure\Http\Request\Method\Put;
+use TG\Infrastructure\Http\Request\Url\FromString;
+use TG\Infrastructure\Http\Request\Url\Query\FromString as QueryFromString;
+use TG\Infrastructure\Routing\Route;
+use TG\Infrastructure\Routing\Route\RouteByMethodAndPathPattern;
+use TG\Infrastructure\Routing\Route\RouteByMethodAndPathPatternWithQuery;
 
 class RouteByMethodAndPathPatternWithQueryTest extends TestCase
 {

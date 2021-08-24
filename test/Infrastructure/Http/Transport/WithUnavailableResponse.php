@@ -2,11 +2,11 @@
 
 declare(strict_types = 1);
 
-namespace RC\Tests\Infrastructure\Http\Transport;
+namespace TG\Tests\Infrastructure\Http\Transport;
 
-use RC\Infrastructure\Http\Request\Outbound\Request;
-use RC\Infrastructure\Http\Response\Inbound\Response;
-use RC\Infrastructure\Http\Response\Inbound\Unavailable;
+use TG\Infrastructure\Http\Request\Outbound\Request;
+use TG\Infrastructure\Http\Response\Inbound\Response;
+use TG\Infrastructure\Http\Response\Inbound\Unavailable;
 
 class WithUnavailableResponse implements FakeTransport
 {

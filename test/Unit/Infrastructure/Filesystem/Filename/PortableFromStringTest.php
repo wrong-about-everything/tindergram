@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace RC\Tests\Unit\Infrastructure\Filesystem\Filename;
+namespace TG\Tests\Unit\Infrastructure\Filesystem\Filename;
 
 use Exception;
 use PHPUnit\Framework\TestCase;
-use RC\Infrastructure\Filesystem\Filename\PortableFromString;
+use TG\Infrastructure\Filesystem\Filename\PortableFromString;
 
 class PortableFromStringTest extends TestCase
 {

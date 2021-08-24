@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\ImpureInteractions\Error;
+namespace TG\Infrastructure\ImpureInteractions\Error;
 
-use RC\Infrastructure\ImpureInteractions\Error;
-use RC\Infrastructure\ImpureInteractions\Severity;
-use RC\Infrastructure\ImpureInteractions\Severity\Alarm;
+use TG\Infrastructure\ImpureInteractions\Error;
+use TG\Infrastructure\ImpureInteractions\Severity;
+use TG\Infrastructure\ImpureInteractions\Severity\Alarm;
 
 class AlarmDecline implements Error
 {

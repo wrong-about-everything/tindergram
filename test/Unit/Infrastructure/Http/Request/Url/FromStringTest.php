@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace RC\Tests\Unit\Infrastructure\Http\Request\Url;
+namespace TG\Tests\Unit\Infrastructure\Http\Request\Url;
 
 use PHPUnit\Framework\TestCase;
-use RC\Infrastructure\Http\Request\Url\FromString;
+use TG\Infrastructure\Http\Request\Url\FromString;
 use Exception;
 
 class FromStringTest extends TestCase

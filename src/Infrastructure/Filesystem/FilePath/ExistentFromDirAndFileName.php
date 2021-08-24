@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\Filesystem\FilePath;
+namespace TG\Infrastructure\Filesystem\FilePath;
 
-use RC\Infrastructure\Filesystem\DirPath;
-use RC\Infrastructure\Filesystem\Filename;
-use RC\Infrastructure\Filesystem\FilePath;
-use RC\Infrastructure\ImpureInteractions\Error\SilentDeclineWithDefaultUserMessage;
-use RC\Infrastructure\ImpureInteractions\ImpureValue;
-use RC\Infrastructure\ImpureInteractions\ImpureValue\Failed;
-use RC\Infrastructure\ImpureInteractions\ImpureValue\Successful;
-use RC\Infrastructure\ImpureInteractions\PureValue\Present;
+use TG\Infrastructure\Filesystem\DirPath;
+use TG\Infrastructure\Filesystem\Filename;
+use TG\Infrastructure\Filesystem\FilePath;
+use TG\Infrastructure\ImpureInteractions\Error\SilentDeclineWithDefaultUserMessage;
+use TG\Infrastructure\ImpureInteractions\ImpureValue;
+use TG\Infrastructure\ImpureInteractions\ImpureValue\Failed;
+use TG\Infrastructure\ImpureInteractions\ImpureValue\Successful;
+use TG\Infrastructure\ImpureInteractions\PureValue\Present;
 
 class ExistentFromDirAndFileName extends FilePath
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\Uuid;
+namespace TG\Infrastructure\Uuid;
 
 use Exception;
 

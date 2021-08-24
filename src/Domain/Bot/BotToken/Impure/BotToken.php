@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace RC\Domain\Bot\BotToken\Impure;
+namespace TG\Domain\Bot\BotToken\Impure;
 
-use RC\Infrastructure\ImpureInteractions\ImpureValue;
+use TG\Infrastructure\ImpureInteractions\ImpureValue;
 
 abstract class BotToken
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace RC\Domain\Bot\BotToken\Pure;
+namespace TG\Domain\Bot\BotToken\Pure;
 
 abstract class BotToken
 {

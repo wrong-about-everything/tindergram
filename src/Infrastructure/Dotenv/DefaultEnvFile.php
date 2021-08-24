@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\Dotenv;
+namespace TG\Infrastructure\Dotenv;
 
 use Dotenv\Dotenv as OneAndOnly;
 

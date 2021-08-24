@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\ExecutionEnvironmentAdapter\RawPhpFpmWebService;
+namespace TG\Infrastructure\ExecutionEnvironmentAdapter\RawPhpFpmWebService;
 
-use RC\Infrastructure\Http\Response\Header;
-use RC\Infrastructure\Http\Response\Header\NonExistent;
-use RC\Infrastructure\UserStory\Header as UserStoryResponseHeader;
+use TG\Infrastructure\Http\Response\Header;
+use TG\Infrastructure\Http\Response\Header\NonExistent;
+use TG\Infrastructure\UserStory\Header as UserStoryResponseHeader;
 
 class HttpResponseHeaderFromUserStoryResponseHeader extends Header
 {

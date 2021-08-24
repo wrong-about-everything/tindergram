@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace RC\Tests\Unit\Domain\Matches;
+namespace TG\Tests\Unit\Domain\Matches;
 
 use PHPUnit\Framework\TestCase;
-use RC\Domain\Experience\ExperienceId\Pure\BetweenAYearAndThree;
-use RC\Domain\Experience\ExperienceId\Pure\BetweenThreeYearsAndSix;
-use RC\Domain\Experience\ExperienceId\Pure\GreaterThanSix;
-use RC\Domain\Experience\ExperienceId\Pure\LessThanAYear;
-use RC\Domain\Matches\ReadModel\Pure\WithExperiencesThatTouchEachOther;
-use RC\Domain\Position\PositionId\Pure\SystemOrBusinessAnalyst;
-use RC\Domain\Position\PositionId\Pure\ProductDesigner;
-use RC\Domain\Position\PositionId\Pure\ProductManager;
+use TG\Domain\Experience\ExperienceId\Pure\BetweenAYearAndThree;
+use TG\Domain\Experience\ExperienceId\Pure\BetweenThreeYearsAndSix;
+use TG\Domain\Experience\ExperienceId\Pure\GreaterThanSix;
+use TG\Domain\Experience\ExperienceId\Pure\LessThanAYear;
+use TG\Domain\Matches\ReadModel\Pure\WithExperiencesThatTouchEachOther;
+use TG\Domain\Position\PositionId\Pure\SystemOrBusinessAnalyst;
+use TG\Domain\Position\PositionId\Pure\ProductDesigner;
+use TG\Domain\Position\PositionId\Pure\ProductManager;
 
 class WithExperiencesThatTouchEachOtherTest extends TestCase
 {

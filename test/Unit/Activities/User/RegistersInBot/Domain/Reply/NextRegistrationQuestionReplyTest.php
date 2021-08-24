@@ -2,39 +2,39 @@
 
 declare(strict_types=1);
 
-namespace RC\Tests\Unit\Activities\User\RegistersInBot\Domain\Reply;
+namespace TG\Tests\Unit\Activities\User\RegistersInBot\Domain\Reply;
 
 use PHPUnit\Framework\TestCase;
-use RC\Domain\Bot\BotId\BotId;
-use RC\Domain\Bot\BotId\FromUuid;
-use RC\Domain\Experience\ExperienceId\Pure\BetweenAYearAndThree;
-use RC\Domain\Experience\ExperienceId\Pure\BetweenThreeYearsAndSix;
-use RC\Domain\Experience\ExperienceId\Pure\GreaterThanSix;
-use RC\Domain\Experience\ExperienceId\Pure\LessThanAYear;
-use RC\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\ApplicationConnection;
-use RC\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\RootConnection;
-use RC\Domain\Position\PositionId\Pure\SystemOrBusinessAnalyst;
-use RC\Domain\Position\PositionId\Pure\ProductDesigner;
-use RC\Domain\Position\PositionId\Pure\ProductManager;
-use RC\Activities\User\RegistersInBot\Domain\Reply\NextRegistrationQuestionReplyToUser;
-use RC\Domain\RegistrationQuestion\RegistrationQuestionType\Pure\Experience;
-use RC\Domain\RegistrationQuestion\RegistrationQuestionType\Pure\Position;
-use RC\Domain\TelegramUser\UserId\FromUuid as UserIdFromUuid;
-use RC\Domain\TelegramUser\UserId\TelegramUserId;
-use RC\Domain\BotUser\UserStatus\Pure\RegistrationIsInProgress;
-use RC\Infrastructure\Http\Request\Url\ParsedQuery\FromQuery;
-use RC\Infrastructure\Http\Request\Url\Query\FromUrl;
-use RC\Infrastructure\Http\Transport\Indifferent;
-use RC\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
-use RC\Infrastructure\TelegramBot\UserId\Pure\FromInteger;
-use RC\Infrastructure\TelegramBot\UserId\Pure\InternalTelegramUserId;
-use RC\Infrastructure\Uuid\Fixed;
-use RC\Infrastructure\Uuid\FromString;
-use RC\Tests\Infrastructure\Environment\Reset;
-use RC\Tests\Infrastructure\Stub\Table\Bot;
-use RC\Tests\Infrastructure\Stub\Table\BotUser;
-use RC\Tests\Infrastructure\Stub\Table\RegistrationQuestion;
-use RC\Tests\Infrastructure\Stub\Table\TelegramUser;
+use TG\Domain\Bot\BotId\BotId;
+use TG\Domain\Bot\BotId\FromUuid;
+use TG\Domain\Experience\ExperienceId\Pure\BetweenAYearAndThree;
+use TG\Domain\Experience\ExperienceId\Pure\BetweenThreeYearsAndSix;
+use TG\Domain\Experience\ExperienceId\Pure\GreaterThanSix;
+use TG\Domain\Experience\ExperienceId\Pure\LessThanAYear;
+use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\ApplicationConnection;
+use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\RootConnection;
+use TG\Domain\Position\PositionId\Pure\SystemOrBusinessAnalyst;
+use TG\Domain\Position\PositionId\Pure\ProductDesigner;
+use TG\Domain\Position\PositionId\Pure\ProductManager;
+use TG\Activities\User\RegistersInBot\Domain\Reply\NextRegistrationQuestionReplyToUser;
+use TG\Domain\RegistrationQuestion\RegistrationQuestionType\Pure\Experience;
+use TG\Domain\RegistrationQuestion\RegistrationQuestionType\Pure\Position;
+use TG\Domain\TelegramUser\UserId\FromUuid as UserIdFromUuid;
+use TG\Domain\TelegramUser\UserId\TelegramUserId;
+use TG\Domain\BotUser\UserStatus\Pure\RegistrationIsInProgress;
+use TG\Infrastructure\Http\Request\Url\ParsedQuery\FromQuery;
+use TG\Infrastructure\Http\Request\Url\Query\FromUrl;
+use TG\Infrastructure\Http\Transport\Indifferent;
+use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
+use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\FromInteger;
+use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId;
+use TG\Infrastructure\Uuid\Fixed;
+use TG\Infrastructure\Uuid\FromString;
+use TG\Tests\Infrastructure\Environment\Reset;
+use TG\Tests\Infrastructure\Stub\Table\Bot;
+use TG\Tests\Infrastructure\Stub\Table\BotUser;
+use TG\Tests\Infrastructure\Stub\Table\RegistrationQuestion;
+use TG\Tests\Infrastructure\Stub\Table\TelegramUser;
 
 class NextRegistrationQuestionReplyTest extends TestCase
 {

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace RC\Domain\TelegramUser\UserId;
+namespace TG\Domain\TelegramUser\UserId;
 
-use RC\Infrastructure\Uuid\UUID;
+use TG\Infrastructure\Uuid\UUID;
 
 class FromUuid extends TelegramUserId
 {

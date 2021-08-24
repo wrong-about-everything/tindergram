@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\UserStory;
+namespace TG\Infrastructure\UserStory;
 
-use RC\Infrastructure\Logging\LogItem\FromThrowable;
-use RC\Infrastructure\Logging\Logs;
-use RC\Infrastructure\UserStory\Response\NonRetryableServerError;
+use TG\Infrastructure\Logging\LogItem\FromThrowable;
+use TG\Infrastructure\Logging\Logs;
+use TG\Infrastructure\UserStory\Response\NonRetryableServerError;
 use Throwable;
 
 class LazySafetyNet implements UserStory

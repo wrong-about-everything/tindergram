@@ -2,10 +2,10 @@
 
 declare(strict_types = 1);
 
-namespace RC\Infrastructure\Http\Request\Url\Host;
+namespace TG\Infrastructure\Http\Request\Url\Host;
 
-use RC\Infrastructure\Http\Request\Url;
-use RC\Infrastructure\Http\Request\Url\Host;
+use TG\Infrastructure\Http\Request\Url;
+use TG\Infrastructure\Http\Request\Url\Host;
 
 class FromUrl implements Host
 {

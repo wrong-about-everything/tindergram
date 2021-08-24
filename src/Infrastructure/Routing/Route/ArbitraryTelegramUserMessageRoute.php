@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\Routing\Route;
+namespace TG\Infrastructure\Routing\Route;
 
-use RC\Domain\Bot\BotId\FromQuery;
-use RC\Infrastructure\TelegramBot\UserMessage\Pure\FromTelegramMessage;
-use RC\Infrastructure\Http\Request\Inbound\Request;
-use RC\Infrastructure\Http\Request\Method\Post;
-use RC\Infrastructure\Http\Request\Url\Query\FromUrl;
-use RC\Infrastructure\Routing\MatchResult;
-use RC\Infrastructure\Routing\MatchResult\Match;
-use RC\Infrastructure\Routing\MatchResult\NotMatch;
-use RC\Infrastructure\Routing\Route;
+use TG\Domain\Bot\BotId\FromQuery;
+use TG\Infrastructure\TelegramBot\UserMessage\Pure\FromTelegramMessage;
+use TG\Infrastructure\Http\Request\Inbound\Request;
+use TG\Infrastructure\Http\Request\Method\Post;
+use TG\Infrastructure\Http\Request\Url\Query\FromUrl;
+use TG\Infrastructure\Routing\MatchResult;
+use TG\Infrastructure\Routing\MatchResult\Match;
+use TG\Infrastructure\Routing\MatchResult\NotMatch;
+use TG\Infrastructure\Routing\Route;
 
 class ArbitraryTelegramUserMessageRoute implements Route
 {

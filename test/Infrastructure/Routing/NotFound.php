@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace RC\Tests\Infrastructure\Routing;
+namespace TG\Tests\Infrastructure\Routing;
 
-use RC\Infrastructure\Http\Request\Inbound\Request;
-use RC\Infrastructure\Routing\MatchResult;
-use RC\Infrastructure\Routing\MatchResult\NotMatch;
-use RC\Infrastructure\Routing\Route;
+use TG\Infrastructure\Http\Request\Inbound\Request;
+use TG\Infrastructure\Routing\MatchResult;
+use TG\Infrastructure\Routing\MatchResult\NotMatch;
+use TG\Infrastructure\Routing\Route;
 
 class NotFound implements Route
 {

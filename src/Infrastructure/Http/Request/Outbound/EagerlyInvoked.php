@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\Http\Request\Outbound;
+namespace TG\Infrastructure\Http\Request\Outbound;
 
-use RC\Infrastructure\Http\Request\Method;
-use RC\Infrastructure\Http\Request\Method\FromString as HttpMethod;
-use RC\Infrastructure\Http\Request\Url;
-use RC\Infrastructure\Http\Request\Url\FromString;
+use TG\Infrastructure\Http\Request\Method;
+use TG\Infrastructure\Http\Request\Method\FromString as HttpMethod;
+use TG\Infrastructure\Http\Request\Url;
+use TG\Infrastructure\Http\Request\Url\FromString;
 
 class EagerlyInvoked implements Request
 {

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace RC\Domain\SentReplyToUser\ReplyOptions;
+namespace TG\Domain\SentReplyToUser\ReplyOptions;
 
-use RC\Infrastructure\ImpureInteractions\ImpureValue;
+use TG\Infrastructure\ImpureInteractions\ImpureValue;
 
 interface ReplyOptions
 {

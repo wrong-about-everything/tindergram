@@ -2,10 +2,10 @@
 
 declare(strict_types = 1);
 
-namespace RC\Infrastructure\Http\Request\Url\Path;
+namespace TG\Infrastructure\Http\Request\Url\Path;
 
-use RC\Infrastructure\Http\Request\Url\Path;
-use RC\Infrastructure\Http\Request\Url;
+use TG\Infrastructure\Http\Request\Url\Path;
+use TG\Infrastructure\Http\Request\Url;
 
 class FromUrl implements Path
 {

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace RC\Domain\SentReplyToUser;
+namespace TG\Domain\SentReplyToUser;
 
-use RC\Infrastructure\ImpureInteractions\ImpureValue;
+use TG\Infrastructure\ImpureInteractions\ImpureValue;
 
 interface SentReplyToUser
 {

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\Logging;
+namespace TG\Infrastructure\Logging;
 
-use RC\Infrastructure\Uuid\UUID;
+use TG\Infrastructure\Uuid\UUID;
 
 class LogId
 {

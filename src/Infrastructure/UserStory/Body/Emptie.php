@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\UserStory\Body;
+namespace TG\Infrastructure\UserStory\Body;
 
-use RC\Infrastructure\ImpureInteractions\PureValue;
-use RC\Infrastructure\ImpureInteractions\PureValue\Emptie as EmptieValue;
-use RC\Infrastructure\UserStory\Body;
+use TG\Infrastructure\ImpureInteractions\PureValue;
+use TG\Infrastructure\ImpureInteractions\PureValue\Emptie as EmptieValue;
+use TG\Infrastructure\UserStory\Body;
 
 class Emptie extends Body
 {

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\Http\Response\Outbound;
+namespace TG\Infrastructure\Http\Response\Outbound;
 
-use RC\Infrastructure\Http\Response\Code;
+use TG\Infrastructure\Http\Response\Code;
 
 class Composite implements Response
 {

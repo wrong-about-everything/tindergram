@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace RC\Domain\TelegramBot\UserCommand;
+namespace TG\Domain\TelegramBot\UserCommand;
 
-use RC\Domain\TelegramBot\AvailableTelegramBotCommands;
-use RC\Infrastructure\TelegramBot\UserCommand\FromTelegramMessage as UserCommandFromMessage;
-use RC\Infrastructure\TelegramBot\UserCommand\UserCommand;
+use TG\Domain\TelegramBot\AvailableTelegramBotCommands;
+use TG\Infrastructure\TelegramBot\UserCommand\FromTelegramMessage as UserCommandFromMessage;
+use TG\Infrastructure\TelegramBot\UserCommand\UserCommand;
 
 class FromTelegramMessage extends UserCommand
 {

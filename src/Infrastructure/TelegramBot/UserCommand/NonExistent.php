@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\TelegramBot\UserCommand;
+namespace TG\Infrastructure\TelegramBot\UserCommand;
 
 use Exception;
 

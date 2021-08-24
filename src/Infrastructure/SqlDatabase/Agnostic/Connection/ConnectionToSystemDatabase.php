@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\SqlDatabase\Agnostic\Connection;
+namespace TG\Infrastructure\SqlDatabase\Agnostic\Connection;
 
 use PDO;
-use RC\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
-use RC\Infrastructure\SqlDatabase\Agnostic\Connection\DatabaseName\NonSpecifiedDatabaseName;
-use RC\Infrastructure\SqlDatabase\Concrete\Postgres\Connection\Dsn;
+use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
+use TG\Infrastructure\SqlDatabase\Agnostic\Connection\DatabaseName\NonSpecifiedDatabaseName;
+use TG\Infrastructure\SqlDatabase\Concrete\Postgres\Connection\Dsn;
 
 class ConnectionToSystemDatabase implements OpenConnection
 {

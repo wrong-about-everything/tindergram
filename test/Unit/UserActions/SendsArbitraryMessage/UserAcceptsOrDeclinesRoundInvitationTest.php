@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace RC\Tests\Unit\UserActions\SendsArbitraryMessage;
+namespace TG\Tests\Unit\UserActions\SendsArbitraryMessage;
 
 use Meringue\ISO8601DateTime;
 use Meringue\ISO8601Interval\Floating\NHours;
@@ -13,55 +13,55 @@ use Meringue\Timeline\Point\Now;
 use Meringue\Timeline\Point\Past;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
-use RC\Domain\BooleanAnswer\BooleanAnswerName\NoMaybeNextTime;
-use RC\Domain\BooleanAnswer\BooleanAnswerName\Sure;
-use RC\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\ApplicationConnection;
-use RC\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\RootConnection;
-use RC\Domain\MeetingRound\MeetingRoundId\Pure\FromString as MeetingRoundIdFromString;
-use RC\Domain\Participant\ReadModel\ByMeetingRoundAndUser;
-use RC\Domain\Participant\Status\Impure\FromReadModelParticipant;
-use RC\Domain\Participant\Status\Impure\FromPure;
-use RC\Domain\Participant\Status\Pure\Registered as ParticipantRegistered;
-use RC\Domain\Participant\Status\Pure\RegistrationInProgress;
-use RC\Domain\Participant\Status\Pure\Status;
-use RC\Domain\RoundInvitation\ReadModel\LatestInvitation;
-use RC\Domain\RoundInvitation\Status\Impure\FromInvitation;
-use RC\Domain\RoundInvitation\Status\Impure\FromPure as ImpureStatusFromPure;
-use RC\Domain\RoundInvitation\Status\Pure\Accepted;
-use RC\Domain\RoundInvitation\Status\Pure\Declined;
-use RC\Domain\RoundInvitation\Status\Pure\Sent;
-use RC\Domain\RoundInvitation\Status\Pure\Status as InvitationStatus;
-use RC\Domain\RoundRegistrationQuestion\Type\Pure\NetworkingOrSomeSpecificArea;
-use RC\Domain\RoundRegistrationQuestion\Type\Pure\RoundRegistrationQuestionType;
-use RC\Domain\RoundRegistrationQuestion\Type\Pure\SpecificAreaChoosing;
-use RC\Domain\TelegramUser\UserId\FromUuid as UserIdFromUuid;
-use RC\Domain\TelegramUser\UserId\TelegramUserId;
-use RC\Domain\BotUser\UserStatus\Pure\Registered;
-use RC\Domain\BotUser\UserStatus\Pure\UserStatus;
-use RC\Infrastructure\Http\Request\Url\ParsedQuery\FromQuery;
-use RC\Infrastructure\Http\Request\Url\Query\FromUrl;
-use RC\Infrastructure\Http\Transport\HttpTransport;
-use RC\Infrastructure\Http\Transport\Indifferent;
-use RC\Infrastructure\Logging\Logs\DevNull;
-use RC\Domain\Bot\BotId\BotId;
-use RC\Domain\Bot\BotId\FromUuid;
-use RC\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
-use RC\Infrastructure\TelegramBot\UserId\Pure\FromInteger;
-use RC\Infrastructure\TelegramBot\UserId\Pure\InternalTelegramUserId;
-use RC\Infrastructure\Uuid\Fixed;
-use RC\Infrastructure\Uuid\FromString;
-use RC\Infrastructure\Uuid\RandomUUID;
-use RC\Infrastructure\Uuid\UUID as InfrastructureUUID;
-use RC\Tests\Infrastructure\Environment\Reset;
-use RC\Tests\Infrastructure\Stub\Table\Bot;
-use RC\Tests\Infrastructure\Stub\Table\BotUser;
-use RC\Tests\Infrastructure\Stub\Table\MeetingRound;
-use RC\Tests\Infrastructure\Stub\Table\MeetingRoundInvitation;
-use RC\Tests\Infrastructure\Stub\Table\RoundRegistrationQuestion;
-use RC\Tests\Infrastructure\Stub\Table\TelegramUser;
-use RC\Tests\Infrastructure\Stub\Table\UserRegistrationProgress;
-use RC\Tests\Infrastructure\Stub\TelegramMessage\UserMessage;
-use RC\UserActions\SendsArbitraryMessage\SendsArbitraryMessage;
+use TG\Domain\BooleanAnswer\BooleanAnswerName\NoMaybeNextTime;
+use TG\Domain\BooleanAnswer\BooleanAnswerName\Sure;
+use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\ApplicationConnection;
+use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\RootConnection;
+use TG\Domain\MeetingRound\MeetingRoundId\Pure\FromString as MeetingRoundIdFromString;
+use TG\Domain\Participant\ReadModel\ByMeetingRoundAndUser;
+use TG\Domain\Participant\Status\Impure\FromReadModelParticipant;
+use TG\Domain\Participant\Status\Impure\FromPure;
+use TG\Domain\Participant\Status\Pure\Registered as ParticipantRegistered;
+use TG\Domain\Participant\Status\Pure\RegistrationInProgress;
+use TG\Domain\Participant\Status\Pure\Status;
+use TG\Domain\RoundInvitation\ReadModel\LatestInvitation;
+use TG\Domain\RoundInvitation\Status\Impure\FromInvitation;
+use TG\Domain\RoundInvitation\Status\Impure\FromPure as ImpureStatusFromPure;
+use TG\Domain\RoundInvitation\Status\Pure\Accepted;
+use TG\Domain\RoundInvitation\Status\Pure\Declined;
+use TG\Domain\RoundInvitation\Status\Pure\Sent;
+use TG\Domain\RoundInvitation\Status\Pure\Status as InvitationStatus;
+use TG\Domain\RoundRegistrationQuestion\Type\Pure\NetworkingOrSomeSpecificArea;
+use TG\Domain\RoundRegistrationQuestion\Type\Pure\RoundRegistrationQuestionType;
+use TG\Domain\RoundRegistrationQuestion\Type\Pure\SpecificAreaChoosing;
+use TG\Domain\TelegramUser\UserId\FromUuid as UserIdFromUuid;
+use TG\Domain\TelegramUser\UserId\TelegramUserId;
+use TG\Domain\BotUser\UserStatus\Pure\Registered;
+use TG\Domain\BotUser\UserStatus\Pure\UserStatus;
+use TG\Infrastructure\Http\Request\Url\ParsedQuery\FromQuery;
+use TG\Infrastructure\Http\Request\Url\Query\FromUrl;
+use TG\Infrastructure\Http\Transport\HttpTransport;
+use TG\Infrastructure\Http\Transport\Indifferent;
+use TG\Infrastructure\Logging\Logs\DevNull;
+use TG\Domain\Bot\BotId\BotId;
+use TG\Domain\Bot\BotId\FromUuid;
+use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
+use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\FromInteger;
+use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId;
+use TG\Infrastructure\Uuid\Fixed;
+use TG\Infrastructure\Uuid\FromString;
+use TG\Infrastructure\Uuid\RandomUUID;
+use TG\Infrastructure\Uuid\UUID as InfrastructureUUID;
+use TG\Tests\Infrastructure\Environment\Reset;
+use TG\Tests\Infrastructure\Stub\Table\Bot;
+use TG\Tests\Infrastructure\Stub\Table\BotUser;
+use TG\Tests\Infrastructure\Stub\Table\MeetingRound;
+use TG\Tests\Infrastructure\Stub\Table\MeetingRoundInvitation;
+use TG\Tests\Infrastructure\Stub\Table\RoundRegistrationQuestion;
+use TG\Tests\Infrastructure\Stub\Table\TelegramUser;
+use TG\Tests\Infrastructure\Stub\Table\UserRegistrationProgress;
+use TG\Tests\Infrastructure\Stub\TelegramMessage\UserMessage;
+use TG\UserActions\SendsArbitraryMessage\SendsArbitraryMessage;
 
 class UserAcceptsOrDeclinesRoundInvitationTest extends TestCase
 {
@@ -81,7 +81,7 @@ class UserAcceptsOrDeclinesRoundInvitationTest extends TestCase
         $this->assertInvitationIsDeclined($this->firstTelegramUserId(), $this->botId(), $connection);
         $this->assertCount(1, $transport->sentRequests());
         $this->assertEquals(
-            'Хорошо, тогда до следующего раза! Если хотите что-то спросить или уточнить, смело пишите на @gorgonzola_support_bot',
+            'Хорошо, тогда до следующего раза! Если хотите что-то спросить или уточнить, смело пишите на @tindergram_support_bot',
             (new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['text']
         );
         $this->participantDoesNotExist($this->meetingRoundId(), $this->firstUserId(), $connection);
@@ -153,7 +153,7 @@ class UserAcceptsOrDeclinesRoundInvitationTest extends TestCase
 
         $this->assertCount(1, $transport->sentRequests());
         $this->assertEquals(
-            'Поздравляю, вы зарегистрировались! Сегодня пришлю вам пару для разговора. Если хотите что-то спросить или уточнить, смело пишите на @gorgonzola_support_bot',
+            'Поздравляю, вы зарегистрировались! Сегодня пришлю вам пару для разговора. Если хотите что-то спросить или уточнить, смело пишите на @tindergram_support_bot',
             (new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['text']
         );
         $this->participantExists($this->pastMeetingRoundId(), $this->firstUserId(), $connection, new ParticipantRegistered());
@@ -162,7 +162,7 @@ class UserAcceptsOrDeclinesRoundInvitationTest extends TestCase
 
         $this->assertCount(2, $transport->sentRequests());
         $this->assertEquals(
-            'Поздравляю, вы зарегистрировались! Сегодня пришлю вам пару для разговора. Если хотите что-то спросить или уточнить, смело пишите на @gorgonzola_support_bot',
+            'Поздравляю, вы зарегистрировались! Сегодня пришлю вам пару для разговора. Если хотите что-то спросить или уточнить, смело пишите на @tindergram_support_bot',
             (new FromQuery(new FromUrl($transport->sentRequests()[1]->url())))->value()['text']
         );
         $this->participantExists($this->pastMeetingRoundId(), $this->secondUserId(), $connection, new ParticipantRegistered());
@@ -175,7 +175,7 @@ class UserAcceptsOrDeclinesRoundInvitationTest extends TestCase
 
         $this->assertCount(3, $transport->sentRequests());
         $this->assertEquals(
-            'Поздравляю, вы зарегистрировались! Сегодня пришлю вам пару для разговора. Если хотите что-то спросить или уточнить, смело пишите на @gorgonzola_support_bot',
+            'Поздравляю, вы зарегистрировались! Сегодня пришлю вам пару для разговора. Если хотите что-то спросить или уточнить, смело пишите на @tindergram_support_bot',
             (new FromQuery(new FromUrl($transport->sentRequests()[2]->url())))->value()['text']
         );
         $this->participantExists($this->meetingRoundId(), $this->firstUserId(), $connection, new ParticipantRegistered());
@@ -184,7 +184,7 @@ class UserAcceptsOrDeclinesRoundInvitationTest extends TestCase
 
         $this->assertCount(4, $transport->sentRequests());
         $this->assertEquals(
-            'Поздравляю, вы зарегистрировались! Сегодня пришлю вам пару для разговора. Если хотите что-то спросить или уточнить, смело пишите на @gorgonzola_support_bot',
+            'Поздравляю, вы зарегистрировались! Сегодня пришлю вам пару для разговора. Если хотите что-то спросить или уточнить, смело пишите на @tindergram_support_bot',
             (new FromQuery(new FromUrl($transport->sentRequests()[3]->url())))->value()['text']
         );
         $this->participantExists($this->meetingRoundId(), $this->secondUserId(), $connection, new ParticipantRegistered());
@@ -205,7 +205,7 @@ class UserAcceptsOrDeclinesRoundInvitationTest extends TestCase
         $this->assertTrue($response->isSuccessful());
         $this->assertCount(1, $transport->sentRequests());
         $this->assertEquals(
-            'Поздравляю, вы зарегистрировались! Сегодня пришлю вам пару для разговора. Если хотите что-то спросить или уточнить, смело пишите на @gorgonzola_support_bot',
+            'Поздравляю, вы зарегистрировались! Сегодня пришлю вам пару для разговора. Если хотите что-то спросить или уточнить, смело пишите на @tindergram_support_bot',
             (new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['text']
         );
         $this->participantExists($this->meetingRoundId(), $this->firstUserId(), $connection, new ParticipantRegistered());
@@ -226,7 +226,7 @@ class UserAcceptsOrDeclinesRoundInvitationTest extends TestCase
         $this->assertTrue($response->isSuccessful());
         $this->assertCount(1, $transport->sentRequests());
         $this->assertEquals(
-            'Раунд встреч уже идёт или уже прошёл. Мы пришлём вам приглашение на новый раунд, как только о нём станет известно. Если хотите что-то спросить или уточнить, смело пишите на @gorgonzola_support_bot',
+            'Раунд встреч уже идёт или уже прошёл. Мы пришлём вам приглашение на новый раунд, как только о нём станет известно. Если хотите что-то спросить или уточнить, смело пишите на @tindergram_support_bot',
             (new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['text']
         );
         $this->participantDoesNotExist($this->meetingRoundId(), $this->firstUserId(), $connection);

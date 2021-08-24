@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\Filesystem\DirPath;
+namespace TG\Infrastructure\Filesystem\DirPath;
 
-use RC\Infrastructure\Filesystem\DirPath;
-use RC\Infrastructure\ImpureInteractions\Error\SilentDeclineWithDefaultUserMessage;
-use RC\Infrastructure\ImpureInteractions\ImpureValue;
-use RC\Infrastructure\ImpureInteractions\ImpureValue\Failed;
+use TG\Infrastructure\Filesystem\DirPath;
+use TG\Infrastructure\ImpureInteractions\Error\SilentDeclineWithDefaultUserMessage;
+use TG\Infrastructure\ImpureInteractions\ImpureValue;
+use TG\Infrastructure\ImpureInteractions\ImpureValue\Failed;
 
 class Copied extends DirPath
 {

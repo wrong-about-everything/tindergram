@@ -2,10 +2,10 @@
 
 declare(strict_types = 1);
 
-namespace RC\Infrastructure\Http\Request\Url;
+namespace TG\Infrastructure\Http\Request\Url;
 
 use \Exception;
-use RC\Infrastructure\Http\Request\Url;
+use TG\Infrastructure\Http\Request\Url;
 
 /**
  * https://mathiasbynens.be/demo/url-regex

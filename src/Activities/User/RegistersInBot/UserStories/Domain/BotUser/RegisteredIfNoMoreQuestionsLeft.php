@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace RC\Activities\User\RegistersInBot\UserStories\Domain\BotUser;
+namespace TG\Activities\User\RegistersInBot\UserStories\Domain\BotUser;
 
-use RC\Domain\Bot\BotId\BotId;
-use RC\Domain\BotUser\BotUser;
-use RC\Domain\BotUser\ByTelegramUserId;
-use RC\Domain\RegistrationQuestion\NextRegistrationQuestion;
-use RC\Domain\BotUser\UserStatus\Pure\Registered;
-use RC\Infrastructure\ImpureInteractions\ImpureValue;
-use RC\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
-use RC\Infrastructure\SqlDatabase\Agnostic\Query\SingleMutating;
-use RC\Infrastructure\TelegramBot\UserId\Pure\InternalTelegramUserId as PureTelegramUserId;
+use TG\Domain\Bot\BotId\BotId;
+use TG\Domain\BotUser\BotUser;
+use TG\Domain\BotUser\ByTelegramUserId;
+use TG\Domain\RegistrationQuestion\NextRegistrationQuestion;
+use TG\Domain\BotUser\UserStatus\Pure\Registered;
+use TG\Infrastructure\ImpureInteractions\ImpureValue;
+use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
+use TG\Infrastructure\SqlDatabase\Agnostic\Query\SingleMutating;
+use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId as PureTelegramUserId;
 
 class RegisteredIfNoMoreQuestionsLeft implements BotUser
 {

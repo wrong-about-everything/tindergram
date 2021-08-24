@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\Http\Response\Inbound;
+namespace TG\Infrastructure\Http\Response\Inbound;
 
-use RC\Infrastructure\Http\Response\Code;
-use RC\Infrastructure\Http\Response\Header;
+use TG\Infrastructure\Http\Response\Code;
+use TG\Infrastructure\Http\Response\Header;
 
 interface Response
 {

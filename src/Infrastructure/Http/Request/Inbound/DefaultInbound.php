@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\Http\Request\Inbound;
+namespace TG\Infrastructure\Http\Request\Inbound;
 
-use RC\Infrastructure\Http\Request\Method;
-use RC\Infrastructure\Http\Request\Method\FromString as HttpMethodFromString;
-use RC\Infrastructure\Http\Request\Url;
-use RC\Infrastructure\Http\Request\Url\FromString as UrlFromString;
+use TG\Infrastructure\Http\Request\Method;
+use TG\Infrastructure\Http\Request\Method\FromString as HttpMethodFromString;
+use TG\Infrastructure\Http\Request\Url;
+use TG\Infrastructure\Http\Request\Url\FromString as UrlFromString;
 
 class DefaultInbound implements Request
 {

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\SqlDatabase\Agnostic\Connection\Port;
+namespace TG\Infrastructure\SqlDatabase\Agnostic\Connection\Port;
 
-use RC\Infrastructure\SqlDatabase\Agnostic\Connection\Port;
+use TG\Infrastructure\SqlDatabase\Agnostic\Connection\Port;
 
 class FromString implements Port
 {

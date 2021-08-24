@@ -2,26 +2,26 @@
 
 declare(strict_types=1);
 
-namespace RC\Domain\SentReplyToUser\ReplyOptions;
+namespace TG\Domain\SentReplyToUser\ReplyOptions;
 
-use RC\Domain\Bot\BotId\BotId;
-use RC\Domain\Experience\AvailableExperiences\ByBotId as AvailableExperiences;
-use RC\Domain\Experience\ExperienceId\Pure\FromInteger as ExperienceFromInteger;
-use RC\Domain\Experience\ExperienceName\FromExperience;
-use RC\Domain\Position\AvailablePositions\ByBotId as AvailablePositions;
-use RC\Domain\Position\PositionId\Pure\FromInteger;
-use RC\Domain\Position\PositionName\FromPosition;
-use RC\Domain\RegistrationQuestion\RegistrationQuestion;
-use RC\Domain\RegistrationQuestion\RegistrationQuestionType\Impure\FromPure;
-use RC\Domain\RegistrationQuestion\RegistrationQuestionType\Impure\FromRegistrationQuestion as RegistrationQuestionType;
-use RC\Domain\RegistrationQuestion\RegistrationQuestionType\Pure\About;
-use RC\Domain\RegistrationQuestion\RegistrationQuestionType\Pure\Experience;
-use RC\Domain\RegistrationQuestion\RegistrationQuestionType\Pure\Position;
-use RC\Infrastructure\ImpureInteractions\ImpureValue;
-use RC\Infrastructure\ImpureInteractions\ImpureValue\Successful;
-use RC\Infrastructure\ImpureInteractions\PureValue\Present;
-use RC\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
-use RC\Domain\TelegramBot\UserMessage\Pure\Skipped;
+use TG\Domain\Bot\BotId\BotId;
+use TG\Domain\Experience\AvailableExperiences\ByBotId as AvailableExperiences;
+use TG\Domain\Experience\ExperienceId\Pure\FromInteger as ExperienceFromInteger;
+use TG\Domain\Experience\ExperienceName\FromExperience;
+use TG\Domain\Position\AvailablePositions\ByBotId as AvailablePositions;
+use TG\Domain\Position\PositionId\Pure\FromInteger;
+use TG\Domain\Position\PositionName\FromPosition;
+use TG\Domain\RegistrationQuestion\RegistrationQuestion;
+use TG\Domain\RegistrationQuestion\RegistrationQuestionType\Impure\FromPure;
+use TG\Domain\RegistrationQuestion\RegistrationQuestionType\Impure\FromRegistrationQuestion as RegistrationQuestionType;
+use TG\Domain\RegistrationQuestion\RegistrationQuestionType\Pure\About;
+use TG\Domain\RegistrationQuestion\RegistrationQuestionType\Pure\Experience;
+use TG\Domain\RegistrationQuestion\RegistrationQuestionType\Pure\Position;
+use TG\Infrastructure\ImpureInteractions\ImpureValue;
+use TG\Infrastructure\ImpureInteractions\ImpureValue\Successful;
+use TG\Infrastructure\ImpureInteractions\PureValue\Present;
+use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
+use TG\Domain\TelegramBot\UserMessage\Pure\Skipped;
 
 class FromRegistrationQuestion implements ReplyOptions
 {

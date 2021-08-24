@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\ExecutionEnvironmentAdapter\RawPhpFpmWebService;
+namespace TG\Infrastructure\ExecutionEnvironmentAdapter\RawPhpFpmWebService;
 
-use RC\Infrastructure\ExecutionEnvironmentAdapter\RawPhpFpmWebService;
-use RC\Infrastructure\Http\Response\Header;
-use RC\Infrastructure\UserStory\Response\RestfulHttp\FromUserStoryResponse;
-use RC\Infrastructure\UserStory\UserStory;
+use TG\Infrastructure\ExecutionEnvironmentAdapter\RawPhpFpmWebService;
+use TG\Infrastructure\Http\Response\Header;
+use TG\Infrastructure\UserStory\Response\RestfulHttp\FromUserStoryResponse;
+use TG\Infrastructure\UserStory\UserStory;
 
 class Restful implements RawPhpFpmWebService
 {

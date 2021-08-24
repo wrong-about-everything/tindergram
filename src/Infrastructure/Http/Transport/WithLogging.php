@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\Http\Transport;
+namespace TG\Infrastructure\Http\Transport;
 
 use Meringue\FormattedInterval\TotalSecondsWithMilliseconds;
 use Meringue\ISO8601Interval\WithFixedStartDateTime\FromRange;
 use Meringue\Timeline\Point\Now;
-use RC\Infrastructure\Http\Request\Outbound\Request;
-use RC\Infrastructure\Http\Response\Inbound\Response;
-use RC\Infrastructure\Logging\LogItem\InformationMessageWithData;
-use RC\Infrastructure\Logging\Logs;
+use TG\Infrastructure\Http\Request\Outbound\Request;
+use TG\Infrastructure\Http\Response\Inbound\Response;
+use TG\Infrastructure\Logging\LogItem\InformationMessageWithData;
+use TG\Infrastructure\Logging\Logs;
 
 class WithLogging implements HttpTransport
 {

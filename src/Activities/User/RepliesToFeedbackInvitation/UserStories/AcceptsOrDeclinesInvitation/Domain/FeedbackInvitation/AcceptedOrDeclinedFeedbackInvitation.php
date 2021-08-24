@@ -2,26 +2,26 @@
 
 declare(strict_types=1);
 
-namespace RC\Activities\User\RepliesToFeedbackInvitation\UserStories\AcceptsOrDeclinesInvitation\Domain\FeedbackInvitation;
+namespace TG\Activities\User\RepliesToFeedbackInvitation\UserStories\AcceptsOrDeclinesInvitation\Domain\FeedbackInvitation;
 
-use RC\Domain\BooleanAnswer\BooleanAnswerId\Pure\FromBooleanAnswerName;
-use RC\Domain\BooleanAnswer\BooleanAnswerId\Pure\No;
-use RC\Domain\BooleanAnswer\BooleanAnswerId\Pure\Yes;
-use RC\Domain\BooleanAnswer\BooleanAnswerName\FromUserMessage;
-use RC\Domain\BooleanAnswer\BooleanAnswerName\NoMaybeNextTime;
-use RC\Domain\BooleanAnswer\BooleanAnswerName\Sure;
-use RC\Domain\FeedbackInvitation\FeedbackInvitationId\Impure\FeedbackInvitationId;
-use RC\Domain\FeedbackInvitation\FeedbackInvitationId\Impure\FromFeedbackInvitation;
-use RC\Domain\FeedbackInvitation\ReadModel\FeedbackInvitation;
-use RC\Domain\FeedbackInvitation\WriteModel\FeedbackInvitation as WriteModelFeedbackInvitation;
-use RC\Domain\FeedbackInvitation\ReadModel\NonSuccessful;
-use RC\Domain\FeedbackInvitation\WriteModel\Accepted;
-use RC\Domain\FeedbackInvitation\WriteModel\Declined;
-use RC\Infrastructure\ImpureInteractions\Error\AlarmDeclineWithDefaultUserMessage;
-use RC\Infrastructure\ImpureInteractions\ImpureValue;
-use RC\Infrastructure\ImpureInteractions\ImpureValue\Failed;
-use RC\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
-use RC\Infrastructure\TelegramBot\UserMessage\Pure\FromParsedTelegramMessage;
+use TG\Domain\BooleanAnswer\BooleanAnswerId\Pure\FromBooleanAnswerName;
+use TG\Domain\BooleanAnswer\BooleanAnswerId\Pure\No;
+use TG\Domain\BooleanAnswer\BooleanAnswerId\Pure\Yes;
+use TG\Domain\BooleanAnswer\BooleanAnswerName\FromUserMessage;
+use TG\Domain\BooleanAnswer\BooleanAnswerName\NoMaybeNextTime;
+use TG\Domain\BooleanAnswer\BooleanAnswerName\Sure;
+use TG\Domain\FeedbackInvitation\FeedbackInvitationId\Impure\FeedbackInvitationId;
+use TG\Domain\FeedbackInvitation\FeedbackInvitationId\Impure\FromFeedbackInvitation;
+use TG\Domain\FeedbackInvitation\ReadModel\FeedbackInvitation;
+use TG\Domain\FeedbackInvitation\WriteModel\FeedbackInvitation as WriteModelFeedbackInvitation;
+use TG\Domain\FeedbackInvitation\ReadModel\NonSuccessful;
+use TG\Domain\FeedbackInvitation\WriteModel\Accepted;
+use TG\Domain\FeedbackInvitation\WriteModel\Declined;
+use TG\Infrastructure\ImpureInteractions\Error\AlarmDeclineWithDefaultUserMessage;
+use TG\Infrastructure\ImpureInteractions\ImpureValue;
+use TG\Infrastructure\ImpureInteractions\ImpureValue\Failed;
+use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
+use TG\Infrastructure\TelegramBot\UserMessage\Pure\FromParsedTelegramMessage;
 
 class AcceptedOrDeclinedFeedbackInvitation implements WriteModelFeedbackInvitation
 {

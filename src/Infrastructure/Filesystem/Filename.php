@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\Filesystem;
+namespace TG\Infrastructure\Filesystem;
 
 /**
  * In linux, directories are files. Hence, the same naming conventions apply to both.

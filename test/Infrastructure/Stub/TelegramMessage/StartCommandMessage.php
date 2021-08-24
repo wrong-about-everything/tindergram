@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace RC\Tests\Infrastructure\Stub\TelegramMessage;
+namespace TG\Tests\Infrastructure\Stub\TelegramMessage;
 
-use RC\Infrastructure\TelegramBot\UserId\Pure\InternalTelegramUserId;
+use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId;
 
 class StartCommandMessage
 {

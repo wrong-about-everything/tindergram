@@ -2,38 +2,38 @@
 
 declare(strict_types=1);
 
-namespace RC\Activities\User\RepliesToRoundInvitation\UserStories\AnswersRoundRegistrationQuestion;
+namespace TG\Activities\User\RepliesToRoundInvitation\UserStories\AnswersRoundRegistrationQuestion;
 
-use RC\Activities\User\RepliesToRoundInvitation\UserStories\AnswersRoundRegistrationQuestion\Domain\Reply\NextReplyToUser;
-use RC\Activities\User\RepliesToRoundInvitation\UserStories\AnswersRoundRegistrationQuestion\Domain\Participant\ParticipantAnsweredRoundRegistrationQuestion;
-use RC\Domain\SentReplyToUser\ReplyOptions\ReplyOptions;
-use RC\Domain\SentReplyToUser\ReplyOptions\FromRoundRegistrationQuestion as AnswerOptionsFromRoundRegistrationQuestion;
-use RC\Domain\Bot\BotId\FromUuid;
-use RC\Domain\RoundInvitation\InvitationId\Impure\FromInvitation;
-use RC\Domain\RoundInvitation\InvitationId\Impure\InvitationId;
-use RC\Domain\RoundInvitation\ReadModel\LatestInvitation;
-use RC\Domain\RoundRegistrationQuestion\NextRoundRegistrationQuestion;
-use RC\Domain\RoundRegistrationQuestion\RoundRegistrationQuestion;
-use RC\Domain\RoundRegistrationQuestion\Type\Impure\FromPure;
-use RC\Domain\RoundRegistrationQuestion\Type\Impure\FromRoundRegistrationQuestion;
-use RC\Domain\RoundRegistrationQuestion\Type\Pure\NetworkingOrSomeSpecificArea;
-use RC\Domain\SentReplyToUser\ValidationError;
-use RC\Domain\UserInterest\InterestName\Pure\FromString;
-use RC\Infrastructure\Http\Transport\HttpTransport;
-use RC\Infrastructure\Logging\LogItem\FromNonSuccessfulImpureValue;
-use RC\Infrastructure\Logging\LogItem\InformationMessage;
-use RC\Infrastructure\Logging\Logs;
-use RC\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
-use RC\Domain\Bot\BotToken\Impure\ByBotId;
-use RC\Domain\SentReplyToUser\Sorry;
-use RC\Infrastructure\TelegramBot\UserId\Pure\FromParsedTelegramMessage;
-use RC\Infrastructure\TelegramBot\UserMessage\Pure\FromParsedTelegramMessage as UserReply;
-use RC\Infrastructure\TelegramBot\UserMessage\Pure\UserMessage;
-use RC\Infrastructure\UserStory\Body\Emptie;
-use RC\Infrastructure\UserStory\Existent;
-use RC\Infrastructure\UserStory\Response;
-use RC\Infrastructure\UserStory\Response\Successful;
-use RC\Infrastructure\Uuid\FromString as UuidFromString;
+use TG\Activities\User\RepliesToRoundInvitation\UserStories\AnswersRoundRegistrationQuestion\Domain\Reply\NextReplyToUser;
+use TG\Activities\User\RepliesToRoundInvitation\UserStories\AnswersRoundRegistrationQuestion\Domain\Participant\ParticipantAnsweredRoundRegistrationQuestion;
+use TG\Domain\SentReplyToUser\ReplyOptions\ReplyOptions;
+use TG\Domain\SentReplyToUser\ReplyOptions\FromRoundRegistrationQuestion as AnswerOptionsFromRoundRegistrationQuestion;
+use TG\Domain\Bot\BotId\FromUuid;
+use TG\Domain\RoundInvitation\InvitationId\Impure\FromInvitation;
+use TG\Domain\RoundInvitation\InvitationId\Impure\InvitationId;
+use TG\Domain\RoundInvitation\ReadModel\LatestInvitation;
+use TG\Domain\RoundRegistrationQuestion\NextRoundRegistrationQuestion;
+use TG\Domain\RoundRegistrationQuestion\RoundRegistrationQuestion;
+use TG\Domain\RoundRegistrationQuestion\Type\Impure\FromPure;
+use TG\Domain\RoundRegistrationQuestion\Type\Impure\FromRoundRegistrationQuestion;
+use TG\Domain\RoundRegistrationQuestion\Type\Pure\NetworkingOrSomeSpecificArea;
+use TG\Domain\SentReplyToUser\ValidationError;
+use TG\Domain\UserInterest\InterestName\Pure\FromString;
+use TG\Infrastructure\Http\Transport\HttpTransport;
+use TG\Infrastructure\Logging\LogItem\FromNonSuccessfulImpureValue;
+use TG\Infrastructure\Logging\LogItem\InformationMessage;
+use TG\Infrastructure\Logging\Logs;
+use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
+use TG\Domain\Bot\BotToken\Impure\ByBotId;
+use TG\Domain\SentReplyToUser\Sorry;
+use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\FromParsedTelegramMessage;
+use TG\Infrastructure\TelegramBot\UserMessage\Pure\FromParsedTelegramMessage as UserReply;
+use TG\Infrastructure\TelegramBot\UserMessage\Pure\UserMessage;
+use TG\Infrastructure\UserStory\Body\Emptie;
+use TG\Infrastructure\UserStory\Existent;
+use TG\Infrastructure\UserStory\Response;
+use TG\Infrastructure\UserStory\Response\Successful;
+use TG\Infrastructure\Uuid\FromString as UuidFromString;
 
 class AnswersRoundRegistrationQuestion extends Existent
 {

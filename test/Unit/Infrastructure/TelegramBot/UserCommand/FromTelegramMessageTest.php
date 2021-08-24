@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace RC\Tests\Unit\Infrastructure\TelegramBot\UserCommand;
+namespace TG\Tests\Unit\Infrastructure\TelegramBot\UserCommand;
 
 use PHPUnit\Framework\TestCase;
-use RC\Infrastructure\TelegramBot\AvailableTelegramBotCommands\FromArray;
-use RC\Infrastructure\TelegramBot\UserCommand\FromTelegramMessage;
-use RC\Infrastructure\TelegramBot\UserCommand\Start;
-use RC\Infrastructure\TelegramBot\UserCommand\UserCommand;
+use TG\Infrastructure\TelegramBot\AvailableTelegramBotCommands\FromArray;
+use TG\Infrastructure\TelegramBot\UserCommand\FromTelegramMessage;
+use TG\Infrastructure\TelegramBot\UserCommand\Start;
+use TG\Infrastructure\TelegramBot\UserCommand\UserCommand;
 
 class FromTelegramMessageTest extends TestCase
 {

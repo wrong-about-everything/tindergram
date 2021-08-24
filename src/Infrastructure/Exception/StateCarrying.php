@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\Exception;
+namespace TG\Infrastructure\Exception;
 
 use Exception;
-use RC\Infrastructure\ImpureInteractions\Error;
+use TG\Infrastructure\ImpureInteractions\Error;
 
 /**
  * Just in case:

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\Http\Response;
+namespace TG\Infrastructure\Http\Response;
 
 abstract class Header
 {

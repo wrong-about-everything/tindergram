@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\Http\Response\Header;
+namespace TG\Infrastructure\Http\Response\Header;
 
 use Exception;
-use RC\Infrastructure\Http\Response\Header;
+use TG\Infrastructure\Http\Response\Header;
 
 class NonExistent extends Header
 {

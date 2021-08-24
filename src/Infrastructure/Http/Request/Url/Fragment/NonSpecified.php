@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\Http\Request\Url\Fragment;
+namespace TG\Infrastructure\Http\Request\Url\Fragment;
 
-use RC\Infrastructure\Http\Request\Url\Fragment;
+use TG\Infrastructure\Http\Request\Url\Fragment;
 use Exception;
 
 class NonSpecified implements Fragment

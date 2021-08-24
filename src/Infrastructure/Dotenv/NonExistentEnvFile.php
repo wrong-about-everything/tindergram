@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\Dotenv;
+namespace TG\Infrastructure\Dotenv;
 
 class NonExistentEnvFile implements DotEnv
 {

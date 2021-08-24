@@ -2,34 +2,34 @@
 
 declare(strict_types=1);
 
-namespace RC\Activities\Cron\AsksForFeedback;
+namespace TG\Activities\Cron\AsksForFeedback;
 
 use Meringue\Timeline\Point\Now;
 use Ramsey\Uuid\Uuid;
-use RC\Domain\Bot\BotId\BotId;
-use RC\Domain\Bot\ById;
-use RC\Domain\FeedbackInvitation\FeedbackInvitationId\Pure\FromString;
-use RC\Domain\FeedbackInvitation\Status\Pure\ErrorDuringSending;
-use RC\Domain\FeedbackInvitation\Status\Pure\Generated;
-use RC\Domain\FeedbackInvitation\Status\Pure\Sent as SentStatus;
-use RC\Domain\FeedbackInvitation\WriteModel\WithPause;
-use RC\Domain\MeetingRound\MeetingRoundId\Impure\FromMeetingRound;
-use RC\Domain\MeetingRound\ReadModel\ByClosestFeedbackDateTime;
-use RC\Domain\MeetingRound\ReadModel\MeetingRound;
-use RC\Domain\FeedbackInvitation\WriteModel\Sent;
-use RC\Infrastructure\Logging\LogItem\FromNonSuccessfulImpureValue;
-use RC\Infrastructure\SqlDatabase\Agnostic\Query\SingleMutatingQueryWithMultipleValueSets;
-use RC\Infrastructure\TelegramBot\UserId\Pure\FromInteger;
-use RC\Infrastructure\UserStory\Response\RetryableServerError;
-use RC\Infrastructure\Http\Transport\HttpTransport;
-use RC\Infrastructure\Logging\LogItem\InformationMessage;
-use RC\Infrastructure\Logging\Logs;
-use RC\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
-use RC\Infrastructure\SqlDatabase\Agnostic\Query\Selecting;
-use RC\Infrastructure\UserStory\Body\Emptie;
-use RC\Infrastructure\UserStory\Existent;
-use RC\Infrastructure\UserStory\Response;
-use RC\Infrastructure\UserStory\Response\Successful;
+use TG\Domain\Bot\BotId\BotId;
+use TG\Domain\Bot\ById;
+use TG\Domain\FeedbackInvitation\FeedbackInvitationId\Pure\FromString;
+use TG\Domain\FeedbackInvitation\Status\Pure\ErrorDuringSending;
+use TG\Domain\FeedbackInvitation\Status\Pure\Generated;
+use TG\Domain\FeedbackInvitation\Status\Pure\Sent as SentStatus;
+use TG\Domain\FeedbackInvitation\WriteModel\WithPause;
+use TG\Domain\MeetingRound\MeetingRoundId\Impure\FromMeetingRound;
+use TG\Domain\MeetingRound\ReadModel\ByClosestFeedbackDateTime;
+use TG\Domain\MeetingRound\ReadModel\MeetingRound;
+use TG\Domain\FeedbackInvitation\WriteModel\Sent;
+use TG\Infrastructure\Logging\LogItem\FromNonSuccessfulImpureValue;
+use TG\Infrastructure\SqlDatabase\Agnostic\Query\SingleMutatingQueryWithMultipleValueSets;
+use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\FromInteger;
+use TG\Infrastructure\UserStory\Response\RetryableServerError;
+use TG\Infrastructure\Http\Transport\HttpTransport;
+use TG\Infrastructure\Logging\LogItem\InformationMessage;
+use TG\Infrastructure\Logging\Logs;
+use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
+use TG\Infrastructure\SqlDatabase\Agnostic\Query\Selecting;
+use TG\Infrastructure\UserStory\Body\Emptie;
+use TG\Infrastructure\UserStory\Existent;
+use TG\Infrastructure\UserStory\Response;
+use TG\Infrastructure\UserStory\Response\Successful;
 
 class AsksForFeedback extends Existent
 {

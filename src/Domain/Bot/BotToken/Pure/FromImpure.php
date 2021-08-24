@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace RC\Domain\Bot\BotToken\Pure;
+namespace TG\Domain\Bot\BotToken\Pure;
 
 use Exception;
-use RC\Domain\Bot\BotToken\Impure\BotToken as ImpureBotToken;
+use TG\Domain\Bot\BotToken\Impure\BotToken as ImpureBotToken;
 
 class FromImpure extends BotToken
 {

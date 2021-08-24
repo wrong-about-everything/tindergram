@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\Logging\Logs;
+namespace TG\Infrastructure\Logging\Logs;
 
 use Google\Cloud\Logging\LoggingClient;
-use RC\Infrastructure\Filesystem\FilePath;
-use RC\Infrastructure\Logging\LogItem;
-use RC\Infrastructure\Logging\LogId;
-use RC\Infrastructure\Logging\Logs;
+use TG\Infrastructure\Filesystem\FilePath;
+use TG\Infrastructure\Logging\LogItem;
+use TG\Infrastructure\Logging\LogId;
+use TG\Infrastructure\Logging\Logs;
 
 class GoogleCloudLogs implements Logs
 {

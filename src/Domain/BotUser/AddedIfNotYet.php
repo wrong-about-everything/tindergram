@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace RC\Domain\BotUser;
+namespace TG\Domain\BotUser;
 
 use Ramsey\Uuid\Uuid;
-use RC\Domain\Bot\BotId\BotId;
-use RC\Domain\BotUser\UserStatus\Pure\RegistrationIsInProgress;
-use RC\Infrastructure\ImpureInteractions\ImpureValue;
-use RC\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
-use RC\Infrastructure\SqlDatabase\Agnostic\Query\SingleMutating;
-use RC\Infrastructure\SqlDatabase\Agnostic\Query\TransactionalQueryFromMultipleQueries;
-use RC\Infrastructure\TelegramBot\UserId\Pure\InternalTelegramUserId as PureTelegramUserId;
+use TG\Domain\Bot\BotId\BotId;
+use TG\Domain\BotUser\UserStatus\Pure\RegistrationIsInProgress;
+use TG\Infrastructure\ImpureInteractions\ImpureValue;
+use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
+use TG\Infrastructure\SqlDatabase\Agnostic\Query\SingleMutating;
+use TG\Infrastructure\SqlDatabase\Agnostic\Query\TransactionalQueryFromMultipleQueries;
+use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId as PureTelegramUserId;
 
 class AddedIfNotYet implements BotUser
 {

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace RC\Domain\Bot\Name\Impure;
+namespace TG\Domain\Bot\Name\Impure;
 
-use RC\Infrastructure\ImpureInteractions\ImpureValue;
+use TG\Infrastructure\ImpureInteractions\ImpureValue;
 
 interface Name
 {

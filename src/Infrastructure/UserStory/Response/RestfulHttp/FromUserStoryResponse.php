@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\UserStory\Response\RestfulHttp;
+namespace TG\Infrastructure\UserStory\Response\RestfulHttp;
 
-use RC\Infrastructure\Http\Response\Code;
-use RC\Infrastructure\Http\Response\Outbound\Response;
-use RC\Infrastructure\UserStory\Header;
-use RC\Infrastructure\UserStory\Response as UserStoryResponse;
+use TG\Infrastructure\Http\Response\Code;
+use TG\Infrastructure\Http\Response\Outbound\Response;
+use TG\Infrastructure\UserStory\Header;
+use TG\Infrastructure\UserStory\Response as UserStoryResponse;
 
 class FromUserStoryResponse implements Response
 {

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\UserStory\Response;
+namespace TG\Infrastructure\UserStory\Response;
 
-use RC\Infrastructure\ImpureInteractions\PureValue;
-use RC\Infrastructure\UserStory\Code\NonRetryableServerError as ServerErrorCode;
-use RC\Infrastructure\UserStory\Body;
-use RC\Infrastructure\UserStory\Code;
-use RC\Infrastructure\UserStory\Response;
+use TG\Infrastructure\ImpureInteractions\PureValue;
+use TG\Infrastructure\UserStory\Code\NonRetryableServerError as ServerErrorCode;
+use TG\Infrastructure\UserStory\Body;
+use TG\Infrastructure\UserStory\Code;
+use TG\Infrastructure\UserStory\Response;
 
 class NonRetryableServerError implements Response
 {

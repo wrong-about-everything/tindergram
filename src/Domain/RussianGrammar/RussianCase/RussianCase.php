@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace RC\Domain\RussianGrammar\RussianCase;
+namespace TG\Domain\RussianGrammar\RussianCase;
 
 abstract class RussianCase
 {

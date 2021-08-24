@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\Http\Request\Inbound;
+namespace TG\Infrastructure\Http\Request\Inbound;
 
-use RC\Infrastructure\Http\Request\Method;
-use RC\Infrastructure\Http\Request\Url;
+use TG\Infrastructure\Http\Request\Method;
+use TG\Infrastructure\Http\Request\Url;
 
 class Composite implements Request
 {

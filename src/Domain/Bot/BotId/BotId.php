@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace RC\Domain\Bot\BotId;
+namespace TG\Domain\Bot\BotId;
 
 abstract class BotId
 {

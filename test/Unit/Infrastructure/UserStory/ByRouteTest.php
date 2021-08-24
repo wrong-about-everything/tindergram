@@ -2,29 +2,29 @@
 
 declare(strict_types=1);
 
-namespace RC\Tests\Unit\Infrastructure\UserStory;
+namespace TG\Tests\Unit\Infrastructure\UserStory;
 
 use PHPUnit\Framework\TestCase;
-use RC\Infrastructure\Http\Request\Inbound\Composite as CompositeRequest;
-use RC\Infrastructure\Http\Request\Method\Get;
-use RC\Infrastructure\Http\Request\Method\Post;
-use RC\Infrastructure\Http\Request\Url\Fragment\NonSpecified as NonSpecifiedFragment;
-use RC\Infrastructure\Http\Request\Url\Composite as CompositeUrl;
-use RC\Infrastructure\Http\Request\Url\Host\FromString;
-use RC\Infrastructure\Http\Request\Url\Path\FromString as Path;
-use RC\Infrastructure\Http\Request\Url\Port\FromInt;
-use RC\Infrastructure\Http\Request\Url\Query;
-use RC\Infrastructure\Http\Request\Url\Query\FromArray;
-use RC\Infrastructure\Http\Request\Url\Query\NonSpecified;
-use RC\Infrastructure\Http\Request\Url\Scheme\Http;
-use RC\Infrastructure\UserStory\Body\Arrray;
-use RC\Infrastructure\UserStory\ByRoute;
-use RC\Infrastructure\UserStory\Response\Successful;
-use RC\Tests\Infrastructure\Http\Request\Url\Test;
-use RC\Tests\Infrastructure\Routing\FoundWithNoParams;
-use RC\Tests\Infrastructure\Routing\FoundWithParams;
-use RC\Tests\Infrastructure\Routing\NotFound;
-use RC\Tests\Infrastructure\UserStories\FromResponse;
+use TG\Infrastructure\Http\Request\Inbound\Composite as CompositeRequest;
+use TG\Infrastructure\Http\Request\Method\Get;
+use TG\Infrastructure\Http\Request\Method\Post;
+use TG\Infrastructure\Http\Request\Url\Fragment\NonSpecified as NonSpecifiedFragment;
+use TG\Infrastructure\Http\Request\Url\Composite as CompositeUrl;
+use TG\Infrastructure\Http\Request\Url\Host\FromString;
+use TG\Infrastructure\Http\Request\Url\Path\FromString as Path;
+use TG\Infrastructure\Http\Request\Url\Port\FromInt;
+use TG\Infrastructure\Http\Request\Url\Query;
+use TG\Infrastructure\Http\Request\Url\Query\FromArray;
+use TG\Infrastructure\Http\Request\Url\Query\NonSpecified;
+use TG\Infrastructure\Http\Request\Url\Scheme\Http;
+use TG\Infrastructure\UserStory\Body\Arrray;
+use TG\Infrastructure\UserStory\ByRoute;
+use TG\Infrastructure\UserStory\Response\Successful;
+use TG\Tests\Infrastructure\Http\Request\Url\Test;
+use TG\Tests\Infrastructure\Routing\FoundWithNoParams;
+use TG\Tests\Infrastructure\Routing\FoundWithParams;
+use TG\Tests\Infrastructure\Routing\NotFound;
+use TG\Tests\Infrastructure\UserStories\FromResponse;
 
 class ByRouteTest extends TestCase
 {

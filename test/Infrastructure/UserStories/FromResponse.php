@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace RC\Tests\Infrastructure\UserStories;
+namespace TG\Tests\Infrastructure\UserStories;
 
-use RC\Infrastructure\UserStory\Existent;
-use RC\Infrastructure\UserStory\Response;
+use TG\Infrastructure\UserStory\Existent;
+use TG\Infrastructure\UserStory\Response;
 
 class FromResponse extends Existent
 {

@@ -2,57 +2,57 @@
 
 declare(strict_types=1);
 
-namespace RC\Tests\Unit\Activities\Cron\InvitesToTakePartInANewRound;
+namespace TG\Tests\Unit\Activities\Cron\InvitesToTakePartInANewRound;
 
 use Meringue\ISO8601DateTime;
 use Meringue\ISO8601Interval\Floating\NHours;
 use Meringue\Timeline\Point\Future;
 use Meringue\Timeline\Point\Now;
 use PHPUnit\Framework\TestCase;
-use RC\Domain\BooleanAnswer\BooleanAnswerName\Sure;
-use RC\Domain\Bot\BotId\BotId;
-use RC\Domain\Bot\BotId\FromUuid;
-use RC\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\ApplicationConnection;
-use RC\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\RootConnection;
-use RC\Domain\MeetingRound\MeetingRoundId\Pure\FromString as RoundId;
-use RC\Domain\MeetingRound\MeetingRoundId\Pure\MeetingRoundId;
-use RC\Domain\Participant\ReadModel\ByMeetingRoundAndUser;
-use RC\Domain\Participant\Status\Impure\FromPure;
-use RC\Domain\Participant\Status\Impure\FromReadModelParticipant;
-use RC\Domain\Participant\Status\Pure\Registered;
-use RC\Domain\RoundInvitation\ReadModel\ByMeetingRoundIdAndUserId;
-use RC\Domain\RoundInvitation\Status\Impure\FromInvitation;
-use RC\Domain\RoundInvitation\Status\Impure\FromPure as ImpureInvitationStatusFromPure;
-use RC\Domain\RoundInvitation\Status\Pure\_New;
-use RC\Domain\RoundInvitation\Status\Pure\Accepted;
-use RC\Domain\RoundInvitation\Status\Pure\FromInteger;
-use RC\Domain\RoundInvitation\Status\Pure\Sent;
-use RC\Domain\RoundInvitation\Status\Pure\Status;
-use RC\Domain\TelegramUser\ByTelegramId;
-use RC\Domain\TelegramUser\UserId\FromTelegramUser;
-use RC\Domain\TelegramUser\UserId\FromUuid as UserIdFromUuid;
-use RC\Domain\TelegramUser\UserId\TelegramUserId;
-use RC\Infrastructure\Http\Request\Url\ParsedQuery\FromQuery;
-use RC\Infrastructure\Http\Request\Url\Query\FromUrl;
-use RC\Infrastructure\Http\Transport\HttpTransport;
-use RC\Infrastructure\Http\Transport\Indifferent;
-use RC\Infrastructure\Logging\Logs\DevNull;
-use RC\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
-use RC\Infrastructure\SqlDatabase\Agnostic\Query\Selecting;
-use RC\Infrastructure\TelegramBot\UserCommand\Start;
-use RC\Infrastructure\TelegramBot\UserId\Pure\FromInteger as TelegramUserIdFromInteger;
-use RC\Infrastructure\TelegramBot\UserId\Pure\InternalTelegramUserId;
-use RC\Infrastructure\Uuid\Fixed;
-use RC\Infrastructure\Uuid\FromString;
-use RC\Tests\Infrastructure\Environment\Reset;
-use RC\Tests\Infrastructure\Stub\Table\Bot;
-use RC\Tests\Infrastructure\Stub\Table\MeetingRound;
-use RC\Tests\Infrastructure\Stub\Table\MeetingRoundInvitation;
-use RC\Tests\Infrastructure\Stub\Table\TelegramUser;
-use RC\Activities\Cron\InvitesToTakePartInANewRound\InvitesToTakePartInANewRound;
-use RC\Tests\Infrastructure\Stub\TelegramMessage\UserMessage;
-use RC\UserActions\PressesStart\PressesStart;
-use RC\UserActions\SendsArbitraryMessage\SendsArbitraryMessage;
+use TG\Domain\BooleanAnswer\BooleanAnswerName\Sure;
+use TG\Domain\Bot\BotId\BotId;
+use TG\Domain\Bot\BotId\FromUuid;
+use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\ApplicationConnection;
+use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\RootConnection;
+use TG\Domain\MeetingRound\MeetingRoundId\Pure\FromString as RoundId;
+use TG\Domain\MeetingRound\MeetingRoundId\Pure\MeetingRoundId;
+use TG\Domain\Participant\ReadModel\ByMeetingRoundAndUser;
+use TG\Domain\Participant\Status\Impure\FromPure;
+use TG\Domain\Participant\Status\Impure\FromReadModelParticipant;
+use TG\Domain\Participant\Status\Pure\Registered;
+use TG\Domain\RoundInvitation\ReadModel\ByMeetingRoundIdAndUserId;
+use TG\Domain\RoundInvitation\Status\Impure\FromInvitation;
+use TG\Domain\RoundInvitation\Status\Impure\FromPure as ImpureInvitationStatusFromPure;
+use TG\Domain\RoundInvitation\Status\Pure\_New;
+use TG\Domain\RoundInvitation\Status\Pure\Accepted;
+use TG\Domain\RoundInvitation\Status\Pure\FromInteger;
+use TG\Domain\RoundInvitation\Status\Pure\Sent;
+use TG\Domain\RoundInvitation\Status\Pure\Status;
+use TG\Domain\TelegramUser\ByTelegramId;
+use TG\Domain\TelegramUser\UserId\FromTelegramUser;
+use TG\Domain\TelegramUser\UserId\FromUuid as UserIdFromUuid;
+use TG\Domain\TelegramUser\UserId\TelegramUserId;
+use TG\Infrastructure\Http\Request\Url\ParsedQuery\FromQuery;
+use TG\Infrastructure\Http\Request\Url\Query\FromUrl;
+use TG\Infrastructure\Http\Transport\HttpTransport;
+use TG\Infrastructure\Http\Transport\Indifferent;
+use TG\Infrastructure\Logging\Logs\DevNull;
+use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
+use TG\Infrastructure\SqlDatabase\Agnostic\Query\Selecting;
+use TG\Infrastructure\TelegramBot\UserCommand\Start;
+use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\FromInteger as TelegramUserIdFromInteger;
+use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId;
+use TG\Infrastructure\Uuid\Fixed;
+use TG\Infrastructure\Uuid\FromString;
+use TG\Tests\Infrastructure\Environment\Reset;
+use TG\Tests\Infrastructure\Stub\Table\Bot;
+use TG\Tests\Infrastructure\Stub\Table\MeetingRound;
+use TG\Tests\Infrastructure\Stub\Table\MeetingRoundInvitation;
+use TG\Tests\Infrastructure\Stub\Table\TelegramUser;
+use TG\Activities\Cron\InvitesToTakePartInANewRound\InvitesToTakePartInANewRound;
+use TG\Tests\Infrastructure\Stub\TelegramMessage\UserMessage;
+use TG\UserActions\PressesStart\PressesStart;
+use TG\UserActions\SendsArbitraryMessage\SendsArbitraryMessage;
 
 class InvitesToTakePartInANewRoundTest extends TestCase
 {
@@ -217,7 +217,7 @@ q
 
         $this->newUserAcceptsAnInvitationForARoundWithoutRegistrationQuestionAndGetsRegisteredRightAway($telegramUserId, $transport, $connection);
         $this->assertEquals(
-            'Поздравляю, вы зарегистрировались! Сегодня пришлю вам пару для разговора. Если хотите что-то спросить или уточнить, смело пишите на @gorgonzola_support_bot',
+            'Поздравляю, вы зарегистрировались! Сегодня пришлю вам пару для разговора. Если хотите что-то спросить или уточнить, смело пишите на @tindergram_support_bot',
             (new FromQuery(new FromUrl($transport->sentRequests()[1]->url())))->value()['text']
         );
     }

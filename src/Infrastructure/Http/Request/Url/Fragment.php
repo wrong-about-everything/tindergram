@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace RC\Infrastructure\Http\Request\Url;
+namespace TG\Infrastructure\Http\Request\Url;
 
 interface Fragment
 {

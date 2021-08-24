@@ -2,29 +2,29 @@
 
 declare(strict_types=1);
 
-namespace RC\Domain\Infrastructure\Setup\Database;
+namespace TG\Domain\Infrastructure\Setup\Database;
 
 use Ramsey\Uuid\Uuid;
-use RC\Domain\Experience\ExperienceId\Pure\BetweenAYearAndThree;
-use RC\Domain\Experience\ExperienceId\Pure\BetweenThreeYearsAndSix;
-use RC\Domain\Experience\ExperienceId\Pure\GreaterThanSix;
-use RC\Domain\Experience\ExperienceId\Pure\LessThanAYear;
-use RC\Domain\Position\PositionId\Pure\CEO;
-use RC\Domain\Position\PositionId\Pure\Marketer;
-use RC\Domain\Position\PositionId\Pure\ProductAnalyst;
-use RC\Domain\Position\PositionId\Pure\ProjectManager;
-use RC\Domain\Position\PositionId\Pure\SystemOrBusinessAnalyst;
-use RC\Domain\Position\PositionId\Pure\ProductDesigner;
-use RC\Domain\Position\PositionId\Pure\ProductManager;
-use RC\Domain\RegistrationQuestion\RegistrationQuestionType\Pure\About;
-use RC\Domain\RegistrationQuestion\RegistrationQuestionType\Pure\Experience;
-use RC\Domain\RegistrationQuestion\RegistrationQuestionType\Pure\Position;
-use RC\Infrastructure\ImpureInteractions\ImpureValue;
-use RC\Infrastructure\ImpureInteractions\ImpureValue\Successful;
-use RC\Infrastructure\ImpureInteractions\PureValue\Emptie;
-use RC\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
-use RC\Infrastructure\SqlDatabase\Agnostic\Query\SingleMutating;
-use RC\Infrastructure\SqlDatabase\Agnostic\Query\TransactionalQueryFromMultipleQueries;
+use TG\Domain\Experience\ExperienceId\Pure\BetweenAYearAndThree;
+use TG\Domain\Experience\ExperienceId\Pure\BetweenThreeYearsAndSix;
+use TG\Domain\Experience\ExperienceId\Pure\GreaterThanSix;
+use TG\Domain\Experience\ExperienceId\Pure\LessThanAYear;
+use TG\Domain\Position\PositionId\Pure\CEO;
+use TG\Domain\Position\PositionId\Pure\Marketer;
+use TG\Domain\Position\PositionId\Pure\ProductAnalyst;
+use TG\Domain\Position\PositionId\Pure\ProjectManager;
+use TG\Domain\Position\PositionId\Pure\SystemOrBusinessAnalyst;
+use TG\Domain\Position\PositionId\Pure\ProductDesigner;
+use TG\Domain\Position\PositionId\Pure\ProductManager;
+use TG\Domain\RegistrationQuestion\RegistrationQuestionType\Pure\About;
+use TG\Domain\RegistrationQuestion\RegistrationQuestionType\Pure\Experience;
+use TG\Domain\RegistrationQuestion\RegistrationQuestionType\Pure\Position;
+use TG\Infrastructure\ImpureInteractions\ImpureValue;
+use TG\Infrastructure\ImpureInteractions\ImpureValue\Successful;
+use TG\Infrastructure\ImpureInteractions\PureValue\Emptie;
+use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
+use TG\Infrastructure\SqlDatabase\Agnostic\Query\SingleMutating;
+use TG\Infrastructure\SqlDatabase\Agnostic\Query\TransactionalQueryFromMultipleQueries;
 
 class Seed
 {

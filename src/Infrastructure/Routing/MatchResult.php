@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\Routing;
+namespace TG\Infrastructure\Routing;
 
 interface MatchResult
 {

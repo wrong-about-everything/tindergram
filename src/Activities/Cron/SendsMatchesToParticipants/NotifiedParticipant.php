@@ -2,26 +2,26 @@
 
 declare(strict_types=1);
 
-namespace RC\Activities\Cron\SendsMatchesToParticipants;
+namespace TG\Activities\Cron\SendsMatchesToParticipants;
 
-use RC\Domain\Bot\BotToken\Impure\BotToken;
-use RC\Domain\Bot\BotToken\Pure\FromImpure;
-use RC\Domain\Participant\ParticipantId\Pure\ParticipantId;
-use RC\Domain\Participant\WriteModel\Participant;
-use RC\Infrastructure\Http\Request\Method\Post;
-use RC\Infrastructure\Http\Request\Outbound\OutboundRequest;
-use RC\Infrastructure\Http\Request\Url\Query\FromArray;
-use RC\Infrastructure\Http\Response\Code\Ok;
-use RC\Infrastructure\Http\Transport\HttpTransport;
-use RC\Infrastructure\ImpureInteractions\Error\SilentDeclineWithDefaultUserMessage;
-use RC\Infrastructure\ImpureInteractions\ImpureValue;
-use RC\Infrastructure\ImpureInteractions\ImpureValue\Failed;
-use RC\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
-use RC\Infrastructure\SqlDatabase\Agnostic\Query\Selecting;
-use RC\Infrastructure\SqlDatabase\Agnostic\Query\SingleMutating;
-use RC\Infrastructure\TelegramBot\BotApiUrl;
-use RC\Infrastructure\TelegramBot\Method\SendMessage;
-use RC\Infrastructure\TelegramBot\UserId\Pure\InternalTelegramUserId;
+use TG\Domain\Bot\BotToken\Impure\BotToken;
+use TG\Domain\Bot\BotToken\Pure\FromImpure;
+use TG\Domain\Participant\ParticipantId\Pure\ParticipantId;
+use TG\Domain\Participant\WriteModel\Participant;
+use TG\Infrastructure\Http\Request\Method\Post;
+use TG\Infrastructure\Http\Request\Outbound\OutboundRequest;
+use TG\Infrastructure\Http\Request\Url\Query\FromArray;
+use TG\Infrastructure\Http\Response\Code\Ok;
+use TG\Infrastructure\Http\Transport\HttpTransport;
+use TG\Infrastructure\ImpureInteractions\Error\SilentDeclineWithDefaultUserMessage;
+use TG\Infrastructure\ImpureInteractions\ImpureValue;
+use TG\Infrastructure\ImpureInteractions\ImpureValue\Failed;
+use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
+use TG\Infrastructure\SqlDatabase\Agnostic\Query\Selecting;
+use TG\Infrastructure\SqlDatabase\Agnostic\Query\SingleMutating;
+use TG\Infrastructure\TelegramBot\BotApiUrl;
+use TG\Infrastructure\TelegramBot\Method\SendMessage;
+use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId;
 
 class NotifiedParticipant implements Participant
 {

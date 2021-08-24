@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\Logging\Logs;
+namespace TG\Infrastructure\Logging\Logs;
 
-use RC\Infrastructure\Filesystem\DirPath;
-use RC\Infrastructure\Filesystem\Filename\PortableFromString;
-use RC\Infrastructure\Filesystem\FilePath\FromDirAndFileName;
-use RC\Infrastructure\Logging\LogItem;
-use RC\Infrastructure\Logging\Logs;
+use TG\Infrastructure\Filesystem\DirPath;
+use TG\Infrastructure\Filesystem\Filename\PortableFromString;
+use TG\Infrastructure\Filesystem\FilePath\FromDirAndFileName;
+use TG\Infrastructure\Logging\LogItem;
+use TG\Infrastructure\Logging\Logs;
 
 class EnvironmentDependentLogs implements Logs
 {

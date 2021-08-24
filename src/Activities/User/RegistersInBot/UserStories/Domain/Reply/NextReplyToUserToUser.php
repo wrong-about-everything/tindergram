@@ -2,22 +2,20 @@
 
 declare(strict_types=1);
 
-namespace RC\Activities\User\RegistersInBot\UserStories\Domain\Reply;
+namespace TG\Activities\User\RegistersInBot\UserStories\Domain\Reply;
 
 use Meringue\Timeline\Point\Now;
-use RC\Activities\User\RegistersInBot\UserStories\Domain\BotUser\RegisteredIfNoMoreQuestionsLeft;
-use RC\Domain\Bot\BotId\BotId;
-use RC\Domain\MeetingRound\ReadModel\LatestNotYetStartedWithFiveMinutesGap;
-use RC\Domain\MeetingRound\ReadModel\MeetingRound;
-use RC\Domain\BotUser\UserStatus\Impure\FromBotUser;
-use RC\Domain\BotUser\UserStatus\Impure\FromPure;
-use RC\Domain\BotUser\UserStatus\Pure\Registered;
-use RC\Infrastructure\Http\Transport\HttpTransport;
-use RC\Infrastructure\ImpureInteractions\ImpureValue;
-use RC\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
-use RC\Domain\SentReplyToUser\SentReplyToUser;
-use RC\Infrastructure\TelegramBot\UserId\Pure\InternalTelegramUserId;
-use RC\Activities\User\RegistersInBot\Domain\Reply\NextRegistrationQuestionReplyToUser;
+use TG\Activities\User\RegistersInBot\UserStories\Domain\BotUser\RegisteredIfNoMoreQuestionsLeft;
+use TG\Domain\Bot\BotId\BotId;
+use TG\Domain\BotUser\UserStatus\Impure\FromBotUser;
+use TG\Domain\BotUser\UserStatus\Impure\FromPure;
+use TG\Domain\BotUser\UserStatus\Pure\Registered;
+use TG\Infrastructure\Http\Transport\HttpTransport;
+use TG\Infrastructure\ImpureInteractions\ImpureValue;
+use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
+use TG\Domain\SentReplyToUser\SentReplyToUser;
+use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId;
+use TG\Activities\User\RegistersInBot\Domain\Reply\NextRegistrationQuestionReplyToUser;
 
 class NextReplyToUserToUser implements SentReplyToUser
 {
@@ -37,15 +35,7 @@ class NextReplyToUserToUser implements SentReplyToUser
     public function value(): ImpureValue
     {
         if ($this->userRegistered()) {
-            $latestMeetingRound = new LatestNotYetStartedWithFiveMinutesGap($this->botId, new Now(), $this->connection);
-            if (!$latestMeetingRound->value()->isSuccessful()) {
-                return $latestMeetingRound->value();
-            }
-            if ($latestMeetingRound->value()->pure()->isPresent()) {
-                return $this->meetingRoundInvitation($latestMeetingRound);
-            } else {
-                return $this->congratulations();
-            }
+
         } else {
             return
                 (new NextRegistrationQuestionReplyToUser(

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\Http\Transport\Guzzle;
+namespace TG\Infrastructure\Http\Transport\Guzzle;
 
 use GuzzleHttp\ClientInterface;
 use GuzzleHttp\RequestOptions;

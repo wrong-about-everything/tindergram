@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\ExecutionEnvironmentAdapter;
+namespace TG\Infrastructure\ExecutionEnvironmentAdapter;
 
 /**
  * As of time of writing, there is no server grpc implementation.

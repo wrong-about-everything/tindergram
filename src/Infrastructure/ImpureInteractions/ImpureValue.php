@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\ImpureInteractions;
+namespace TG\Infrastructure\ImpureInteractions;
 
 interface ImpureValue
 {

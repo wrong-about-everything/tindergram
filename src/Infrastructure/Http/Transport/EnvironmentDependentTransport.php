@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\Http\Transport;
+namespace TG\Infrastructure\Http\Transport;
 
 use GuzzleHttp\Client;
-use RC\Infrastructure\Filesystem\DirPath;
-use RC\Infrastructure\Filesystem\Filename\PortableFromString;
-use RC\Infrastructure\Filesystem\FilePath\FromDirAndFileName;
-use RC\Infrastructure\Http\Request\Outbound\Request as OutboundRequest;
-use RC\Infrastructure\Http\Response\Inbound\Response;
-use RC\Infrastructure\Http\Transport\Guzzle\DefaultGuzzle;
-use RC\Infrastructure\Http\Transport\Guzzle\WithConnectTimeout;
-use RC\Infrastructure\Http\Transport\Guzzle\WithTimeout;
-use RC\Infrastructure\Logging\Logs;
+use TG\Infrastructure\Filesystem\DirPath;
+use TG\Infrastructure\Filesystem\Filename\PortableFromString;
+use TG\Infrastructure\Filesystem\FilePath\FromDirAndFileName;
+use TG\Infrastructure\Http\Request\Outbound\Request as OutboundRequest;
+use TG\Infrastructure\Http\Response\Inbound\Response;
+use TG\Infrastructure\Http\Transport\Guzzle\DefaultGuzzle;
+use TG\Infrastructure\Http\Transport\Guzzle\WithConnectTimeout;
+use TG\Infrastructure\Http\Transport\Guzzle\WithTimeout;
+use TG\Infrastructure\Logging\Logs;
 
 class EnvironmentDependentTransport implements HttpTransport
 {

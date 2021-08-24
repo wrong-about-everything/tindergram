@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace RC\Tests\Infrastructure\Environment;
+namespace TG\Tests\Infrastructure\Environment;
 
 use Exception;
-use RC\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
-use RC\Infrastructure\SqlDatabase\Agnostic\Query\SingleMutating;
-use RC\Tests\Infrastructure\Filesystem\DirPath\Tmp;
+use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
+use TG\Infrastructure\SqlDatabase\Agnostic\Query\SingleMutating;
+use TG\Tests\Infrastructure\Filesystem\DirPath\Tmp;
 
 class Reset
 {

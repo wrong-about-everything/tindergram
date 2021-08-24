@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\ImpureInteractions\ImpureValue;
+namespace TG\Infrastructure\ImpureInteractions\ImpureValue;
 
 use Exception;
-use RC\Infrastructure\ImpureInteractions\Error;
-use RC\Infrastructure\ImpureInteractions\Error\Composite;
-use RC\Infrastructure\ImpureInteractions\ImpureValue;
-use RC\Infrastructure\ImpureInteractions\PureValue;
-use RC\Infrastructure\ImpureInteractions\PureValue\Present;
-use RC\Infrastructure\ImpureInteractions\Severity\Max;
+use TG\Infrastructure\ImpureInteractions\Error;
+use TG\Infrastructure\ImpureInteractions\Error\Composite;
+use TG\Infrastructure\ImpureInteractions\ImpureValue;
+use TG\Infrastructure\ImpureInteractions\PureValue;
+use TG\Infrastructure\ImpureInteractions\PureValue\Present;
+use TG\Infrastructure\ImpureInteractions\Severity\Max;
 
 class Combined implements ImpureValue
 {

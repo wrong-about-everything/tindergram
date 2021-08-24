@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\SqlDatabase\Agnostic\Query;
+namespace TG\Infrastructure\SqlDatabase\Agnostic\Query;
 
-use RC\Infrastructure\ImpureInteractions\ImpureValue;
-use RC\Infrastructure\ImpureInteractions\ImpureValue\Successful;
-use RC\Infrastructure\ImpureInteractions\PureValue\Present;
-use RC\Infrastructure\SqlDatabase\Agnostic\Query;
+use TG\Infrastructure\ImpureInteractions\ImpureValue;
+use TG\Infrastructure\ImpureInteractions\ImpureValue\Successful;
+use TG\Infrastructure\ImpureInteractions\PureValue\Present;
+use TG\Infrastructure\SqlDatabase\Agnostic\Query;
 
 class EmptyQuery implements Query
 {

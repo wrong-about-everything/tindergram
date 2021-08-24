@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace RC\Tests\Unit\Infrastructure\SqlDatabase\Concrete\Postgres\Connection;
+namespace TG\Tests\Unit\Infrastructure\SqlDatabase\Concrete\Postgres\Connection;
 
 use PHPUnit\Framework\TestCase;
-use RC\Infrastructure\SqlDatabase\Agnostic\Connection\DatabaseName\NonSpecifiedDatabaseName;
-use RC\Infrastructure\SqlDatabase\Agnostic\Connection\DatabaseName\SpecifiedDatabaseName;
-use RC\Infrastructure\SqlDatabase\Concrete\Postgres\Connection\Dsn;
-use RC\Infrastructure\SqlDatabase\Agnostic\Connection\Host\FromString;
-use RC\Infrastructure\SqlDatabase\Agnostic\Connection\Port\DefaultPort;
-use RC\Infrastructure\SqlDatabase\Agnostic\Connection\Port\FromString as SpecifiedPort;
+use TG\Infrastructure\SqlDatabase\Agnostic\Connection\DatabaseName\NonSpecifiedDatabaseName;
+use TG\Infrastructure\SqlDatabase\Agnostic\Connection\DatabaseName\SpecifiedDatabaseName;
+use TG\Infrastructure\SqlDatabase\Concrete\Postgres\Connection\Dsn;
+use TG\Infrastructure\SqlDatabase\Agnostic\Connection\Host\FromString;
+use TG\Infrastructure\SqlDatabase\Agnostic\Connection\Port\DefaultPort;
+use TG\Infrastructure\SqlDatabase\Agnostic\Connection\Port\FromString as SpecifiedPort;
 
 class DsnTest extends TestCase
 {

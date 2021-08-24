@@ -2,11 +2,11 @@
 
 declare(strict_types = 1);
 
-namespace RC\Infrastructure\Http\Request\Url\Query;
+namespace TG\Infrastructure\Http\Request\Url\Query;
 
 use Exception;
-use RC\Infrastructure\Http\Request\Url;
-use RC\Infrastructure\Http\Request\Url\Query;
+use TG\Infrastructure\Http\Request\Url;
+use TG\Infrastructure\Http\Request\Url\Query;
 
 class FromUrl implements Query
 {

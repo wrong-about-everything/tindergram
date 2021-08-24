@@ -2,37 +2,37 @@
 
 declare(strict_types=1);
 
-namespace RC\Activities\User\RegistersInBot\UserStories\AnswersRegistrationQuestion;
+namespace TG\Activities\User\RegistersInBot\UserStories\AnswersRegistrationQuestion;
 
-use RC\Domain\SentReplyToUser\ReplyOptions\ReplyOptions;
-use RC\Domain\SentReplyToUser\ReplyOptions\FromRegistrationQuestion as AnswerOptionsFromRegistrationQuestion;
-use RC\Domain\Bot\BotId\FromUuid;
-use RC\Domain\Experience\ExperienceName\FromString;
-use RC\Domain\Position\PositionName\FromString as PositionNameFromString;
-use RC\Domain\RegistrationQuestion\NextRegistrationQuestion;
-use RC\Activities\User\RegistersInBot\UserStories\Domain\Reply\NextReplyToUserToUser;
-use RC\Domain\RegistrationQuestion\RegistrationQuestion;
-use RC\Domain\SentReplyToUser\ValidationError;
-use RC\Domain\RegistrationQuestion\RegistrationQuestionType\Impure\FromPure;
-use RC\Domain\RegistrationQuestion\RegistrationQuestionType\Impure\FromRegistrationQuestion;
-use RC\Domain\RegistrationQuestion\RegistrationQuestionType\Pure\Experience;
-use RC\Domain\RegistrationQuestion\RegistrationQuestionType\Pure\Position;
-use RC\Infrastructure\Http\Transport\HttpTransport;
-use RC\Infrastructure\Logging\LogItem\FromNonSuccessfulImpureValue;
-use RC\Infrastructure\Logging\LogItem\InformationMessage;
-use RC\Infrastructure\Logging\Logs;
-use RC\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
-use RC\Domain\Bot\BotToken\Impure\ByBotId;
-use RC\Domain\SentReplyToUser\Sorry;
-use RC\Infrastructure\TelegramBot\UserId\Pure\FromParsedTelegramMessage;
-use RC\Infrastructure\TelegramBot\UserMessage\Pure\FromParsedTelegramMessage as UserReply;
-use RC\Infrastructure\TelegramBot\UserMessage\Pure\UserMessage;
-use RC\Infrastructure\UserStory\Body\Emptie;
-use RC\Infrastructure\UserStory\Existent;
-use RC\Infrastructure\UserStory\Response;
-use RC\Infrastructure\UserStory\Response\Successful;
-use RC\Infrastructure\Uuid\FromString as UuidFromString;
-use RC\Activities\User\RegistersInBot\UserStories\AnswersRegistrationQuestion\Domain\UserMessage\SavedAnswerToRegistrationQuestion;
+use TG\Domain\SentReplyToUser\ReplyOptions\ReplyOptions;
+use TG\Domain\SentReplyToUser\ReplyOptions\FromRegistrationQuestion as AnswerOptionsFromRegistrationQuestion;
+use TG\Domain\Bot\BotId\FromUuid;
+use TG\Domain\Experience\ExperienceName\FromString;
+use TG\Domain\Position\PositionName\FromString as PositionNameFromString;
+use TG\Domain\RegistrationQuestion\NextRegistrationQuestion;
+use TG\Activities\User\RegistersInBot\UserStories\Domain\Reply\NextReplyToUserToUser;
+use TG\Domain\RegistrationQuestion\RegistrationQuestion;
+use TG\Domain\SentReplyToUser\ValidationError;
+use TG\Domain\RegistrationQuestion\RegistrationQuestionType\Impure\FromPure;
+use TG\Domain\RegistrationQuestion\RegistrationQuestionType\Impure\FromRegistrationQuestion;
+use TG\Domain\RegistrationQuestion\RegistrationQuestionType\Pure\Experience;
+use TG\Domain\RegistrationQuestion\RegistrationQuestionType\Pure\Position;
+use TG\Infrastructure\Http\Transport\HttpTransport;
+use TG\Infrastructure\Logging\LogItem\FromNonSuccessfulImpureValue;
+use TG\Infrastructure\Logging\LogItem\InformationMessage;
+use TG\Infrastructure\Logging\Logs;
+use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
+use TG\Domain\Bot\BotToken\Impure\ByBotId;
+use TG\Domain\SentReplyToUser\Sorry;
+use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\FromParsedTelegramMessage;
+use TG\Infrastructure\TelegramBot\UserMessage\Pure\FromParsedTelegramMessage as UserReply;
+use TG\Infrastructure\TelegramBot\UserMessage\Pure\UserMessage;
+use TG\Infrastructure\UserStory\Body\Emptie;
+use TG\Infrastructure\UserStory\Existent;
+use TG\Infrastructure\UserStory\Response;
+use TG\Infrastructure\UserStory\Response\Successful;
+use TG\Infrastructure\Uuid\FromString as UuidFromString;
+use TG\Activities\User\RegistersInBot\UserStories\AnswersRegistrationQuestion\Domain\UserMessage\SavedAnswerToRegistrationQuestion;
 
 class AnswersRegistrationQuestion extends Existent
 {

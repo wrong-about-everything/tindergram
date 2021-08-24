@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace RC\Tests\Unit\UserActions\SendsArbitraryMessage;
+namespace TG\Tests\Unit\UserActions\SendsArbitraryMessage;
 
 use Meringue\ISO8601DateTime;
 use Meringue\ISO8601Interval\Floating\OneHour;
@@ -12,57 +12,57 @@ use Meringue\Timeline\Point\Now;
 use Meringue\Timeline\Point\Past;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
-use RC\Domain\BooleanAnswer\BooleanAnswerName\BooleanAnswerName;
-use RC\Domain\MeetingRound\MeetingRoundId\Pure\FromString as MeetingRoundIdFromString;
-use RC\Domain\Participant\ReadModel\ByMeetingRoundAndUser;
-use RC\Domain\Participant\ReadModel\Participant;
-use RC\Domain\Participant\Status\Impure\FromReadModelParticipant as StatusFromParticipant;
-use RC\Domain\Participant\Status\Impure\FromPure as ImpureStatusFromPure;
-use RC\Domain\Participant\Status\Pure\Registered as ParticipantRegistered;
-use RC\Domain\RoundInvitation\Status\Pure\Status as InvitationStatus;
-use RC\Domain\RoundRegistrationQuestion\Type\Pure\NetworkingOrSomeSpecificArea;
-use RC\Domain\RoundRegistrationQuestion\Type\Pure\RoundRegistrationQuestionType;
-use RC\Domain\RoundRegistrationQuestion\Type\Pure\SpecificAreaChoosing;
-use RC\Domain\BotUser\UserStatus\Pure\UserStatus;
-use RC\Domain\UserInterest\InterestId\Impure\Multiple\FromParticipant;
-use RC\Domain\UserInterest\InterestId\Impure\Single\FromPure as ImpureInterestFromPure;
-use RC\Domain\UserInterest\InterestId\Pure\Single\FromInteger as InterestIdFromInteger;
-use RC\Domain\UserInterest\InterestName\Pure\FromInterestId;
-use RC\Domain\UserInterest\InterestName\Pure\Networking as NetworkingName;
-use RC\Domain\UserInterest\InterestId\Pure\Single\Networking;
-use RC\Domain\UserInterest\InterestId\Pure\Single\SpecificArea;
-use RC\Domain\BooleanAnswer\BooleanAnswerName\Sure;
-use RC\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\ApplicationConnection;
-use RC\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\RootConnection;
-use RC\Domain\RoundInvitation\Status\Pure\Sent;
-use RC\Domain\TelegramUser\UserId\FromUuid as UserIdFromUuid;
-use RC\Domain\TelegramUser\UserId\TelegramUserId;
-use RC\Domain\BotUser\UserStatus\Pure\Registered;
-use RC\Domain\UserInterest\InterestName\Pure\SpecificArea as SpecificAreaInterestName;
-use RC\Infrastructure\Http\Request\Outbound\Request;
-use RC\Infrastructure\Http\Request\Url\ParsedQuery\FromQuery;
-use RC\Infrastructure\Http\Request\Url\Query\FromUrl;
-use RC\Infrastructure\Http\Transport\HttpTransport;
-use RC\Infrastructure\Http\Transport\Indifferent;
-use RC\Infrastructure\Logging\Logs\DevNull;
-use RC\Domain\Bot\BotId\BotId;
-use RC\Domain\Bot\BotId\FromUuid;
-use RC\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
-use RC\Infrastructure\TelegramBot\UserId\Pure\FromInteger;
-use RC\Infrastructure\TelegramBot\UserId\Pure\InternalTelegramUserId;
-use RC\Infrastructure\Uuid\Fixed;
-use RC\Infrastructure\Uuid\FromString;
-use RC\Infrastructure\Uuid\RandomUUID;
-use RC\Infrastructure\Uuid\UUID as InfrastructureUUID;
-use RC\Tests\Infrastructure\Environment\Reset;
-use RC\Tests\Infrastructure\Stub\Table\Bot;
-use RC\Tests\Infrastructure\Stub\Table\BotUser;
-use RC\Tests\Infrastructure\Stub\Table\MeetingRound;
-use RC\Tests\Infrastructure\Stub\Table\MeetingRoundInvitation;
-use RC\Tests\Infrastructure\Stub\Table\RoundRegistrationQuestion;
-use RC\Tests\Infrastructure\Stub\Table\TelegramUser;
-use RC\Tests\Infrastructure\Stub\TelegramMessage\UserMessage;
-use RC\UserActions\SendsArbitraryMessage\SendsArbitraryMessage;
+use TG\Domain\BooleanAnswer\BooleanAnswerName\BooleanAnswerName;
+use TG\Domain\MeetingRound\MeetingRoundId\Pure\FromString as MeetingRoundIdFromString;
+use TG\Domain\Participant\ReadModel\ByMeetingRoundAndUser;
+use TG\Domain\Participant\ReadModel\Participant;
+use TG\Domain\Participant\Status\Impure\FromReadModelParticipant as StatusFromParticipant;
+use TG\Domain\Participant\Status\Impure\FromPure as ImpureStatusFromPure;
+use TG\Domain\Participant\Status\Pure\Registered as ParticipantRegistered;
+use TG\Domain\RoundInvitation\Status\Pure\Status as InvitationStatus;
+use TG\Domain\RoundRegistrationQuestion\Type\Pure\NetworkingOrSomeSpecificArea;
+use TG\Domain\RoundRegistrationQuestion\Type\Pure\RoundRegistrationQuestionType;
+use TG\Domain\RoundRegistrationQuestion\Type\Pure\SpecificAreaChoosing;
+use TG\Domain\BotUser\UserStatus\Pure\UserStatus;
+use TG\Domain\UserInterest\InterestId\Impure\Multiple\FromParticipant;
+use TG\Domain\UserInterest\InterestId\Impure\Single\FromPure as ImpureInterestFromPure;
+use TG\Domain\UserInterest\InterestId\Pure\Single\FromInteger as InterestIdFromInteger;
+use TG\Domain\UserInterest\InterestName\Pure\FromInterestId;
+use TG\Domain\UserInterest\InterestName\Pure\Networking as NetworkingName;
+use TG\Domain\UserInterest\InterestId\Pure\Single\Networking;
+use TG\Domain\UserInterest\InterestId\Pure\Single\SpecificArea;
+use TG\Domain\BooleanAnswer\BooleanAnswerName\Sure;
+use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\ApplicationConnection;
+use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\RootConnection;
+use TG\Domain\RoundInvitation\Status\Pure\Sent;
+use TG\Domain\TelegramUser\UserId\FromUuid as UserIdFromUuid;
+use TG\Domain\TelegramUser\UserId\TelegramUserId;
+use TG\Domain\BotUser\UserStatus\Pure\Registered;
+use TG\Domain\UserInterest\InterestName\Pure\SpecificArea as SpecificAreaInterestName;
+use TG\Infrastructure\Http\Request\Outbound\Request;
+use TG\Infrastructure\Http\Request\Url\ParsedQuery\FromQuery;
+use TG\Infrastructure\Http\Request\Url\Query\FromUrl;
+use TG\Infrastructure\Http\Transport\HttpTransport;
+use TG\Infrastructure\Http\Transport\Indifferent;
+use TG\Infrastructure\Logging\Logs\DevNull;
+use TG\Domain\Bot\BotId\BotId;
+use TG\Domain\Bot\BotId\FromUuid;
+use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
+use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\FromInteger;
+use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId;
+use TG\Infrastructure\Uuid\Fixed;
+use TG\Infrastructure\Uuid\FromString;
+use TG\Infrastructure\Uuid\RandomUUID;
+use TG\Infrastructure\Uuid\UUID as InfrastructureUUID;
+use TG\Tests\Infrastructure\Environment\Reset;
+use TG\Tests\Infrastructure\Stub\Table\Bot;
+use TG\Tests\Infrastructure\Stub\Table\BotUser;
+use TG\Tests\Infrastructure\Stub\Table\MeetingRound;
+use TG\Tests\Infrastructure\Stub\Table\MeetingRoundInvitation;
+use TG\Tests\Infrastructure\Stub\Table\RoundRegistrationQuestion;
+use TG\Tests\Infrastructure\Stub\Table\TelegramUser;
+use TG\Tests\Infrastructure\Stub\TelegramMessage\UserMessage;
+use TG\UserActions\SendsArbitraryMessage\SendsArbitraryMessage;
 
 class UserRegistersForAMeetingRoundTest extends TestCase
 {
@@ -94,7 +94,7 @@ class UserRegistersForAMeetingRoundTest extends TestCase
         $this->assertTrue($secondResponse->isSuccessful());
         $this->assertCount(2, $transport->sentRequests());
         $this->assertEquals(
-            'Поздравляю, вы зарегистрировались! Сегодня пришлю вам пару для разговора. Если хотите что-то спросить или уточнить, смело пишите на @gorgonzola_support_bot',
+            'Поздравляю, вы зарегистрировались! Сегодня пришлю вам пару для разговора. Если хотите что-то спросить или уточнить, смело пишите на @tindergram_support_bot',
             (new FromQuery(new FromUrl($transport->sentRequests()[1]->url())))->value()['text']
         );
         $this->assertParticipantWithNetworkingInterestExists($this->meetingRoundId(), $this->userId(), $connection);
@@ -104,7 +104,7 @@ class UserRegistersForAMeetingRoundTest extends TestCase
         $this->assertTrue($thirdResponse->isSuccessful());
         $this->assertCount(3, $transport->sentRequests());
         $this->assertEquals(
-            'Хотите что-то уточнить? Смело пишите на @gorgonzola_support_bot!',
+            'Хотите что-то уточнить? Смело пишите на @tindergram_support_bot!',
             (new FromQuery(new FromUrl($transport->sentRequests()[2]->url())))->value()['text']
         );
         $this->assertParticipantWithNetworkingInterestExists($this->meetingRoundId(), $this->userId(), $connection);
@@ -114,7 +114,7 @@ class UserRegistersForAMeetingRoundTest extends TestCase
         $this->assertTrue($fourthResponse->isSuccessful());
         $this->assertCount(4, $transport->sentRequests());
         $this->assertEquals(
-            'Хотите что-то уточнить? Смело пишите на @gorgonzola_support_bot!',
+            'Хотите что-то уточнить? Смело пишите на @tindergram_support_bot!',
             (new FromQuery(new FromUrl($transport->sentRequests()[3]->url())))->value()['text']
         );
         $this->assertParticipantWithNetworkingInterestExists($this->meetingRoundId(), $this->userId(), $connection);
@@ -146,7 +146,7 @@ class UserRegistersForAMeetingRoundTest extends TestCase
         $this->assertTrue($secondResponse->isSuccessful());
         $this->assertCount(2, $transport->sentRequests());
         $this->assertEquals(
-            'Поздравляю, вы зарегистрировались! Сегодня пришлю вам пару для разговора. Если хотите что-то спросить или уточнить, смело пишите на @gorgonzola_support_bot',
+            'Поздравляю, вы зарегистрировались! Сегодня пришлю вам пару для разговора. Если хотите что-то спросить или уточнить, смело пишите на @tindergram_support_bot',
             (new FromQuery(new FromUrl($transport->sentRequests()[1]->url())))->value()['text']
         );
         $this->assertParticipantWithNetworkingInterestExists($this->meetingRoundId(), $this->userId(), $connection);
@@ -156,7 +156,7 @@ class UserRegistersForAMeetingRoundTest extends TestCase
         $this->assertTrue($thirdResponse->isSuccessful());
         $this->assertCount(3, $transport->sentRequests());
         $this->assertEquals(
-            'Хотите что-то уточнить? Смело пишите на @gorgonzola_support_bot!',
+            'Хотите что-то уточнить? Смело пишите на @tindergram_support_bot!',
             (new FromQuery(new FromUrl($transport->sentRequests()[2]->url())))->value()['text']
         );
         $this->assertParticipantWithNetworkingInterestExists($this->meetingRoundId(), $this->userId(), $connection);
@@ -166,7 +166,7 @@ class UserRegistersForAMeetingRoundTest extends TestCase
         $this->assertTrue($fourthResponse->isSuccessful());
         $this->assertCount(4, $transport->sentRequests());
         $this->assertEquals(
-            'Хотите что-то уточнить? Смело пишите на @gorgonzola_support_bot!',
+            'Хотите что-то уточнить? Смело пишите на @tindergram_support_bot!',
             (new FromQuery(new FromUrl($transport->sentRequests()[3]->url())))->value()['text']
         );
         $this->assertParticipantWithNetworkingInterestExists($this->meetingRoundId(), $this->userId(), $connection);
@@ -207,7 +207,7 @@ class UserRegistersForAMeetingRoundTest extends TestCase
         $this->assertTrue($thirdResponse->isSuccessful());
         $this->assertCount(3, $transport->sentRequests());
         $this->assertEquals(
-            'Поздравляю, вы зарегистрировались! Сегодня пришлю вам пару для разговора. Если хотите что-то спросить или уточнить, смело пишите на @gorgonzola_support_bot',
+            'Поздравляю, вы зарегистрировались! Сегодня пришлю вам пару для разговора. Если хотите что-то спросить или уточнить, смело пишите на @tindergram_support_bot',
             (new FromQuery(new FromUrl($transport->sentRequests()[2]->url())))->value()['text']
         );
         $this->assertParticipantIsRegisteredWithSpecificInterest($this->meetingRoundId(), $this->userId(), $connection);
@@ -217,7 +217,7 @@ class UserRegistersForAMeetingRoundTest extends TestCase
         $this->assertTrue($fourthResponse->isSuccessful());
         $this->assertCount(4, $transport->sentRequests());
         $this->assertEquals(
-            'Хотите что-то уточнить? Смело пишите на @gorgonzola_support_bot!',
+            'Хотите что-то уточнить? Смело пишите на @tindergram_support_bot!',
             (new FromQuery(new FromUrl($transport->sentRequests()[3]->url())))->value()['text']
         );
         $this->assertParticipantIsRegisteredWithSpecificInterest($this->meetingRoundId(), $this->userId(), $connection);
@@ -227,7 +227,7 @@ class UserRegistersForAMeetingRoundTest extends TestCase
         $this->assertTrue($fifthResponse->isSuccessful());
         $this->assertCount(5, $transport->sentRequests());
         $this->assertEquals(
-            'Хотите что-то уточнить? Смело пишите на @gorgonzola_support_bot!',
+            'Хотите что-то уточнить? Смело пишите на @tindergram_support_bot!',
             (new FromQuery(new FromUrl($transport->sentRequests()[4]->url())))->value()['text']
         );
         $this->assertParticipantIsRegisteredWithSpecificInterest($this->meetingRoundId(), $this->userId(), $connection);
@@ -260,7 +260,7 @@ class UserRegistersForAMeetingRoundTest extends TestCase
         $this->assertTrue($secondResponse->isSuccessful());
         $this->assertCount(2, $transport->sentRequests());
         $this->assertEquals(
-            'К сожалению, мы пока не можем принять ответ в виде текста. Поэтому выберите, пожалуйста, один из вариантов ответа. Если ни один не подходит — напишите в @gorgonzola_support_bot',
+            'К сожалению, мы пока не можем принять ответ в виде текста. Поэтому выберите, пожалуйста, один из вариантов ответа. Если ни один не подходит — напишите в @tindergram_support_bot',
             (new FromQuery(new FromUrl($transport->sentRequests()[1]->url())))->value()['text']
         );
         $this->assertButtonNamesInReply($this->interestIds(), $transport->sentRequests()[0]);
@@ -279,7 +279,7 @@ class UserRegistersForAMeetingRoundTest extends TestCase
         $this->assertTrue($fourthResponse->isSuccessful());
         $this->assertCount(4, $transport->sentRequests());
         $this->assertEquals(
-            'Поздравляю, вы зарегистрировались! Сегодня пришлю вам пару для разговора. Если хотите что-то спросить или уточнить, смело пишите на @gorgonzola_support_bot',
+            'Поздравляю, вы зарегистрировались! Сегодня пришлю вам пару для разговора. Если хотите что-то спросить или уточнить, смело пишите на @tindergram_support_bot',
             (new FromQuery(new FromUrl($transport->sentRequests()[3]->url())))->value()['text']
         );
         $this->assertParticipantIsRegisteredWithSpecificInterest($this->meetingRoundId(), $this->userId(), $connection);
@@ -289,7 +289,7 @@ class UserRegistersForAMeetingRoundTest extends TestCase
         $this->assertTrue($fifthResponse->isSuccessful());
         $this->assertCount(5, $transport->sentRequests());
         $this->assertEquals(
-            'Хотите что-то уточнить? Смело пишите на @gorgonzola_support_bot!',
+            'Хотите что-то уточнить? Смело пишите на @tindergram_support_bot!',
             (new FromQuery(new FromUrl($transport->sentRequests()[4]->url())))->value()['text']
         );
         $this->assertParticipantIsRegisteredWithSpecificInterest($this->meetingRoundId(), $this->userId(), $connection);
@@ -299,7 +299,7 @@ class UserRegistersForAMeetingRoundTest extends TestCase
         $this->assertTrue($sixthResponse->isSuccessful());
         $this->assertCount(6, $transport->sentRequests());
         $this->assertEquals(
-            'Хотите что-то уточнить? Смело пишите на @gorgonzola_support_bot!',
+            'Хотите что-то уточнить? Смело пишите на @tindergram_support_bot!',
             (new FromQuery(new FromUrl($transport->sentRequests()[5]->url())))->value()['text']
         );
         $this->assertParticipantIsRegisteredWithSpecificInterest($this->meetingRoundId(), $this->userId(), $connection);

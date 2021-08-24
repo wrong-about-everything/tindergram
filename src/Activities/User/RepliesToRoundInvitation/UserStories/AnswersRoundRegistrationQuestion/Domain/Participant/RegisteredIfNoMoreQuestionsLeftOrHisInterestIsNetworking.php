@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace RC\Activities\User\RepliesToRoundInvitation\UserStories\AnswersRoundRegistrationQuestion\Domain\Participant;
+namespace TG\Activities\User\RepliesToRoundInvitation\UserStories\AnswersRoundRegistrationQuestion\Domain\Participant;
 
-use RC\Domain\Participant\ParticipantId\Impure\FromReadModelParticipant;
-use RC\Domain\Participant\ReadModel\Participant as RoundParticipant;
-use RC\Domain\Participant\WriteModel\Participant;
-use RC\Domain\UserInterest\InterestId\Pure\Single\Networking;
-use RC\Domain\Participant\ReadModel\ByInvitationId;
-use RC\Domain\Participant\WriteModel\Registered;
-use RC\Domain\RoundInvitation\InvitationId\Impure\InvitationId;
-use RC\Domain\RoundRegistrationQuestion\NextRoundRegistrationQuestion;
-use RC\Domain\UserInterest\InterestId\Impure\Multiple\FromParticipant;
-use RC\Domain\UserInterest\InterestId\Impure\Single\FromPure;
-use RC\Infrastructure\ImpureInteractions\ImpureValue;
-use RC\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
+use TG\Domain\Participant\ParticipantId\Impure\FromReadModelParticipant;
+use TG\Domain\Participant\ReadModel\Participant as RoundParticipant;
+use TG\Domain\Participant\WriteModel\Participant;
+use TG\Domain\UserInterest\InterestId\Pure\Single\Networking;
+use TG\Domain\Participant\ReadModel\ByInvitationId;
+use TG\Domain\Participant\WriteModel\Registered;
+use TG\Domain\RoundInvitation\InvitationId\Impure\InvitationId;
+use TG\Domain\RoundRegistrationQuestion\NextRoundRegistrationQuestion;
+use TG\Domain\UserInterest\InterestId\Impure\Multiple\FromParticipant;
+use TG\Domain\UserInterest\InterestId\Impure\Single\FromPure;
+use TG\Infrastructure\ImpureInteractions\ImpureValue;
+use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
 
 class RegisteredIfNoMoreQuestionsLeftOrHisInterestIsNetworking implements Participant
 {

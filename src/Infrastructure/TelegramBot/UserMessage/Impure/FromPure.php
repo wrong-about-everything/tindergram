@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\TelegramBot\UserMessage\Impure;
+namespace TG\Infrastructure\TelegramBot\UserMessage\Impure;
 
-use RC\Infrastructure\ImpureInteractions\ImpureValue;
-use RC\Infrastructure\ImpureInteractions\ImpureValue\Successful;
-use RC\Infrastructure\ImpureInteractions\PureValue\Present;
-use RC\Infrastructure\TelegramBot\UserMessage\Pure\UserMessage as PureUserMessage;
+use TG\Infrastructure\ImpureInteractions\ImpureValue;
+use TG\Infrastructure\ImpureInteractions\ImpureValue\Successful;
+use TG\Infrastructure\ImpureInteractions\PureValue\Present;
+use TG\Infrastructure\TelegramBot\UserMessage\Pure\UserMessage as PureUserMessage;
 
 class FromPure implements UserMessage
 {

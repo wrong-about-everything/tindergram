@@ -2,10 +2,10 @@
 
 declare(strict_types = 1);
 
-namespace RC\Tests\Infrastructure\Http\Transport;
+namespace TG\Tests\Infrastructure\Http\Transport;
 
-use RC\Infrastructure\Http\Request\Outbound\Request;
-use RC\Infrastructure\Http\Response\Inbound\Response;
+use TG\Infrastructure\Http\Request\Outbound\Request;
+use TG\Infrastructure\Http\Response\Inbound\Response;
 
 class FakeWithResponse implements FakeTransport
 {

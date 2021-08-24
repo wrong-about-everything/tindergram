@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\Http\Request\Inbound;
+namespace TG\Infrastructure\Http\Request\Inbound;
 
-use RC\Infrastructure\Http\Request\Inbound\Composite as CompositeRequest;
-use RC\Infrastructure\Http\Request\Method;
-use RC\Infrastructure\Http\Request\Method\FromString as HttpMethodFromString;
-use RC\Infrastructure\Http\Request\Url;
-use RC\Infrastructure\Http\Request\Url\Composite as CompositeUrl;
-use RC\Infrastructure\Http\Request\Url\Fragment\NonSpecified as NonSpecifiedFragment;
-use RC\Infrastructure\Http\Request\Url\Host\Localhost;
-use RC\Infrastructure\Http\Request\Url\Path\FromString as PathFromString;
-use RC\Infrastructure\Http\Request\Url\Port\NonSpecified as NonSpecifiedPort;
-use RC\Infrastructure\Http\Request\Url\Query\FromArray as QueryFromArray;
-use RC\Infrastructure\Http\Request\Url\Scheme\Https;
+use TG\Infrastructure\Http\Request\Inbound\Composite as CompositeRequest;
+use TG\Infrastructure\Http\Request\Method;
+use TG\Infrastructure\Http\Request\Method\FromString as HttpMethodFromString;
+use TG\Infrastructure\Http\Request\Url;
+use TG\Infrastructure\Http\Request\Url\Composite as CompositeUrl;
+use TG\Infrastructure\Http\Request\Url\Fragment\NonSpecified as NonSpecifiedFragment;
+use TG\Infrastructure\Http\Request\Url\Host\Localhost;
+use TG\Infrastructure\Http\Request\Url\Path\FromString as PathFromString;
+use TG\Infrastructure\Http\Request\Url\Port\NonSpecified as NonSpecifiedPort;
+use TG\Infrastructure\Http\Request\Url\Query\FromArray as QueryFromArray;
+use TG\Infrastructure\Http\Request\Url\Scheme\Https;
 
 class FromYandexServerlessEnvironmentRequest implements Request
 {

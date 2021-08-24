@@ -2,25 +2,25 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\Setup\Database;
+namespace TG\Infrastructure\Setup\Database;
 
 use Exception;
-use RC\Infrastructure\Filesystem\DirPath;
-use RC\Infrastructure\Filesystem\FileContents\FromFilePath;
-use RC\Infrastructure\Filesystem\FilePath;
-use RC\Infrastructure\ImpureInteractions\Error\SilentDeclineWithDefaultUserMessage;
-use RC\Infrastructure\ImpureInteractions\Error\SilentDeclineWithDefaultUserMessageFromPdo;
-use RC\Infrastructure\ImpureInteractions\ImpureValue;
-use RC\Infrastructure\ImpureInteractions\ImpureValue\Failed;
-use RC\Infrastructure\ImpureInteractions\ImpureValue\Successful;
-use RC\Infrastructure\ImpureInteractions\PureValue\Emptie;
-use RC\Infrastructure\SqlDatabase\Agnostic\Connection\Credentials;
-use RC\Infrastructure\SqlDatabase\Agnostic\Connection\DatabaseName;
-use RC\Infrastructure\SqlDatabase\Agnostic\Connection\DefaultConnection;
-use RC\Infrastructure\SqlDatabase\Agnostic\Connection\Host;
-use RC\Infrastructure\SqlDatabase\Agnostic\Connection\Port;
-use RC\Infrastructure\SqlDatabase\Agnostic\Connection\ConnectionToSystemDatabase;
-use RC\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\Credentials\RootCredentials;
+use TG\Infrastructure\Filesystem\DirPath;
+use TG\Infrastructure\Filesystem\FileContents\FromFilePath;
+use TG\Infrastructure\Filesystem\FilePath;
+use TG\Infrastructure\ImpureInteractions\Error\SilentDeclineWithDefaultUserMessage;
+use TG\Infrastructure\ImpureInteractions\Error\SilentDeclineWithDefaultUserMessageFromPdo;
+use TG\Infrastructure\ImpureInteractions\ImpureValue;
+use TG\Infrastructure\ImpureInteractions\ImpureValue\Failed;
+use TG\Infrastructure\ImpureInteractions\ImpureValue\Successful;
+use TG\Infrastructure\ImpureInteractions\PureValue\Emptie;
+use TG\Infrastructure\SqlDatabase\Agnostic\Connection\Credentials;
+use TG\Infrastructure\SqlDatabase\Agnostic\Connection\DatabaseName;
+use TG\Infrastructure\SqlDatabase\Agnostic\Connection\DefaultConnection;
+use TG\Infrastructure\SqlDatabase\Agnostic\Connection\Host;
+use TG\Infrastructure\SqlDatabase\Agnostic\Connection\Port;
+use TG\Infrastructure\SqlDatabase\Agnostic\Connection\ConnectionToSystemDatabase;
+use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\Credentials\RootCredentials;
 use PDO;
 
 class Recreate

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\Routing;
+namespace TG\Infrastructure\Routing;
 
-use RC\Infrastructure\Http\Request\Inbound\Request;
+use TG\Infrastructure\Http\Request\Inbound\Request;
 
 interface Route
 {

@@ -2,25 +2,24 @@
 
 declare(strict_types=1);
 
-namespace RC\Domain\SentReplyToUser;
+namespace TG\Domain\SentReplyToUser;
 
-use RC\Infrastructure\Http\Request\Method\Post;
-use RC\Infrastructure\Http\Request\Outbound\OutboundRequest;
-use RC\Infrastructure\Http\Request\Url\Query\FromArray;
-use RC\Infrastructure\Http\Transport\HttpTransport;
-use RC\Infrastructure\ImpureInteractions\Error\SilentDeclineWithDefaultUserMessage;
-use RC\Infrastructure\ImpureInteractions\ImpureValue;
-use RC\Infrastructure\ImpureInteractions\ImpureValue\Failed;
-use RC\Infrastructure\ImpureInteractions\ImpureValue\Successful;
-use RC\Infrastructure\ImpureInteractions\PureValue\Emptie;
-use RC\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
-use RC\Infrastructure\TelegramBot\BotApiUrl;
-use RC\Domain\Bot\BotId\BotId;
-use RC\Domain\Bot\BotToken\Impure\ByBotId;
-use RC\Domain\Bot\BotToken\Pure\FromImpure;
-use RC\Infrastructure\TelegramBot\Method\SendMessage;
-use RC\Domain\SentReplyToUser\SentReplyToUser;
-use RC\Infrastructure\TelegramBot\UserId\Pure\InternalTelegramUserId;
+use TG\Infrastructure\Http\Request\Method\Post;
+use TG\Infrastructure\Http\Request\Outbound\OutboundRequest;
+use TG\Infrastructure\Http\Request\Url\Query\FromArray;
+use TG\Infrastructure\Http\Transport\HttpTransport;
+use TG\Infrastructure\ImpureInteractions\Error\SilentDeclineWithDefaultUserMessage;
+use TG\Infrastructure\ImpureInteractions\ImpureValue;
+use TG\Infrastructure\ImpureInteractions\ImpureValue\Failed;
+use TG\Infrastructure\ImpureInteractions\ImpureValue\Successful;
+use TG\Infrastructure\ImpureInteractions\PureValue\Emptie;
+use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
+use TG\Infrastructure\TelegramBot\BotApiUrl;
+use TG\Domain\Bot\BotId\BotId;
+use TG\Domain\Bot\BotToken\Impure\ByBotId;
+use TG\Domain\Bot\BotToken\Pure\FromImpure;
+use TG\Infrastructure\TelegramBot\Method\SendMessage;
+use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId;
 
 class InCaseOfAnyUncertainty implements SentReplyToUser
 {
@@ -53,7 +52,7 @@ class InCaseOfAnyUncertainty implements SentReplyToUser
                             new SendMessage(),
                             new FromArray([
                                 'chat_id' => $this->telegramUserId->value(),
-                                'text' => 'Хотите что-то уточнить? Смело пишите на @gorgonzola_support_bot!',
+                                'text' => 'Хотите что-то уточнить? Смело пишите на @tindergram_support_bot!',
                             ]),
                             new FromImpure($botToken)
                         ),

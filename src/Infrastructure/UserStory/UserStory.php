@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\UserStory;
+namespace TG\Infrastructure\UserStory;
 
 interface UserStory
 {

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\UserStory\Response;
+namespace TG\Infrastructure\UserStory\Response;
 
-use RC\Infrastructure\ImpureInteractions\PureValue;
-use RC\Infrastructure\ImpureInteractions\PureValue\Emptie;
-use RC\Infrastructure\UserStory\Code;
-use RC\Infrastructure\UserStory\Code\Unauthorized as UnauthorizedCode;
-use RC\Infrastructure\UserStory\Response;
+use TG\Infrastructure\ImpureInteractions\PureValue;
+use TG\Infrastructure\ImpureInteractions\PureValue\Emptie;
+use TG\Infrastructure\UserStory\Code;
+use TG\Infrastructure\UserStory\Code\Unauthorized as UnauthorizedCode;
+use TG\Infrastructure\UserStory\Response;
 
 class Unauthorized implements Response
 {

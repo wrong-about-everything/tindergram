@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace RC\Domain\Bot\BotId;
+namespace TG\Domain\Bot\BotId;
 
-use RC\Infrastructure\Http\Request\Url\ParsedQuery\FromQuery as ParsedQuery;
-use RC\Infrastructure\Http\Request\Url\Query;
-use RC\Infrastructure\Uuid\FromString;
+use TG\Infrastructure\Http\Request\Url\ParsedQuery\FromQuery as ParsedQuery;
+use TG\Infrastructure\Http\Request\Url\Query;
+use TG\Infrastructure\Uuid\FromString;
 
 class FromQuery extends BotId
 {

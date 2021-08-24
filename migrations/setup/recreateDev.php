@@ -12,17 +12,17 @@ set_error_handler(
 );
 
 use Dotenv\Dotenv as OneAndOnly;
-use RC\Domain\Infrastructure\Setup\Database\Seed;
-use RC\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\ApplicationConnection;
-use RC\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\Credentials\ApplicationCredentials;
-use RC\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\Credentials\RootCredentials;
-use RC\Infrastructure\Filesystem\DirPath\ExistentFromAbsolutePathString as DirPath;
-use RC\Infrastructure\Filesystem\FilePath\ExistentFromAbsolutePathString as FilePath;
-use RC\Infrastructure\Setup\Database\Recreate;
-use RC\Infrastructure\SqlDatabase\Agnostic\Connection\Port\FromString;
-use RC\Infrastructure\SqlDatabase\Agnostic\Connection\DatabaseName\SpecifiedDatabaseName;
-use RC\Infrastructure\SqlDatabase\Agnostic\Connection\Host\FromString as Host;
-use RC\Infrastructure\SqlDatabase\Agnostic\Connection\Credentials\DefaultCredentials;
+use TG\Domain\Infrastructure\Setup\Database\Seed;
+use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\ApplicationConnection;
+use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\Credentials\ApplicationCredentials;
+use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\Credentials\RootCredentials;
+use TG\Infrastructure\Filesystem\DirPath\ExistentFromAbsolutePathString as DirPath;
+use TG\Infrastructure\Filesystem\FilePath\ExistentFromAbsolutePathString as FilePath;
+use TG\Infrastructure\Setup\Database\Recreate;
+use TG\Infrastructure\SqlDatabase\Agnostic\Connection\Port\FromString;
+use TG\Infrastructure\SqlDatabase\Agnostic\Connection\DatabaseName\SpecifiedDatabaseName;
+use TG\Infrastructure\SqlDatabase\Agnostic\Connection\Host\FromString as Host;
+use TG\Infrastructure\SqlDatabase\Agnostic\Connection\Credentials\DefaultCredentials;
 
 if (!file_exists(dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . '.env.dev')) {
     throw new Exception('It seems you run this file outside of dev environment. You can not do that.');
@@ -38,8 +38,8 @@ $r1 =
         new SpecifiedDatabaseName(getenv('DB_NAME')),
         new RootCredentials(),
         new ApplicationCredentials(),
-        new FilePath(sprintf('%s/../rc/setup/createTables.sql', dirname(__FILE__))),
-        new FilePath(sprintf('%s/../rc.php', dirname(__FILE__)))
+        new FilePath(sprintf('%s/../tg/setup/createTables.sql', dirname(__FILE__))),
+        new FilePath(sprintf('%s/../tg.php', dirname(__FILE__)))
     ))
         ->value();
 
@@ -66,43 +66,13 @@ exec(
         '%s/vendor/bin/phinx migrate -c %s/migrations/%s.php 2>&1',
         (new FromString(dirname(dirname(__DIR__))))->value(),
         (new FromString(dirname(dirname(__DIR__))))->value(),
-        'rc'
+        'tg'
     ),
     $output,
     $status
 );
 if ($status !== 0) {
     var_dump($output);
-    die();
-}
-
-$r3 =
-    (new Recreate(
-        new FromString(dirname(dirname(__DIR__))),
-        new Host(getenv('HISTORY_DB_HOST')),
-        new FromString((int) getenv('HISTORY_DB_PORT')),
-        new SpecifiedDatabaseName(getenv('HISTORY_DB_NAME')),
-        new DefaultCredentials(getenv('HISTORY_ROOT_USER'), getenv('HISTORY_ROOT_PASS')),
-        'history'
-    ))
-        ->value();
-if (!$r3->isSuccessful()) {
-    var_dump($r3->error()->value());
-    die();
-}
-
-$r5 =
-    (new Recreate(
-        new FromString(dirname(dirname(__DIR__))),
-        new Host(getenv('REPORT_DB_HOST')),
-        new FromString((int) getenv('REPORT_DB_PORT')),
-        new SpecifiedDatabaseName(getenv('REPORT_DB_NAME')),
-        new DefaultCredentials(getenv('REPORT_ROOT_USER'), getenv('REPORT_ROOT_PASS')),
-        'report'
-    ))
-        ->value();
-if (!$r5->isSuccessful()) {
-    var_dump($r5->error()->value());
     die();
 }
 

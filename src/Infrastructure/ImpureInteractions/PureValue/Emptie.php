@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\ImpureInteractions\PureValue;
+namespace TG\Infrastructure\ImpureInteractions\PureValue;
 
 use Exception;
-use RC\Infrastructure\ImpureInteractions\PureValue;
+use TG\Infrastructure\ImpureInteractions\PureValue;
 
 class Emptie implements PureValue
 {

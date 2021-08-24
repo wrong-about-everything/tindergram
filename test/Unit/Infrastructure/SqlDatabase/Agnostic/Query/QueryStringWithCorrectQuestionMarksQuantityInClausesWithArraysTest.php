@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace RC\Tests\Unit\Infrastructure\SqlDatabase\Agnostic\Query;
+namespace TG\Tests\Unit\Infrastructure\SqlDatabase\Agnostic\Query;
 
 use PHPUnit\Framework\TestCase;
-use RC\Infrastructure\SqlDatabase\Agnostic\Query\QueryStringWithCorrectQuestionMarksQuantityInClausesWithArrays;
+use TG\Infrastructure\SqlDatabase\Agnostic\Query\QueryStringWithCorrectQuestionMarksQuantityInClausesWithArrays;
 
 class QueryStringWithCorrectQuestionMarksQuantityInClausesWithArraysTest extends TestCase
 {

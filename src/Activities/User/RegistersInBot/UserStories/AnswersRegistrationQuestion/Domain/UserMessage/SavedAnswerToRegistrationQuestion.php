@@ -2,35 +2,35 @@
 
 declare(strict_types=1);
 
-namespace RC\Activities\User\RegistersInBot\UserStories\AnswersRegistrationQuestion\Domain\UserMessage;
+namespace TG\Activities\User\RegistersInBot\UserStories\AnswersRegistrationQuestion\Domain\UserMessage;
 
 use Exception;
-use RC\Domain\Bot\BotId\BotId;
-use RC\Domain\Experience\ExperienceId\Pure\FromExperienceName;
-use RC\Domain\Experience\ExperienceName\FromString as ExperienceName;
-use RC\Domain\Position\PositionId\Pure\FromPositionName;
-use RC\Domain\Position\PositionName\FromString;
-use RC\Domain\RegistrationQuestion\RegistrationQuestion;
-use RC\Domain\RegistrationQuestion\RegistrationQuestionId\Impure\FromRegistrationQuestion as RegistrationQuestionId;
-use RC\Domain\RegistrationQuestion\RegistrationQuestionId\Pure\FromImpure;
-use RC\Domain\RegistrationQuestion\RegistrationQuestionId\Pure\RegistrationQuestionId as PureRegistrationQuestionId;
-use RC\Domain\RegistrationQuestion\RegistrationQuestionType\Impure\FromPure;
-use RC\Domain\RegistrationQuestion\RegistrationQuestionType\Impure\FromRegistrationQuestion as ProfileRecordType;
-use RC\Domain\RegistrationQuestion\RegistrationQuestionType\Pure\About;
-use RC\Domain\RegistrationQuestion\RegistrationQuestionType\Pure\Experience;
-use RC\Domain\RegistrationQuestion\RegistrationQuestionType\Pure\Position;
-use RC\Infrastructure\ImpureInteractions\ImpureValue;
-use RC\Infrastructure\ImpureInteractions\ImpureValue\Successful;
-use RC\Infrastructure\ImpureInteractions\PureValue\Present;
-use RC\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
-use RC\Infrastructure\SqlDatabase\Agnostic\Query;
-use RC\Infrastructure\SqlDatabase\Agnostic\Query\EmptyQuery;
-use RC\Infrastructure\SqlDatabase\Agnostic\Query\SingleMutating;
-use RC\Infrastructure\SqlDatabase\Agnostic\Query\TransactionalQueryFromMultipleQueries;
-use RC\Infrastructure\TelegramBot\UserId\Pure\InternalTelegramUserId;
-use RC\Infrastructure\TelegramBot\UserMessage\Impure\UserMessage;
-use RC\Domain\TelegramBot\UserMessage\Pure\Skipped;
-use RC\Infrastructure\TelegramBot\UserMessage\Pure\UserMessage as PureUserMessage;
+use TG\Domain\Bot\BotId\BotId;
+use TG\Domain\Experience\ExperienceId\Pure\FromExperienceName;
+use TG\Domain\Experience\ExperienceName\FromString as ExperienceName;
+use TG\Domain\Position\PositionId\Pure\FromPositionName;
+use TG\Domain\Position\PositionName\FromString;
+use TG\Domain\RegistrationQuestion\RegistrationQuestion;
+use TG\Domain\RegistrationQuestion\RegistrationQuestionId\Impure\FromRegistrationQuestion as RegistrationQuestionId;
+use TG\Domain\RegistrationQuestion\RegistrationQuestionId\Pure\FromImpure;
+use TG\Domain\RegistrationQuestion\RegistrationQuestionId\Pure\RegistrationQuestionId as PureRegistrationQuestionId;
+use TG\Domain\RegistrationQuestion\RegistrationQuestionType\Impure\FromPure;
+use TG\Domain\RegistrationQuestion\RegistrationQuestionType\Impure\FromRegistrationQuestion as ProfileRecordType;
+use TG\Domain\RegistrationQuestion\RegistrationQuestionType\Pure\About;
+use TG\Domain\RegistrationQuestion\RegistrationQuestionType\Pure\Experience;
+use TG\Domain\RegistrationQuestion\RegistrationQuestionType\Pure\Position;
+use TG\Infrastructure\ImpureInteractions\ImpureValue;
+use TG\Infrastructure\ImpureInteractions\ImpureValue\Successful;
+use TG\Infrastructure\ImpureInteractions\PureValue\Present;
+use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
+use TG\Infrastructure\SqlDatabase\Agnostic\Query;
+use TG\Infrastructure\SqlDatabase\Agnostic\Query\EmptyQuery;
+use TG\Infrastructure\SqlDatabase\Agnostic\Query\SingleMutating;
+use TG\Infrastructure\SqlDatabase\Agnostic\Query\TransactionalQueryFromMultipleQueries;
+use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId;
+use TG\Infrastructure\TelegramBot\UserMessage\Impure\UserMessage;
+use TG\Domain\TelegramBot\UserMessage\Pure\Skipped;
+use TG\Infrastructure\TelegramBot\UserMessage\Pure\UserMessage as PureUserMessage;
 
 class SavedAnswerToRegistrationQuestion implements UserMessage
 {

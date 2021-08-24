@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace RC\Domain\Bot;
+namespace TG\Domain\Bot;
 
 use Exception;
-use RC\Infrastructure\ImpureInteractions\ImpureValue;
+use TG\Infrastructure\ImpureInteractions\ImpureValue;
 
 class NonSuccessful implements Bot
 {

@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\SqlDatabase\Agnostic\Connection;
+namespace TG\Infrastructure\SqlDatabase\Agnostic\Connection;
 
 use Meringue\FormattedInterval\TotalSecondsWithMilliseconds;
 use Meringue\ISO8601Interval\WithFixedStartDateTime\FromRange;
 use Meringue\Timeline\Point\Now;
 use PDO;
-use RC\Infrastructure\Logging\LogItem\FromThrowable;
-use RC\Infrastructure\Logging\LogItem\InformationMessage;
-use RC\Infrastructure\Logging\Logs;
-use RC\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
+use TG\Infrastructure\Logging\LogItem\FromThrowable;
+use TG\Infrastructure\Logging\LogItem\InformationMessage;
+use TG\Infrastructure\Logging\Logs;
+use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
 use Throwable;
 
 class Logged implements OpenConnection

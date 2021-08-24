@@ -2,9 +2,9 @@
 
 declare(strict_types = 1);
 
-namespace RC\Infrastructure\Http\Request\Url;
+namespace TG\Infrastructure\Http\Request\Url;
 
-use RC\Infrastructure\Http\Request\Url;
+use TG\Infrastructure\Http\Request\Url;
 
 class Composite extends Url
 {

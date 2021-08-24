@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\TelegramBot\UserMessage\Impure;
+namespace TG\Infrastructure\TelegramBot\UserMessage\Impure;
 
-use RC\Infrastructure\ImpureInteractions\ImpureValue;
+use TG\Infrastructure\ImpureInteractions\ImpureValue;
 
 interface UserMessage
 {

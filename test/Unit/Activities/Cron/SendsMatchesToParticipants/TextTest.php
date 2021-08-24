@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace RC\Tests\Unit\Activities\Cron\SendsMatchesToParticipants;
+namespace TG\Tests\Unit\Activities\Cron\SendsMatchesToParticipants;
 
 use PHPUnit\Framework\TestCase;
-use RC\Activities\Cron\SendsMatchesToParticipants\Text;
-use RC\Domain\About\Pure\Emptie;
-use RC\Domain\About\Pure\FromString;
-use RC\Domain\UserInterest\InterestId\Pure\Single\DayDreaming;
-use RC\Domain\UserInterest\InterestId\Pure\Single\Networking;
-use RC\Domain\UserInterest\InterestId\Pure\Single\SkySurfing;
+use TG\Activities\Cron\SendsMatchesToParticipants\Text;
+use TG\Domain\About\Pure\Emptie;
+use TG\Domain\About\Pure\FromString;
+use TG\Domain\UserInterest\InterestId\Pure\Single\DayDreaming;
+use TG\Domain\UserInterest\InterestId\Pure\Single\Networking;
+use TG\Domain\UserInterest\InterestId\Pure\Single\SkySurfing;
 
 class TextTest extends TestCase
 {

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace RC\Domain\TelegramBot;
+namespace TG\Domain\TelegramBot;
 
 use Exception;
-use RC\Infrastructure\TelegramBot\AvailableTelegramBotCommands\AvailableTelegramBotCommands as InfrastructureAvailableTelegramBotCommands;
-use RC\Infrastructure\TelegramBot\UserCommand\Start;
-use RC\Infrastructure\TelegramBot\UserCommand\UserCommand;
+use TG\Infrastructure\TelegramBot\AvailableTelegramBotCommands\AvailableTelegramBotCommands as InfrastructureAvailableTelegramBotCommands;
+use TG\Infrastructure\TelegramBot\UserCommand\Start;
+use TG\Infrastructure\TelegramBot\UserCommand\UserCommand;
 
 class AvailableTelegramBotCommands implements InfrastructureAvailableTelegramBotCommands
 {

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace RC\Domain\TelegramBot\UserMessage\Pure;
+namespace TG\Domain\TelegramBot\UserMessage\Pure;
 
-use RC\Infrastructure\TelegramBot\UserMessage\Pure\UserMessage;
+use TG\Infrastructure\TelegramBot\UserMessage\Pure\UserMessage;
 
 class Skipped extends UserMessage
 {

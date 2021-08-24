@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\UserStory;
+namespace TG\Infrastructure\UserStory;
 
-use RC\Infrastructure\ImpureInteractions\PureValue;
+use TG\Infrastructure\ImpureInteractions\PureValue;
 
 abstract class Body
 {

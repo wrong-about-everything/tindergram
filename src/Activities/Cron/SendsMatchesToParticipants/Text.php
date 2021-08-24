@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace RC\Activities\Cron\SendsMatchesToParticipants;
+namespace TG\Activities\Cron\SendsMatchesToParticipants;
 
-use RC\Domain\About\Pure\About;
-use RC\Domain\UserInterest\InterestId\Pure\Single\FromInteger;
-use RC\Domain\UserInterest\InterestName\Pure\FromInterestId;
-use RC\Infrastructure\TelegramBot\MessageToUser\MarkdownV2;
+use TG\Domain\About\Pure\About;
+use TG\Domain\UserInterest\InterestId\Pure\Single\FromInteger;
+use TG\Domain\UserInterest\InterestName\Pure\FromInterestId;
+use TG\Infrastructure\TelegramBot\MessageToUser\MarkdownV2;
 
 class Text
 {

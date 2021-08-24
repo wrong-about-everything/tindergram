@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\TelegramBot\UserMessage\Pure;
+namespace TG\Infrastructure\TelegramBot\UserMessage\Pure;
 
 class FromString extends UserMessage
 {

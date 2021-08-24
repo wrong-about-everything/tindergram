@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace RC\Tests\Unit\UserActions\SendsArbitraryMessage;
+namespace TG\Tests\Unit\UserActions\SendsArbitraryMessage;
 
 use Meringue\ISO8601DateTime;
 use Meringue\ISO8601Interval\Floating\OneHour;
@@ -10,49 +10,49 @@ use Meringue\Timeline\Point\Future;
 use Meringue\Timeline\Point\Now;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
-use RC\Domain\BooleanAnswer\BooleanAnswerName\NoMaybeNextTime;
-use RC\Domain\BooleanAnswer\BooleanAnswerName\Sure;
-use RC\Domain\FeedbackInvitation\FeedbackInvitationId\Impure\FromPure as ImpureFeedbackInvitationIdFromPure;
-use RC\Domain\FeedbackInvitation\FeedbackInvitationId\Pure\FeedbackInvitationId;
-use RC\Domain\FeedbackInvitation\FeedbackInvitationId\Pure\FromString as FeedbackInvitationIdFromString;
-use RC\Domain\FeedbackInvitation\ReadModel\ById;
-use RC\Domain\FeedbackInvitation\Status\Impure\FromFeedbackInvitation;
-use RC\Domain\FeedbackInvitation\Status\Impure\FromPure as ImpureFeedbackInvitationStatusFromPure;
-use RC\Domain\FeedbackInvitation\Status\Pure\Declined;
-use RC\Domain\FeedbackInvitation\Status\Pure\Sent;
-use RC\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\ApplicationConnection;
-use RC\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\RootConnection;
-use RC\Domain\MeetingRound\MeetingRoundId\Pure\FromString as MeetingRoundIdFromString;
-use RC\Domain\MeetingRound\MeetingRoundId\Pure\MeetingRoundId;
-use RC\Domain\Participant\ParticipantId\Pure\FromString as ParticipantIdFromString;
-use RC\Domain\Participant\ParticipantId\Pure\ParticipantId;
-use RC\Domain\FeedbackInvitation\Status\Pure\Status;
-use RC\Domain\TelegramUser\UserId\FromUuid as UserIdFromUuid;
-use RC\Domain\TelegramUser\UserId\TelegramUserId;
-use RC\Domain\BotUser\UserStatus\Pure\Registered;
-use RC\Domain\BotUser\UserStatus\Pure\UserStatus;
-use RC\Infrastructure\Http\Request\Url\ParsedQuery\FromQuery;
-use RC\Infrastructure\Http\Request\Url\Query\FromUrl;
-use RC\Infrastructure\Http\Transport\HttpTransport;
-use RC\Infrastructure\Http\Transport\Indifferent;
-use RC\Domain\Bot\BotId\BotId;
-use RC\Domain\Bot\BotId\FromUuid;
-use RC\Infrastructure\Logging\Logs\DevNull;
-use RC\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
-use RC\Infrastructure\TelegramBot\UserId\Pure\FromInteger;
-use RC\Infrastructure\TelegramBot\UserId\Pure\InternalTelegramUserId;
-use RC\Infrastructure\Uuid\Fixed;
-use RC\Infrastructure\Uuid\FromString;
-use RC\Tests\Infrastructure\Environment\Reset;
-use RC\Tests\Infrastructure\Stub\Table\Bot;
-use RC\Tests\Infrastructure\Stub\Table\BotUser;
-use RC\Tests\Infrastructure\Stub\Table\FeedbackInvitation;
-use RC\Tests\Infrastructure\Stub\Table\FeedbackQuestion;
-use RC\Tests\Infrastructure\Stub\Table\MeetingRound;
-use RC\Tests\Infrastructure\Stub\Table\MeetingRoundParticipant;
-use RC\Tests\Infrastructure\Stub\Table\TelegramUser;
-use RC\Tests\Infrastructure\Stub\TelegramMessage\UserMessage;
-use RC\UserActions\SendsArbitraryMessage\SendsArbitraryMessage;
+use TG\Domain\BooleanAnswer\BooleanAnswerName\NoMaybeNextTime;
+use TG\Domain\BooleanAnswer\BooleanAnswerName\Sure;
+use TG\Domain\FeedbackInvitation\FeedbackInvitationId\Impure\FromPure as ImpureFeedbackInvitationIdFromPure;
+use TG\Domain\FeedbackInvitation\FeedbackInvitationId\Pure\FeedbackInvitationId;
+use TG\Domain\FeedbackInvitation\FeedbackInvitationId\Pure\FromString as FeedbackInvitationIdFromString;
+use TG\Domain\FeedbackInvitation\ReadModel\ById;
+use TG\Domain\FeedbackInvitation\Status\Impure\FromFeedbackInvitation;
+use TG\Domain\FeedbackInvitation\Status\Impure\FromPure as ImpureFeedbackInvitationStatusFromPure;
+use TG\Domain\FeedbackInvitation\Status\Pure\Declined;
+use TG\Domain\FeedbackInvitation\Status\Pure\Sent;
+use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\ApplicationConnection;
+use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\RootConnection;
+use TG\Domain\MeetingRound\MeetingRoundId\Pure\FromString as MeetingRoundIdFromString;
+use TG\Domain\MeetingRound\MeetingRoundId\Pure\MeetingRoundId;
+use TG\Domain\Participant\ParticipantId\Pure\FromString as ParticipantIdFromString;
+use TG\Domain\Participant\ParticipantId\Pure\ParticipantId;
+use TG\Domain\FeedbackInvitation\Status\Pure\Status;
+use TG\Domain\TelegramUser\UserId\FromUuid as UserIdFromUuid;
+use TG\Domain\TelegramUser\UserId\TelegramUserId;
+use TG\Domain\BotUser\UserStatus\Pure\Registered;
+use TG\Domain\BotUser\UserStatus\Pure\UserStatus;
+use TG\Infrastructure\Http\Request\Url\ParsedQuery\FromQuery;
+use TG\Infrastructure\Http\Request\Url\Query\FromUrl;
+use TG\Infrastructure\Http\Transport\HttpTransport;
+use TG\Infrastructure\Http\Transport\Indifferent;
+use TG\Domain\Bot\BotId\BotId;
+use TG\Domain\Bot\BotId\FromUuid;
+use TG\Infrastructure\Logging\Logs\DevNull;
+use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
+use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\FromInteger;
+use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId;
+use TG\Infrastructure\Uuid\Fixed;
+use TG\Infrastructure\Uuid\FromString;
+use TG\Tests\Infrastructure\Environment\Reset;
+use TG\Tests\Infrastructure\Stub\Table\Bot;
+use TG\Tests\Infrastructure\Stub\Table\BotUser;
+use TG\Tests\Infrastructure\Stub\Table\FeedbackInvitation;
+use TG\Tests\Infrastructure\Stub\Table\FeedbackQuestion;
+use TG\Tests\Infrastructure\Stub\Table\MeetingRound;
+use TG\Tests\Infrastructure\Stub\Table\MeetingRoundParticipant;
+use TG\Tests\Infrastructure\Stub\Table\TelegramUser;
+use TG\Tests\Infrastructure\Stub\TelegramMessage\UserMessage;
+use TG\UserActions\SendsArbitraryMessage\SendsArbitraryMessage;
 
 class UserAcceptsOrDeclinesFeedbackInvitationTest extends TestCase
 {
@@ -73,7 +73,7 @@ class UserAcceptsOrDeclinesFeedbackInvitationTest extends TestCase
         $this->assertFeedbackInvitationIsDeclined($this->feedbackInvitationId(), $connection);
         $this->assertCount(1, $transport->sentRequests());
         $this->assertEquals(
-            'Тогда до следующего раза! Если хотите что-то спросить или уточнить, смело пишите на @gorgonzola_support_bot',
+            'Тогда до следующего раза! Если хотите что-то спросить или уточнить, смело пишите на @tindergram_support_bot',
             (new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['text']
         );
     }

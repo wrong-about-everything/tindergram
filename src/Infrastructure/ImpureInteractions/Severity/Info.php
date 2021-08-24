@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\ImpureInteractions\Severity;
+namespace TG\Infrastructure\ImpureInteractions\Severity;
 
-use RC\Infrastructure\ImpureInteractions\Severity;
+use TG\Infrastructure\ImpureInteractions\Severity;
 
 class Info extends Severity
 {

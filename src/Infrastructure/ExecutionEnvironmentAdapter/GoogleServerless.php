@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\ExecutionEnvironmentAdapter;
+namespace TG\Infrastructure\ExecutionEnvironmentAdapter;
 
 use Exception;
 use GuzzleHttp\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use RC\Infrastructure\Logging\LogItem\FromInboundPsrHttpServerRequest;
-use RC\Infrastructure\Logging\LogItem\FromOutboundHttpResponse;
-use RC\Infrastructure\Logging\LogItem\FromThrowable;
-use RC\Infrastructure\Logging\Logs;
-use RC\Infrastructure\UserStory\LazySafetyNet;
-use RC\Infrastructure\UserStory\Response as UserStoryResponse;
-use RC\Infrastructure\UserStory\Response\RestfulHttp\FromUserStoryResponse;
-use RC\Infrastructure\UserStory\UserStory;
+use TG\Infrastructure\Logging\LogItem\FromInboundPsrHttpServerRequest;
+use TG\Infrastructure\Logging\LogItem\FromOutboundHttpResponse;
+use TG\Infrastructure\Logging\LogItem\FromThrowable;
+use TG\Infrastructure\Logging\Logs;
+use TG\Infrastructure\UserStory\LazySafetyNet;
+use TG\Infrastructure\UserStory\Response as UserStoryResponse;
+use TG\Infrastructure\UserStory\Response\RestfulHttp\FromUserStoryResponse;
+use TG\Infrastructure\UserStory\UserStory;
 use Throwable;
 
 class GoogleServerless

@@ -2,25 +2,25 @@
 
 declare(strict_types=1);
 
-namespace RC\Activities\User\RepliesToRoundInvitation\UserStories\AcceptsOrDeclinesInvitation\Domain\Participant;
+namespace TG\Activities\User\RepliesToRoundInvitation\UserStories\AcceptsOrDeclinesInvitation\Domain\Participant;
 
-use RC\Domain\BooleanAnswer\BooleanAnswerId\Pure\FromBooleanAnswerName;
-use RC\Domain\BooleanAnswer\BooleanAnswerId\Pure\No;
-use RC\Domain\BooleanAnswer\BooleanAnswerId\Pure\Yes;
-use RC\Domain\BooleanAnswer\BooleanAnswerName\FromUserMessage;
-use RC\Domain\Participant\WriteModel\AcceptedInvitation;
-use RC\Domain\Participant\WriteModel\NonExistent;
-use RC\Domain\Participant\WriteModel\NonSuccessful;
-use RC\Domain\Participant\WriteModel\Participant;
-use RC\Domain\RoundInvitation\InvitationId\Impure\FromInvitation;
-use RC\Domain\RoundInvitation\ReadModel\Invitation as ReadModelInvitation;
-use RC\Domain\RoundInvitation\WriteModel\Accepted;
-use RC\Domain\RoundInvitation\WriteModel\Declined;
-use RC\Infrastructure\ImpureInteractions\Error\AlarmDeclineWithDefaultUserMessage;
-use RC\Infrastructure\ImpureInteractions\ImpureValue;
-use RC\Infrastructure\ImpureInteractions\ImpureValue\Failed;
-use RC\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
-use RC\Infrastructure\TelegramBot\UserMessage\Pure\FromParsedTelegramMessage;
+use TG\Domain\BooleanAnswer\BooleanAnswerId\Pure\FromBooleanAnswerName;
+use TG\Domain\BooleanAnswer\BooleanAnswerId\Pure\No;
+use TG\Domain\BooleanAnswer\BooleanAnswerId\Pure\Yes;
+use TG\Domain\BooleanAnswer\BooleanAnswerName\FromUserMessage;
+use TG\Domain\Participant\WriteModel\AcceptedInvitation;
+use TG\Domain\Participant\WriteModel\NonExistent;
+use TG\Domain\Participant\WriteModel\NonSuccessful;
+use TG\Domain\Participant\WriteModel\Participant;
+use TG\Domain\RoundInvitation\InvitationId\Impure\FromInvitation;
+use TG\Domain\RoundInvitation\ReadModel\Invitation as ReadModelInvitation;
+use TG\Domain\RoundInvitation\WriteModel\Accepted;
+use TG\Domain\RoundInvitation\WriteModel\Declined;
+use TG\Infrastructure\ImpureInteractions\Error\AlarmDeclineWithDefaultUserMessage;
+use TG\Infrastructure\ImpureInteractions\ImpureValue;
+use TG\Infrastructure\ImpureInteractions\ImpureValue\Failed;
+use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
+use TG\Infrastructure\TelegramBot\UserMessage\Pure\FromParsedTelegramMessage;
 
 class RepliedToInvitation implements Participant
 {

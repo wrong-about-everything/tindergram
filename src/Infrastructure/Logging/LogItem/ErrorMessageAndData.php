@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace RC\Infrastructure\Logging\LogItem;
+namespace TG\Infrastructure\Logging\LogItem;
 
 use Meringue\Timeline\Point\Now;
-use RC\Infrastructure\Logging\LogItem;
-use RC\Infrastructure\Logging\Severity\Error;
+use TG\Infrastructure\Logging\LogItem;
+use TG\Infrastructure\Logging\Severity\Error;
 
 class ErrorMessageAndData implements LogItem
 {

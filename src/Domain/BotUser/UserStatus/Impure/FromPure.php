@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace RC\Domain\BotUser\UserStatus\Impure;
+namespace TG\Domain\BotUser\UserStatus\Impure;
 
-use RC\Domain\BotUser\UserStatus\Pure\UserStatus as PureUserStatus;
-use RC\Infrastructure\ImpureInteractions\ImpureValue;
-use RC\Infrastructure\ImpureInteractions\ImpureValue\Successful;
-use RC\Infrastructure\ImpureInteractions\PureValue\Present;
+use TG\Domain\BotUser\UserStatus\Pure\UserStatus as PureUserStatus;
+use TG\Infrastructure\ImpureInteractions\ImpureValue;
+use TG\Infrastructure\ImpureInteractions\ImpureValue\Successful;
+use TG\Infrastructure\ImpureInteractions\PureValue\Present;
 
 class FromPure extends UserStatus
 {

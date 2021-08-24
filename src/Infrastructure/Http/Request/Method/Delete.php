@@ -2,9 +2,9 @@
 
 declare(strict_types = 1);
 
-namespace RC\Infrastructure\Http\Request\Method;
+namespace TG\Infrastructure\Http\Request\Method;
 
-use RC\Infrastructure\Http\Request\Method;
+use TG\Infrastructure\Http\Request\Method;
 
 class Delete extends Method
 {

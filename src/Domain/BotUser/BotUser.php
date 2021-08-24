@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace RC\Domain\BotUser;
+namespace TG\Domain\BotUser;
 
-use RC\Infrastructure\ImpureInteractions\ImpureValue;
+use TG\Infrastructure\ImpureInteractions\ImpureValue;
 
 interface BotUser
 {
