@@ -1,0 +1,6 @@
+.gcloudignore
+.git
+.gitignore
+/vendor/
+deploy.sh
+.env.dev
