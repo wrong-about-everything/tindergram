@@ -201,7 +201,7 @@ class PressesStartTest extends TestCase
         );
     }
 
-    public function testWhenRegisteredUserPressesStartThenHeSeesCongratulations()
+    public function testWhenRegisteredUserPressesStartThenHeSeesWhatCanIDoForYouMessage()
     {
         $connection = new ApplicationConnection();
         (new BotUser($connection))

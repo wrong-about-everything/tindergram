@@ -37,15 +37,13 @@ use TG\Activities\User\RegistersInBot\UserStories\AnswersRegistrationQuestion\Do
 class AnswersRegistrationQuestion extends Existent
 {
     private $message;
-    private $botId;
     private $httpTransport;
     private $connection;
     private $logs;
 
-    public function __construct(array $message, string $botId, HttpTransport $httpTransport, OpenConnection $connection, Logs $logs)
+    public function __construct(array $message, HttpTransport $httpTransport, OpenConnection $connection, Logs $logs)
     {
         $this->message = $message;
-        $this->botId = $botId;
         $this->httpTransport = $httpTransport;
         $this->connection = $connection;
         $this->logs = $logs;
