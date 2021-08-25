@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace TG\Domain\BotUser\UserStatus\Impure;
 
-use TG\Domain\BotUser\BotUser;
+use TG\Domain\BotUser\ReadModel\BotUser;
 use TG\Domain\BotUser\UserStatus\Pure\FromInteger;
 use TG\Domain\BotUser\UserStatus\Pure\NonExistent;
 use TG\Infrastructure\ImpureInteractions\ImpureValue;

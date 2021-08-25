@@ -29,14 +29,12 @@ use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUs
 class NextRegistrationQuestionReplyToUser implements SentReplyToUser
 {
     private $telegramUserId;
-    private $botId;
     private $connection;
     private $httpTransport;
 
-    public function __construct(InternalTelegramUserId $telegramUserId, BotId $botId, OpenConnection $connection, HttpTransport $httpTransport)
+    public function __construct(InternalTelegramUserId $telegramUserId, OpenConnection $connection, HttpTransport $httpTransport)
     {
         $this->telegramUserId = $telegramUserId;
-        $this->botId = $botId;
         $this->connection = $connection;
         $this->httpTransport = $httpTransport;
     }

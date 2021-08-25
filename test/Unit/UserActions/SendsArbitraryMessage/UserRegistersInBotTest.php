@@ -13,7 +13,7 @@ use Meringue\Timeline\Point\Past;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 use TG\Domain\About\Impure\FromBotUser as AboutBotUser;
-use TG\Domain\BotUser\ByTelegramUserId;
+use TG\Domain\BotUser\ReadModel\ByInternalTelegramUserId;
 use TG\Domain\Experience\ExperienceId\Impure\FromBotUser as ExperienceFromBotUser;
 use TG\Domain\Experience\ExperienceId\Impure\FromPure as ImpureExperienceFromPure;
 use TG\Domain\Experience\ExperienceId\Pure\Experience as UserExperience;
@@ -33,8 +33,8 @@ use TG\Domain\RegistrationQuestion\RegistrationQuestionId\Impure\RegistrationQue
 use TG\Domain\RegistrationQuestion\RegistrationQuestionType\Pure\About;
 use TG\Domain\RegistrationQuestion\RegistrationQuestionType\Pure\RegistrationQuestionType;
 use TG\Domain\TelegramBot\UserMessage\Pure\Skipped;
-use TG\Domain\TelegramUser\UserId\FromUuid as UserIdFromUuid;
-use TG\Domain\TelegramUser\UserId\TelegramUserId;
+use TG\Domain\BotUser\UserId\FromUuid as UserIdFromUuid;
+use TG\Domain\BotUser\UserId\BotUserId;
 use TG\Domain\RegistrationQuestion\RegistrationQuestionType\Pure\Experience;
 use TG\Domain\RegistrationQuestion\RegistrationQuestionType\Pure\Position;
 use TG\Domain\BotUser\UserStatus\Impure\FromBotUser as UserStatusFromBotUser;
@@ -105,7 +105,7 @@ class UserRegistersInBotTest extends TestCase
         $this->assertTrue($response->isSuccessful());
         $this->assertCount(1, $transport->sentRequests());
         $this->assertEquals(
-            'К сожалению, мы пока не можем принять ответ в виде текста. Поэтому выберите, пожалуйста, один из вариантов ответа. Если ни один не подходит — напишите в @tindergram_support_bot',
+            'К сожалению, мы пока не можем принять ответ в виде текста. Поэтому выберите, пожалуйста, один из вариантов ответа. Если ни один не подходит — напишите в @hey_sweetie_support_bot',
             (new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['text']
         );
         $this->assertReplyButtons($transport->sentRequests()[0]);
@@ -137,7 +137,7 @@ class UserRegistersInBotTest extends TestCase
         $this->assertTrue($response->isSuccessful());
         $this->assertCount(1, $transport->sentRequests());
         $this->assertEquals(
-            'К сожалению, мы пока не можем принять ответ в виде текста. Поэтому выберите, пожалуйста, один из вариантов ответа. Если ни один не подходит — напишите в @tindergram_support_bot',
+            'К сожалению, мы пока не можем принять ответ в виде текста. Поэтому выберите, пожалуйста, один из вариантов ответа. Если ни один не подходит — напишите в @hey_sweetie_support_bot',
             (new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['text']
         );
     }
@@ -161,7 +161,7 @@ class UserRegistersInBotTest extends TestCase
         $this->assertUserIs($this->telegramUserId(), $this->botId(), new Registered(), $connection);
         $this->assertCount(1, $transport->sentRequests());
         $this->assertEquals(
-            'Поздравляю, вы зарегистрировались! Если хотите что-то спросить или уточнить, смело пишите на @tindergram_support_bot',
+            'Поздравляю, вы зарегистрировались! Если хотите что-то спросить или уточнить, смело пишите на @hey_sweetie_support_bot',
             (new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['text']
         );
     }
@@ -185,7 +185,7 @@ class UserRegistersInBotTest extends TestCase
         $this->assertUserIs($this->telegramUserId(), $this->botId(), new Registered(), $connection);
         $this->assertCount(1, $transport->sentRequests());
         $this->assertEquals(
-            'Поздравляю, вы зарегистрировались! Если хотите что-то спросить или уточнить, смело пишите на @tindergram_support_bot',
+            'Поздравляю, вы зарегистрировались! Если хотите что-то спросить или уточнить, смело пишите на @hey_sweetie_support_bot',
             (new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['text']
         );
     }
@@ -209,7 +209,7 @@ class UserRegistersInBotTest extends TestCase
         $this->assertUserIs($this->telegramUserId(), $this->botId(), new Registered(), $connection);
         $this->assertCount(1, $transport->sentRequests());
         $this->assertEquals(
-            'Поздравляю, вы зарегистрировались! Если хотите что-то спросить или уточнить, смело пишите на @tindergram_support_bot',
+            'Поздравляю, вы зарегистрировались! Если хотите что-то спросить или уточнить, смело пишите на @hey_sweetie_support_bot',
             (new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['text']
         );
     }
@@ -227,7 +227,7 @@ class UserRegistersInBotTest extends TestCase
         $this->assertTrue($response->isSuccessful());
         $this->assertCount(1, $transport->sentRequests());
         $this->assertEquals(
-            'Хотите что-то уточнить? Смело пишите на @tindergram_support_bot!',
+            'Хотите что-то уточнить? Смело пишите на @hey_sweetie_support_bot!',
             (new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['text']
         );
     }
@@ -283,7 +283,7 @@ q
         return new FromUuid(new Fixed());
     }
 
-    private function userId(): TelegramUserId
+    private function userId(): BotUserId
     {
         return new UserIdFromUuid(new FromString('103729d6-330c-4123-b856-d5196812d509'));
     }
@@ -311,7 +311,7 @@ q
             ]);
     }
 
-    private function createTelegramUser(TelegramUserId $userId, InternalTelegramUserId $telegramUserId, $connection)
+    private function createTelegramUser(BotUserId $userId, InternalTelegramUserId $telegramUserId, $connection)
     {
         (new TelegramUser($connection))
             ->insert([
@@ -319,7 +319,7 @@ q
             ]);
     }
 
-    private function createBotUser(BotId $botId, TelegramUserId $userId, UserStatus $status, $connection)
+    private function createBotUser(BotId $botId, BotUserId $userId, UserStatus $status, $connection)
     {
         (new BotUser($connection))
             ->insert([
@@ -342,7 +342,7 @@ q
             ]);
     }
 
-    private function createRegistrationProgress(RegistrationQuestionId $registrationQuestionId, TelegramUserId $userId, OpenConnection $connection)
+    private function createRegistrationProgress(RegistrationQuestionId $registrationQuestionId, BotUserId $userId, OpenConnection $connection)
     {
         (new UserRegistrationProgress($connection))
             ->insert([
@@ -371,7 +371,7 @@ q
             );
     }
 
-    private function assertUserRegistrationProgressUpdated(TelegramUserId $userId, RegistrationQuestionId $registrationQuestionId, OpenConnection $connection)
+    private function assertUserRegistrationProgressUpdated(BotUserId $userId, RegistrationQuestionId $registrationQuestionId, OpenConnection $connection)
     {
         $this->assertNotEmpty(
             (new Selecting(
@@ -392,7 +392,7 @@ q
     {
         $this->assertTrue(
             (new FromBotUser(
-                new ByTelegramUserId($telegramUserId, $botId, $connection)
+                new ByInternalTelegramUserId($telegramUserId, $botId, $connection)
             ))
                 ->equals(
                     new FromPure($position)
@@ -404,7 +404,7 @@ q
     {
         $this->assertTrue(
             (new ExperienceFromBotUser(
-                new ByTelegramUserId($telegramUserId, $botId, $connection)
+                new ByInternalTelegramUserId($telegramUserId, $botId, $connection)
             ))
                 ->equals(
                     new ImpureExperienceFromPure($experience)
@@ -416,7 +416,7 @@ q
     {
         $this->assertTrue(
             (new AboutBotUser(
-                new ByTelegramUserId($telegramUserId, $botId, $connection)
+                new ByInternalTelegramUserId($telegramUserId, $botId, $connection)
             ))
                 ->empty()->pure()->raw()
         );
@@ -427,7 +427,7 @@ q
         $this->assertEquals(
             $about,
             (new AboutBotUser(
-                new ByTelegramUserId($telegramUserId, $botId, $connection)
+                new ByInternalTelegramUserId($telegramUserId, $botId, $connection)
             ))
                 ->value()->pure()->raw()
         );
@@ -437,7 +437,7 @@ q
     {
         $this->assertTrue(
             (new UserStatusFromBotUser(
-                new ByTelegramUserId($telegramUserId, $botId, $connection)
+                new ByInternalTelegramUserId($telegramUserId, $botId, $connection)
             ))
                 ->equals(
                     new ImpureUserStatusFromPure($userStatus)

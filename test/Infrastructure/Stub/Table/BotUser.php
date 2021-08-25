@@ -6,8 +6,6 @@ namespace TG\Tests\Infrastructure\Stub\Table;
 
 use Exception;
 use Ramsey\Uuid\Uuid;
-use TG\Domain\Experience\ExperienceId\Pure\LessThanAYear;
-use TG\Domain\Position\PositionId\Pure\ProductManager;
 use TG\Domain\BotUser\UserStatus\Pure\Registered;
 use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
 use TG\Infrastructure\SqlDatabase\Agnostic\Query\SingleMutatingQueryWithMultipleValueSets;
@@ -25,17 +23,16 @@ class BotUser
     {
         $botUserInsertResponse =
             (new SingleMutatingQueryWithMultipleValueSets(
-                'insert into "bot_user" (id, user_id, bot_id, position, experience, about, status) values (?, ?, ?, ?, ?, ?, ?)',
+                'insert into "bot_user" (id, first_name, last_name, telegram_id, telegram_handle, status) values (?, ?, ?, ?, ?, ?)',
                 array_map(
                     function (array $record) {
                         $values = array_merge($this->defaultValues(), $record);
                         return [
                             $values['id'],
-                            $values['user_id'],
-                            $values['bot_id'],
-                            $values['position'],
-                            $values['experience'],
-                            $values['about'],
+                            $values['first_name'],
+                            $values['last_name'],
+                            $values['telegram_id'],
+                            $values['telegram_handle'],
                             $values['status']
                         ];
                     },
@@ -53,9 +50,10 @@ class BotUser
     {
         return [
             'id' => Uuid::uuid4()->toString(),
-            'position' => (new ProductManager())->value(),
-            'experience' => (new LessThanAYear())->value(),
-            'about' => 'About me',
+            'first_name' => 'Vasya',
+            'last_name' => 'Belov',
+            'telegram_id' => 666,
+            'telegram_handle' => '@vasya',
             'status' => (new Registered())->value(),
         ];
     }

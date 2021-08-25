@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace TG\Activities\User\RegistersInBot\UserStories\Domain\Reply;
 
-use TG\Domain\Bot\BotToken\Impure\BotToken;
 use TG\Infrastructure\Http\Request\Method\Post;
 use TG\Infrastructure\Http\Request\Outbound\OutboundRequest;
 use TG\Infrastructure\Http\Request\Url\Query\FromArray;
@@ -14,11 +13,7 @@ use TG\Infrastructure\ImpureInteractions\ImpureValue;
 use TG\Infrastructure\ImpureInteractions\ImpureValue\Failed;
 use TG\Infrastructure\ImpureInteractions\ImpureValue\Successful;
 use TG\Infrastructure\ImpureInteractions\PureValue\Emptie;
-use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
 use TG\Infrastructure\TelegramBot\BotApiUrl;
-use TG\Domain\Bot\BotId\BotId;
-use TG\Domain\Bot\BotToken\Impure\ByBotId;
-use TG\Domain\Bot\BotToken\Pure\FromImpure;
 use TG\Infrastructure\TelegramBot\Method\SendMessage;
 use TG\Domain\SentReplyToUser\SentReplyToUser;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId;
@@ -26,26 +21,17 @@ use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUs
 class RegistrationCongratulations implements SentReplyToUser
 {
     private $telegramUserId;
-    private $botId;
-    private $connection;
     private $httpTransport;
 
-    public function __construct(InternalTelegramUserId $telegramUserId, BotId $botId, OpenConnection $connection, HttpTransport $httpTransport)
+    public function __construct(InternalTelegramUserId $telegramUserId, HttpTransport $httpTransport)
     {
         $this->telegramUserId = $telegramUserId;
-        $this->botId = $botId;
-        $this->connection = $connection;
         $this->httpTransport = $httpTransport;
     }
 
     public function value(): ImpureValue
     {
-        $botToken = new ByBotId($this->botId, $this->connection);
-        if (!$botToken->value()->isSuccessful() || !$botToken->value()->pure()->isPresent()) {
-            return $botToken->value();
-        }
-
-        $telegramResponse = $this->congratulations($botToken);
+        $telegramResponse = $this->congratulations();
         if (!$telegramResponse->isAvailable()) {
             return new Failed(new SilentDeclineWithDefaultUserMessage('Response from telegram is not available', []));
         }
@@ -53,7 +39,7 @@ class RegistrationCongratulations implements SentReplyToUser
         return new Successful(new Emptie());
     }
 
-    private function congratulations(BotToken $botToken)
+    private function congratulations()
     {
         return
             $this->httpTransport
@@ -64,10 +50,9 @@ class RegistrationCongratulations implements SentReplyToUser
                             new SendMessage(),
                             new FromArray([
                                 'chat_id' => $this->telegramUserId->value(),
-                                'text' => 'Поздравляю, вы зарегистрировались! Если хотите что-то спросить или уточнить, смело пишите на @tindergram_support_bot',
+                                'text' => 'Поздравляю, вы зарегистрировались! Если хотите что-то спросить или уточнить, смело пишите на @hey_sweetie_support_bot',
                                 'reply_markup' => json_encode(['remove_keyboard' => true])
-                            ]),
-                            new FromImpure($botToken)
+                            ])
                         ),
                         [],
                         ''

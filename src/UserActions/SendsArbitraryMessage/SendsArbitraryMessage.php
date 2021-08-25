@@ -9,7 +9,7 @@ use TG\Activities\User\RepliesToFeedbackInvitation\UserStories\AcceptsOrDeclines
 use TG\Activities\User\RepliesToFeedbackInvitation\UserStories\AnswersFeedbackQuestion\AnswersFeedbackQuestion;
 use TG\Activities\User\RepliesToRoundInvitation\UserStories\AnswersRoundRegistrationQuestion\AnswersRoundRegistrationQuestion;
 use TG\Activities\User\RepliesToRoundInvitation\UserStories\AcceptsOrDeclinesInvitation\AcceptsOrDeclinesInvitation;
-use TG\Domain\BotUser\ByTelegramUserId;
+use TG\Domain\BotUser\ReadModel\ByInternalTelegramUserId;
 use TG\Domain\SentReplyToUser\InCaseOfAnyUncertainty;
 use TG\Domain\SentReplyToUser\NoRoundsAhead;
 use TG\Domain\BotUser\UserStatus\Impure\FromBotUser;
@@ -77,7 +77,7 @@ class SendsArbitraryMessage extends Existent
     {
         return
             new FromBotUser(
-                new ByTelegramUserId(
+                new ByInternalTelegramUserId(
                     new FromParsedTelegramMessage($this->message),
                     $this->botId(),
                     $this->connection

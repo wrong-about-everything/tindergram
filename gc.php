@@ -86,8 +86,8 @@ function entryPoint(ServerRequestInterface $request): ResponseInterface
                         ],
                         [
                             new RouteByTelegramBotCommand(new Start()),
-                            function (array $parsedTelegramMessage, string $botId) use ($transport, $logs) {
-                                return new PressesStart($parsedTelegramMessage, $botId, $transport, new ApplicationConnection(), $logs);
+                            function (array $parsedTelegramMessage) use ($transport, $logs) {
+                                return new PressesStart($parsedTelegramMessage, $transport, new ApplicationConnection(), $logs);
                             }
                         ],
                         [

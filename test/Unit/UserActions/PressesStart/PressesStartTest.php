@@ -8,33 +8,22 @@ use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\ApplicationConnection;
 use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\RootConnection;
-use TG\Domain\BotUser\ByTelegramUserId;
-use TG\Domain\RegistrationQuestion\RegistrationQuestionType\Pure\Experience;
-use TG\Domain\RegistrationQuestion\RegistrationQuestionType\Pure\Position;
-use TG\Domain\TelegramUser\ByTelegramId;
-use TG\Domain\TelegramUser\RegisteredInBot;
-use TG\Domain\TelegramUser\UserId\FromUuid as UserIdFromUuid;
-use TG\Domain\TelegramUser\UserId\TelegramUserId;
+use TG\Domain\BotUser\ReadModel\ByInternalTelegramUserId;
+use TG\Domain\BotUser\UserId\FromUuid as UserIdFromUuid;
+use TG\Domain\BotUser\UserId\BotUserId;
 use TG\Domain\BotUser\UserStatus\Pure\Registered;
 use TG\Domain\BotUser\UserStatus\Pure\RegistrationIsInProgress;
 use TG\Infrastructure\Http\Request\Url\ParsedQuery\FromQuery;
 use TG\Infrastructure\Http\Request\Url\Query\FromUrl;
 use TG\Infrastructure\Http\Transport\Indifferent;
 use TG\Infrastructure\Logging\Logs\DevNull;
-use TG\Domain\Bot\BotId\BotId;
-use TG\Domain\Bot\BotId\FromUuid;
 use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\FromInteger;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId;
-use TG\Infrastructure\Uuid\Fixed;
 use TG\Infrastructure\Uuid\FromString;
 use TG\Tests\Infrastructure\Environment\Reset;
-use TG\Tests\Infrastructure\Stub\Table\Bot;
-use TG\Tests\Infrastructure\Stub\Table\RegistrationQuestion;
-use TG\Tests\Infrastructure\Stub\Table\TelegramUser;
 use TG\Tests\Infrastructure\Stub\TelegramMessage\StartCommandMessage;
 use TG\Tests\Infrastructure\Stub\Table\BotUser;
-use TG\Tests\Infrastructure\Stub\Table\UserRegistrationProgress;
 use TG\Tests\Infrastructure\Stub\TelegramMessage\StartCommandMessageWithEmptyUsername;
 use TG\UserActions\PressesStart\PressesStart;
 
@@ -43,16 +32,11 @@ class PressesStartTest extends TestCase
     public function testWhenNewUserDoesNotHaveUsernameThenHeSeesAPromptMessageToSetIt()
     {
         $connection = new ApplicationConnection();
-        (new Bot($connection))
-            ->insert([
-                ['id' => $this->botId()->value(), 'token' => Uuid::uuid4()->toString(), 'name' => 'vasya_bot']
-            ]);
         $transport = new Indifferent();
 
         $response =
             (new PressesStart(
                 (new StartCommandMessageWithEmptyUsername($this->telegramUserId()))->value(),
-                $this->botId()->value(),
                 $transport,
                 $connection,
                 new DevNull()
@@ -63,36 +47,19 @@ class PressesStartTest extends TestCase
         $this->assertUserDoesNotExist($this->telegramUserId(), $connection);
         $this->assertCount(1, $transport->sentRequests());
         $this->assertEquals(
-            <<<t
-Не хотелось бы начинать знакомство с минорной ноты, но у меня нет другого выбора. Для того, чтобы мы смогли передать ваши контакты будущим собеседникам, нам нужно знать ваш ник, а он у вас не указан. Если не знаете, где именно всё это надо указать, вот пошаговая инструкция: https://aboutmessengers.ru/kak-pomenyat-imya-v-telegramme/. 
-
-Если не знаете, какой ник выбрать, попробуйте просто набор цифр. Например, такой — {$this->time()}. Обещать не могу, но, думаю, он свободен.
-
-Как будет готово, снова нажмите /start. 
-t
-            ,
+            'Hey sweetie, у тебя не установлен ник! Как установишь, снова жми /start.',
             (new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['text']
         );
     }
 
-    public function testGivenNoUsersAreRegisteredInBotWhenNewUserPressesStartThenHeSeesTheFirstQuestion()
+    public function testGivenNoUsersAreRegisteredInBotAndThereAreNoRegistrationQuestionsWhenNewUserPressesStartThenHeSeesCongratulation()
     {
         $connection = new ApplicationConnection();
-        (new Bot($connection))
-            ->insert([
-                ['id' => $this->botId()->value(), 'token' => Uuid::uuid4()->toString(), 'name' => 'vasya_bot']
-            ]);
-        (new RegistrationQuestion($connection))
-            ->insert([
-                ['id' => Uuid::uuid4()->toString(), 'profile_record_type' => (new Position())->value(), 'bot_id' => $this->botId()->value(), 'ordinal_number' => 1, 'text' => 'Какая у вас должность?'],
-                ['id' => Uuid::uuid4()->toString(), 'profile_record_type' => (new Experience())->value(), 'bot_id' => $this->botId()->value(), 'ordinal_number' => 2, 'text' => 'А опыт?'],
-            ]);
         $transport = new Indifferent();
 
         $response =
             (new PressesStart(
                 (new StartCommandMessage($this->telegramUserId()))->value(),
-                $this->botId()->value(),
                 $transport,
                 $connection,
                 new DevNull()
@@ -100,79 +67,22 @@ t
                 ->response();
 
         $this->assertTrue($response->isSuccessful());
-        $this->assertUserExists($this->telegramUserId(), $this->botId(), $connection);
+        $this->assertUserExists($this->telegramUserId(), $connection);
         $this->assertCount(1, $transport->sentRequests());
         $this->assertEquals(
-            'Какая у вас должность?',
-            (new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['text']
-        );
-    }
-
-    public function testGivenSomeUsersAreRegisteredInBotWhenNewUserPressesStartThenHeSeesTheFirstQuestion()
-    {
-        $connection = new ApplicationConnection();
-        (new Bot($connection))
-            ->insert([
-                ['id' => $this->botId()->value(), 'token' => Uuid::uuid4()->toString(), 'name' => 'vasya_bot']
-            ]);
-        (new TelegramUser($connection))
-            ->insert([
-                ['id' => $this->userId()->value(), 'first_name' => 'Vadim', 'last_name' => 'Samokhin', 'telegram_id' => 987654321, 'telegram_handle' => 'dremuchee_bydlo'],
-            ]);
-        (new BotUser($connection))
-            ->insert([
-                ['bot_id' => $this->botId()->value(), 'user_id' => $this->userId()->value(), 'status' => (new Registered())->value()]
-            ]);
-        (new UserRegistrationProgress($connection))
-            ->insert([
-                ['registration_question_id' => $this->firstRegistrationQuestionId(), 'user_id' => $this->userId()->value()],
-                ['registration_question_id' => $this->secondRegistrationQuestionId(), 'user_id' => $this->userId()->value()],
-            ]);
-        (new RegistrationQuestion($connection))
-            ->insert([
-                ['id' => $this->firstRegistrationQuestionId(), 'profile_record_type' => (new Position())->value(), 'bot_id' => $this->botId()->value(), 'ordinal_number' => 1, 'text' => 'Какая у вас должность?'],
-                ['id' => $this->secondRegistrationQuestionId(), 'profile_record_type' => (new Experience())->value(), 'bot_id' => $this->botId()->value(), 'ordinal_number' => 2, 'text' => 'А опыт?'],
-            ]);
-        $transport = new Indifferent();
-
-        $response =
-            (new PressesStart(
-                (new StartCommandMessage($this->telegramUserId()))->value(),
-                $this->botId()->value(),
-                $transport,
-                $connection,
-                new DevNull()
-            ))
-                ->response();
-
-        $this->assertTrue($response->isSuccessful());
-        $this->assertUserExists($this->telegramUserId(), $this->botId(), $connection);
-        $this->assertCount(1, $transport->sentRequests());
-        $this->assertEquals(
-            'Какая у вас должность?',
+            'Поздравляю, вы зарегистрировались! Если хотите что-то спросить или уточнить, смело пишите на @hey_sweetie_support_bot',
             (new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['text']
         );
     }
 
     public function testWhenExistingButNotRegisteredUserPressesStartOneMoreTimeThenHeStillSeesTheFirstQuestion()
     {
+        $this->markTestIncomplete();
+
         $connection = new ApplicationConnection();
-        (new Bot($connection))
-            ->insert([
-                ['id' => $this->botId()->value(), 'token' => Uuid::uuid4()->toString(), 'name' => 'vasya_bot']
-            ]);
-        (new TelegramUser($connection))
-            ->insert([
-                ['id' => $this->userId()->value(), 'first_name' => 'Vadim', 'last_name' => 'Samokhin', 'telegram_id' => $this->telegramUserId()->value(), 'telegram_handle' => 'dremuchee_bydlo'],
-            ]);
         (new BotUser($connection))
             ->insert([
-                ['bot_id' => $this->botId()->value(), 'user_id' => $this->userId()->value(), 'status' => (new RegistrationIsInProgress())->value()]
-            ]);
-        (new RegistrationQuestion($connection))
-            ->insert([
-                ['id' => Uuid::uuid4()->toString(), 'profile_record_type' => (new Position())->value(), 'bot_id' => $this->botId()->value(), 'ordinal_number' => 1, 'text' => 'Какая у вас должность?'],
-                ['id' => Uuid::uuid4()->toString(), 'profile_record_type' => (new Experience())->value(), 'bot_id' => $this->botId()->value(), 'ordinal_number' => 2, 'text' => 'А опыт?'],
+                ['id' => $this->userId()->value(), 'first_name' => 'Vadim', 'last_name' => 'Samokhin', 'telegram_id' => $this->telegramUserId()->value(), 'telegram_handle' => 'dremuchee_bydlo', 'status' => (new RegistrationIsInProgress())->value()]
             ]);
         $transport = new Indifferent();
 
@@ -197,6 +107,8 @@ t
 
     public function testWhenExistingButNotRegisteredUserWhoHasAnsweredOneQuestionPressesStartThenHeSeesTheSecondQuestion()
     {
+        $this->markTestIncomplete();
+
         $connection = new ApplicationConnection();
         (new Bot($connection))
             ->insert([
@@ -242,6 +154,8 @@ t
 
     public function testWhenExistingButNotYetRegisteredUserWhoHasAnsweredAllButOneQuestionPressesStartThenHeSeesTheLastQuestion()
     {
+        $this->markTestIncomplete();
+
         $connection = new ApplicationConnection();
         (new Bot($connection))
             ->insert([
@@ -287,37 +201,18 @@ t
         );
     }
 
-    public function testWhenRegisteredUserPressesStartThenHeSeesWhatHeCanDo()
+    public function testWhenRegisteredUserPressesStartThenHeSeesCongratulations()
     {
         $connection = new ApplicationConnection();
-        (new Bot($connection))
-            ->insert([
-                ['id' => $this->botId()->value(), 'token' => Uuid::uuid4()->toString(), 'name' => 'vasya_bot']
-            ]);
-        (new TelegramUser($connection))
-            ->insert([
-                ['id' => $this->userId()->value(), 'first_name' => 'Vadim', 'last_name' => 'Samokhin', 'telegram_id' => $this->telegramUserId()->value(), 'telegram_handle' => 'dremuchee_bydlo'],
-            ]);
         (new BotUser($connection))
             ->insert([
-                ['bot_id' => $this->botId()->value(), 'user_id' => $this->userId()->value(), 'status' => (new Registered())->value()]
-            ]);
-        (new RegistrationQuestion($connection))
-            ->insert([
-                ['id' => $this->firstRegistrationQuestionId(), 'profile_record_type' => (new Position())->value(), 'bot_id' => $this->botId()->value(), 'ordinal_number' => 1, 'text' => 'Какая у вас должность?'],
-                ['id' => $this->secondRegistrationQuestionId(), 'profile_record_type' => (new Experience())->value(), 'bot_id' => $this->botId()->value(), 'ordinal_number' => 2, 'text' => 'А опыт?'],
-            ]);
-        (new UserRegistrationProgress($connection))
-            ->insert([
-                ['registration_question_id' => $this->firstRegistrationQuestionId(), 'user_id' => $this->userId()->value()],
-                ['registration_question_id' => $this->secondRegistrationQuestionId(), 'user_id' => $this->userId()->value()],
+                ['id' => $this->userId()->value(), 'first_name' => 'Vadim', 'last_name' => 'Samokhin', 'telegram_id' => $this->telegramUserId()->value(), 'telegram_handle' => 'dremuchee_bydlo', 'status' => (new Registered())->value()]
             ]);
         $transport = new Indifferent();
 
         $response =
             (new PressesStart(
                 (new StartCommandMessage($this->telegramUserId()))->value(),
-                $this->botId()->value(),
                 $transport,
                 $connection,
                 new DevNull()
@@ -325,10 +220,10 @@ t
                 ->response();
 
         $this->assertTrue($response->isSuccessful());
-        $this->assertUserExists($this->telegramUserId(), $this->botId(), $connection);
+        $this->assertUserExists($this->telegramUserId(), $connection);
         $this->assertCount(1, $transport->sentRequests());
         $this->assertEquals(
-            'Хотите что-то уточнить? Смело пишите на @tindergram_support_bot!',
+            'Хотите что-то уточнить? Смело пишите на @hey_sweetie_support_bot!',
             (new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['text']
         );
     }
@@ -343,11 +238,6 @@ t
         return new FromInteger(654987);
     }
 
-    private function botId(): BotId
-    {
-        return new FromUuid(new Fixed());
-    }
-
     private function firstRegistrationQuestionId()
     {
         return 'a2737a5d-9f02-4a62-886d-6f29cfbbccef';
@@ -358,31 +248,24 @@ t
         return 'ddd7969c-02a3-447e-ab34-42cbea41a5d3';
     }
 
-    private function userId(): TelegramUserId
+    private function userId(): BotUserId
     {
         return new UserIdFromUuid(new FromString('103729d6-330c-4123-b856-d5196812d509'));
     }
 
-    private function assertUserExists(InternalTelegramUserId $telegramUserId, BotId $botId, OpenConnection $connection)
+    private function assertUserExists(InternalTelegramUserId $telegramUserId, OpenConnection $connection)
     {
-        $user = (new RegisteredInBot($telegramUserId, $botId, $connection))->value();
+        $user = (new ByInternalTelegramUserId($telegramUserId, $connection))->value();
         $this->assertTrue($user->pure()->isPresent());
         $this->assertEquals('Vadim', $user->pure()->raw()['first_name']);
         $this->assertEquals('Samokhin', $user->pure()->raw()['last_name']);
         $this->assertEquals('dremuchee_bydlo', $user->pure()->raw()['telegram_handle']);
-        $profile = (new ByTelegramUserId($telegramUserId, $botId, $connection))->value();
-        $this->assertTrue($profile->pure()->isPresent());
     }
 
     private function assertUserDoesNotExist(InternalTelegramUserId $telegramUserId, OpenConnection $connection)
     {
         $this->assertFalse(
-            (new ByTelegramId($telegramUserId, $connection))->value()->pure()->isPresent()
+            (new ByInternalTelegramUserId($telegramUserId, $connection))->value()->pure()->isPresent()
         );
-    }
-
-    private function time()
-    {
-        return time();
     }
 }

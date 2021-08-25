@@ -14,22 +14,18 @@ use TG\Infrastructure\ImpureInteractions\ImpureValue\Failed;
 use TG\Infrastructure\ImpureInteractions\ImpureValue\Successful;
 use TG\Infrastructure\ImpureInteractions\PureValue\Emptie;
 use TG\Infrastructure\TelegramBot\BotApiUrl;
-use TG\Domain\Bot\BotToken\Pure\FromImpure;
-use TG\Domain\Bot\BotToken\Impure\BotToken;
 use TG\Infrastructure\TelegramBot\Method\SendMessage;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId;
 
 class Sorry implements SentReplyToUser
 {
     private $telegramUserId;
-    private $botToken;
     private $httpTransport;
     private $cached;
 
-    public function __construct(InternalTelegramUserId $telegramUserId, BotToken $botToken, HttpTransport $httpTransport)
+    public function __construct(InternalTelegramUserId $telegramUserId, HttpTransport $httpTransport)
     {
         $this->telegramUserId = $telegramUserId;
-        $this->botToken = $botToken;
         $this->httpTransport = $httpTransport;
         $this->cached = null;
     }
@@ -45,10 +41,6 @@ class Sorry implements SentReplyToUser
 
     private function doValue(): ImpureValue
     {
-        if (!$this->botToken->value()->isSuccessful()) {
-            return $this->botToken->value();
-        }
-
         $response =
             $this->httpTransport
                 ->response(
@@ -58,9 +50,8 @@ class Sorry implements SentReplyToUser
                             new SendMessage(),
                             new FromArray([
                                 'chat_id' => $this->telegramUserId->value(),
-                                'text' => 'Простите, у нас что-то сломалось. Попробуйте ещё пару раз, и если не заработает — напишите, пожалуйста, в @tindergram_support_bot',
-                            ]),
-                            new FromImpure($this->botToken)
+                                'text' => 'Простите, у нас что-то сломалось. Попробуйте ещё пару раз, и если не заработает — напишите, пожалуйста, в @hey_sweetie_support_bot',
+                            ])
                         ),
                         [],
                         ''

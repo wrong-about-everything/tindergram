@@ -56,22 +56,7 @@ class Reset
                 <<<q
 truncate
     sample_table,
-    bot,
-    "group",
-    telegram_user,
-    bot_user,
-    registration_question,
-    user_registration_progress,
-    meeting_round,
-    meeting_round_invitation,
-    meeting_round_registration_question,
-    user_round_registration_progress,
-    meeting_round_participant,
-    meeting_round_pair,
-    meeting_round_dropout,
-    feedback_invitation,
-    feedback_question,
-    feedback_answer
+    bot_user
 
     cascade
 q

@@ -63,7 +63,7 @@ class ValidationError implements SentReplyToUser
                                 array_merge(
                                     [
                                         'chat_id' => $this->telegramUserId->value(),
-                                        'text' => 'К сожалению, мы пока не можем принять ответ в виде текста. Поэтому выберите, пожалуйста, один из вариантов ответа. Если ни один не подходит — напишите в @tindergram_support_bot',
+                                        'text' => 'К сожалению, мы пока не можем принять ответ в виде текста. Поэтому выберите, пожалуйста, один из вариантов ответа. Если ни один не подходит — напишите в @hey_sweetie_support_bot',
                                     ],
                                     empty($this->answerOptions->value())
                                         ? []

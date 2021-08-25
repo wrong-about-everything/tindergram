@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace TG\Activities\User\RegistersInBot\UserStories\Domain\Reply;
 
-use Meringue\Timeline\Point\Now;
 use TG\Activities\User\RegistersInBot\UserStories\Domain\BotUser\RegisteredIfNoMoreQuestionsLeft;
-use TG\Domain\Bot\BotId\BotId;
+use TG\Domain\BotUser\ReadModel\FromWriteModel;
 use TG\Domain\BotUser\UserStatus\Impure\FromBotUser;
 use TG\Domain\BotUser\UserStatus\Impure\FromPure;
 use TG\Domain\BotUser\UserStatus\Pure\Registered;
@@ -20,14 +19,12 @@ use TG\Activities\User\RegistersInBot\Domain\Reply\NextRegistrationQuestionReply
 class NextReplyToUserToUser implements SentReplyToUser
 {
     private $telegramUserId;
-    private $botId;
     private $httpTransport;
     private $connection;
 
-    public function __construct(InternalTelegramUserId $telegramUserId, BotId $botId, HttpTransport $httpTransport, OpenConnection $connection)
+    public function __construct(InternalTelegramUserId $telegramUserId, HttpTransport $httpTransport, OpenConnection $connection)
     {
         $this->telegramUserId = $telegramUserId;
-        $this->botId = $botId;
         $this->httpTransport = $httpTransport;
         $this->connection = $connection;
     }
@@ -35,12 +32,11 @@ class NextReplyToUserToUser implements SentReplyToUser
     public function value(): ImpureValue
     {
         if ($this->userRegistered()) {
-
+            return $this->congratulations();
         } else {
             return
                 (new NextRegistrationQuestionReplyToUser(
                     $this->telegramUserId,
-                    $this->botId,
                     $this->connection,
                     $this->httpTransport
                 ))
@@ -48,26 +44,11 @@ class NextReplyToUserToUser implements SentReplyToUser
         }
     }
 
-    private function meetingRoundInvitation(MeetingRound $meetingRound)
-    {
-        return
-            (new MeetingRoundInvitation(
-                $meetingRound,
-                $this->telegramUserId,
-                $this->botId,
-                $this->connection,
-                $this->httpTransport
-            ))
-                ->value();
-    }
-
     private function congratulations()
     {
         return
             (new RegistrationCongratulations(
                 $this->telegramUserId,
-                $this->botId,
-                $this->connection,
                 $this->httpTransport
             ))
                 ->value();
@@ -77,9 +58,11 @@ class NextReplyToUserToUser implements SentReplyToUser
     {
         return
             (new FromBotUser(
-                new RegisteredIfNoMoreQuestionsLeft(
-                    $this->telegramUserId,
-                    $this->botId,
+                new FromWriteModel(
+                    new RegisteredIfNoMoreQuestionsLeft(
+                        $this->telegramUserId,
+                        $this->connection
+                    ),
                     $this->connection
                 )
             ))
