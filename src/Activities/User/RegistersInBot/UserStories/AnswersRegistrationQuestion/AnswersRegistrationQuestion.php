@@ -6,23 +6,15 @@ namespace TG\Activities\User\RegistersInBot\UserStories\AnswersRegistrationQuest
 
 use TG\Domain\SentReplyToUser\ReplyOptions\ReplyOptions;
 use TG\Domain\SentReplyToUser\ReplyOptions\FromRegistrationQuestion as AnswerOptionsFromRegistrationQuestion;
-use TG\Domain\Bot\BotId\FromUuid;
-use TG\Domain\Experience\ExperienceName\FromString;
-use TG\Domain\Position\PositionName\FromString as PositionNameFromString;
-use TG\Domain\RegistrationQuestion\NextRegistrationQuestion;
-use TG\Activities\User\RegistersInBot\UserStories\Domain\Reply\NextReplyToUserToUser;
-use TG\Domain\RegistrationQuestion\RegistrationQuestion;
+use TG\Domain\RegistrationQuestion\Impure\NextRegistrationQuestion;
+use TG\Activities\User\RegistersInBot\UserStories\Domain\Reply\NextReplyToUser;
+use TG\Domain\RegistrationQuestion\Impure\RegistrationQuestion;
 use TG\Domain\SentReplyToUser\ValidationError;
-use TG\Domain\RegistrationQuestion\RegistrationQuestionType\Impure\FromPure;
-use TG\Domain\RegistrationQuestion\RegistrationQuestionType\Impure\FromRegistrationQuestion;
-use TG\Domain\RegistrationQuestion\RegistrationQuestionType\Pure\Experience;
-use TG\Domain\RegistrationQuestion\RegistrationQuestionType\Pure\Position;
 use TG\Infrastructure\Http\Transport\HttpTransport;
 use TG\Infrastructure\Logging\LogItem\FromNonSuccessfulImpureValue;
 use TG\Infrastructure\Logging\LogItem\InformationMessage;
 use TG\Infrastructure\Logging\Logs;
 use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
-use TG\Domain\Bot\BotToken\Impure\ByBotId;
 use TG\Domain\SentReplyToUser\Sorry;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\FromParsedTelegramMessage;
 use TG\Infrastructure\TelegramBot\UserMessage\Pure\FromParsedTelegramMessage as UserReply;
@@ -78,17 +70,11 @@ class AnswersRegistrationQuestion extends Existent
         return new Successful(new Emptie());
     }
 
-    private function botId()
-    {
-        return new FromUuid(new UuidFromString($this->botId));
-    }
-
     private function currentlyAnsweredQuestion()
     {
         return
             new NextRegistrationQuestion(
                 new FromParsedTelegramMessage($this->message),
-                new FromUuid(new UuidFromString($this->botId)),
                 $this->connection
             );
     }
@@ -151,7 +137,7 @@ class AnswersRegistrationQuestion extends Existent
     private function nextReplyToUser()
     {
         return
-            new NextReplyToUserToUser(
+            new NextReplyToUser(
                 new FromParsedTelegramMessage($this->message),
                 new FromUuid(new UuidFromString($this->botId)),
                 $this->httpTransport,

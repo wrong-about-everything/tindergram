@@ -28,6 +28,7 @@ use TG\Infrastructure\Logging\Logs\EnvironmentDependentLogs;
 use TG\Infrastructure\Logging\Logs\File;
 use TG\Infrastructure\Logging\Logs\GoogleCloudLogs;
 use TG\Infrastructure\Routing\Route\ArbitraryTelegramUserMessageRoute;
+use TG\Infrastructure\Routing\Route\ArbitraryTelegramUserMessageRouteWithBotId;
 use TG\Infrastructure\Routing\Route\MatchingAnyPostRequest;
 use TG\Infrastructure\Routing\Route\RouteByMethodAndPathPattern;
 use TG\Infrastructure\Routing\Route\RouteByTelegramBotCommand;
@@ -92,8 +93,8 @@ function entryPoint(ServerRequestInterface $request): ResponseInterface
                         ],
                         [
                             new ArbitraryTelegramUserMessageRoute(),
-                            function (array $parsedTelegramMessage, string $botId) use ($transport, $logs) {
-                                return new SendsArbitraryMessage(new Now(), $parsedTelegramMessage, $botId, $transport, new ApplicationConnection(), $logs);
+                            function (array $parsedTelegramMessage) use ($transport, $logs) {
+                                return new SendsArbitraryMessage($parsedTelegramMessage, $transport, new ApplicationConnection(), $logs);
                             }
                         ],
                         [

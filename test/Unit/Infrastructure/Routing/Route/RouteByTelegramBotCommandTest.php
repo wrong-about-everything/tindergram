@@ -12,7 +12,7 @@ use TG\Infrastructure\Http\Request\Method\Get;
 use TG\Infrastructure\Http\Request\Method\Post;
 use TG\Infrastructure\Http\Request\Url\FromString;
 use TG\Infrastructure\Routing\Route;
-use TG\Infrastructure\Routing\Route\RouteByTelegramBotCommandAndBotId;
+use TG\Infrastructure\Routing\Route\RouteByTelegramBotCommand;
 use TG\Infrastructure\TelegramBot\UserCommand\Start;
 use TG\Infrastructure\TelegramBot\UserCommand\UserCommand;
 
@@ -35,14 +35,14 @@ class RouteByTelegramBotCommandTest extends TestCase
     {
         return [
             [
-                new RouteByTelegramBotCommandAndBotId(new Start()),
+                new RouteByTelegramBotCommand(new Start()),
                 new Composite(
                     new Post(),
                     new FromString('https://hello.vasya.ru/hello/vasya?secret_smile=c0139e5f-24b5-4b9e-bb41-0ac7909de2f7'),
                     [],
                     $this->requestBody(new Start())
                 ),
-                [json_decode($this->requestBody(new Start()),true), 'c0139e5f-24b5-4b9e-bb41-0ac7909de2f7']
+                [json_decode($this->requestBody(new Start()),true)]
             ],
         ];
     }
@@ -60,7 +60,7 @@ class RouteByTelegramBotCommandTest extends TestCase
     {
         return [
             [
-                new RouteByTelegramBotCommandAndBotId(new Start()),
+                new RouteByTelegramBotCommand(new Start()),
                 new Composite(
                     new Get(),
                     new FromString('https://hello.vasya.ru/hello/vasya'),
@@ -69,7 +69,7 @@ class RouteByTelegramBotCommandTest extends TestCase
                 )
             ],
             [
-                new RouteByTelegramBotCommandAndBotId(new Start()),
+                new RouteByTelegramBotCommand(new Start()),
                 new Composite(
                     new Post(),
                     new FromString('https://hello.vasya.ru/hello/vasya'),
@@ -78,7 +78,7 @@ class RouteByTelegramBotCommandTest extends TestCase
                 )
             ],
             [
-                new RouteByTelegramBotCommandAndBotId(new Start()),
+                new RouteByTelegramBotCommand(new Start()),
                 new Composite(
                     new Post(),
                     new FromString('https://hello.vasya.ru/hello/vasya'),

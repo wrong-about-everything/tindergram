@@ -11,18 +11,21 @@ use TG\Domain\Experience\ExperienceName\FromExperience;
 use TG\Domain\Position\AvailablePositions\ByBotId as AvailablePositions;
 use TG\Domain\Position\PositionId\Pure\FromInteger;
 use TG\Domain\Position\PositionName\FromPosition;
-use TG\Domain\RegistrationQuestion\RegistrationQuestion;
-use TG\Domain\RegistrationQuestion\RegistrationQuestionType\Impure\FromPure;
-use TG\Domain\RegistrationQuestion\RegistrationQuestionType\Impure\FromRegistrationQuestion as RegistrationQuestionType;
-use TG\Domain\RegistrationQuestion\RegistrationQuestionType\Pure\About;
-use TG\Domain\RegistrationQuestion\RegistrationQuestionType\Pure\Experience;
-use TG\Domain\RegistrationQuestion\RegistrationQuestionType\Pure\Position;
+use TG\Domain\RegistrationQuestion\Impure\RegistrationQuestion;
+use TG\Domain\RegistrationQuestion\Impure\RegistrationQuestionType\Impure\FromPure;
+use TG\Domain\RegistrationQuestion\Impure\RegistrationQuestionType\Impure\FromRegistrationQuestion as RegistrationQuestionType;
+use TG\Domain\RegistrationQuestion\Impure\RegistrationQuestionType\Pure\About;
+use TG\Domain\RegistrationQuestion\Impure\RegistrationQuestionType\Pure\Experience;
+use TG\Domain\RegistrationQuestion\Impure\RegistrationQuestionType\Pure\Position;
 use TG\Infrastructure\ImpureInteractions\ImpureValue;
 use TG\Infrastructure\ImpureInteractions\ImpureValue\Successful;
 use TG\Infrastructure\ImpureInteractions\PureValue\Present;
 use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
 use TG\Domain\TelegramBot\UserMessage\Pure\Skipped;
 
+/**
+ * @deprecated
+ */
 class FromRegistrationQuestion implements ReplyOptions
 {
     private $registrationQuestion;

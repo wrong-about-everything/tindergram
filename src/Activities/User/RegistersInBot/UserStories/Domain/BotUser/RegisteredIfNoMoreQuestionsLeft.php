@@ -6,8 +6,11 @@ namespace TG\Activities\User\RegistersInBot\UserStories\Domain\BotUser;
 
 use TG\Domain\BotUser\UserId\FromReadModelBotUser;
 use TG\Domain\BotUser\WriteModel\BotUser;
+use TG\Domain\BotUser\ReadModel\BotUser as ReadModelBotUser;
 use TG\Domain\BotUser\ReadModel\ByInternalTelegramUserId;
 use TG\Domain\BotUser\UserStatus\Pure\Registered;
+use TG\Domain\RegistrationQuestion\RegistrationQuestions\Impure\Unanswered;
+use TG\Domain\RegistrationQuestion\RegistrationQuestions\Pure\All;
 use TG\Infrastructure\ImpureInteractions\ImpureValue;
 use TG\Infrastructure\ImpureInteractions\ImpureValue\Successful;
 use TG\Infrastructure\ImpureInteractions\PureValue\Present;
@@ -40,7 +43,41 @@ class RegisteredIfNoMoreQuestionsLeft implements BotUser
 
     private function doValue(): ImpureValue
     {
-        $updatedUserResponse =
+        $botUser = new ByInternalTelegramUserId($this->internalTelegramUserId, $this->connection);
+
+        $unansweredQuestions = $this->unansweredQuestions($botUser);
+        if (!$unansweredQuestions->isSuccessful()) {
+            return $unansweredQuestions;
+        }
+        if (empty($unansweredQuestions->pure()->raw())) {
+            $registerResponse = $this->register();
+            if (!$registerResponse->isSuccessful()) {
+                return $registerResponse;
+            }
+        }
+
+        return
+            new Successful(
+                new Present(
+                    (new FromReadModelBotUser($botUser))
+                        ->value()
+                )
+            );
+    }
+
+    private function unansweredQuestions(ReadModelBotUser $botUser): ImpureValue
+    {
+        return
+            (new Unanswered(
+                new All(),
+                $botUser
+            ))
+                ->value();
+    }
+
+    private function register(): ImpureValue
+    {
+        return
             (new SingleMutating(
                 <<<q
 update bot_user
@@ -53,18 +90,5 @@ q
                 $this->connection
             ))
                 ->response();
-        if (!$updatedUserResponse->isSuccessful()) {
-            return $updatedUserResponse;
-        }
-
-        return
-            new Successful(
-                new Present(
-                    (new FromReadModelBotUser(
-                        new ByInternalTelegramUserId($this->internalTelegramUserId, $this->connection)
-                    ))
-                        ->value()
-                )
-            );
     }
 }

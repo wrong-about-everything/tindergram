@@ -11,7 +11,7 @@ use TG\Infrastructure\ImpureInteractions\Error;
  * Just in case:
  * Exceptions are bad for flow control.
  * This class is not intended for it. It is created ONLY for carrying the original context when short-circuiting took place.
- * See `TransactionalQueryFromMultipleQueries` class.
+ * For example, see `TransactionalQueryFromMultipleQueries` class.
  */
 class StateCarrying extends Exception
 {

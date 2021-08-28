@@ -23,7 +23,7 @@ class BotUser
     {
         $botUserInsertResponse =
             (new SingleMutatingQueryWithMultipleValueSets(
-                'insert into "bot_user" (id, first_name, last_name, telegram_id, telegram_handle, status) values (?, ?, ?, ?, ?, ?)',
+                'insert into "bot_user" (id, first_name, last_name, telegram_id, telegram_handle, status, preferences) values (?, ?, ?, ?, ?, ?, ?)',
                 array_map(
                     function (array $record) {
                         $values = array_merge($this->defaultValues(), $record);
@@ -33,7 +33,8 @@ class BotUser
                             $values['last_name'],
                             $values['telegram_id'],
                             $values['telegram_handle'],
-                            $values['status']
+                            $values['status'],
+                            json_encode($values['preferences'])
                         ];
                     },
                     $records
@@ -55,6 +56,7 @@ class BotUser
             'telegram_id' => 666,
             'telegram_handle' => '@vasya',
             'status' => (new Registered())->value(),
+            'preferences' => [],
         ];
     }
 }

@@ -9,14 +9,18 @@ use TG\Domain\BotUser\ReadModel\FromWriteModel;
 use TG\Domain\BotUser\UserStatus\Impure\FromBotUser;
 use TG\Domain\BotUser\UserStatus\Impure\FromPure;
 use TG\Domain\BotUser\UserStatus\Pure\Registered;
+use TG\Domain\RegistrationQuestion\Impure\NextRegistrationQuestion;
+use TG\Domain\RegistrationQuestionAnswer\RegistrationAnswerOptions\Impure\FromRegistrationQuestion;
+use TG\Domain\RegistrationQuestionAnswer\RegistrationAnswerOptions\Pure\FromImpure;
+use TG\Domain\TelegramBot\KeyboardButtons\KeyboardFromAnswerOptions;
 use TG\Infrastructure\Http\Transport\HttpTransport;
 use TG\Infrastructure\ImpureInteractions\ImpureValue;
 use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
 use TG\Domain\SentReplyToUser\SentReplyToUser;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId;
-use TG\Activities\User\RegistersInBot\Domain\Reply\NextRegistrationQuestionReplyToUser;
+use TG\Infrastructure\TelegramBot\SentReplyToUser\DefaultWithMarkup;
 
-class NextReplyToUserToUser implements SentReplyToUser
+class NextReplyToUser implements SentReplyToUser
 {
     private $telegramUserId;
     private $httpTransport;
@@ -35,9 +39,16 @@ class NextReplyToUserToUser implements SentReplyToUser
             return $this->congratulations();
         } else {
             return
-                (new NextRegistrationQuestionReplyToUser(
+                (new DefaultWithMarkup(
                     $this->telegramUserId,
-                    $this->connection,
+                    (new NextRegistrationQuestion($this->telegramUserId, $this->connection))->value()->pure()->raw(),
+                    new KeyboardFromAnswerOptions(
+                        new FromImpure(
+                            new FromRegistrationQuestion(
+                                new NextRegistrationQuestion($this->telegramUserId, $this->connection)
+                            )
+                        )
+                    ),
                     $this->httpTransport
                 ))
                     ->value();

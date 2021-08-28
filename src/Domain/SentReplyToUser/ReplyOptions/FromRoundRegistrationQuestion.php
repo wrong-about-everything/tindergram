@@ -17,6 +17,9 @@ use TG\Infrastructure\ImpureInteractions\ImpureValue\Successful;
 use TG\Infrastructure\ImpureInteractions\PureValue\Present;
 use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
 
+/**
+ * @deprecated
+ */
 class FromRoundRegistrationQuestion implements ReplyOptions
 {
     private $registrationQuestion;

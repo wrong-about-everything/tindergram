@@ -6,6 +6,9 @@ namespace TG\Domain\SentReplyToUser\ReplyOptions;
 
 use TG\Infrastructure\ImpureInteractions\ImpureValue;
 
+/**
+ * @deprecated
+ */
 interface ReplyOptions
 {
     public function value(): ImpureValue;

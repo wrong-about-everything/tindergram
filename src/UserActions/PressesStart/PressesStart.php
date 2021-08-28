@@ -58,14 +58,13 @@ class PressesStart extends Existent
         }
 
         if ($userStatus->equals(new ImpureUserStatusFromPure(new RegistrationIsInProgress()))) {
-            return
-                (new NonRegisteredUserPressesStart(
-                    $this->message,
-                    $this->httpTransport,
-                    $this->connection,
-                    $this->logs
-                ))
-                    ->response();
+            (new NonRegisteredUserPressesStart(
+                $this->message,
+                $this->httpTransport,
+                $this->connection,
+                $this->logs
+            ))
+                ->response();
         } elseif ($userStatus->equals(new ImpureUserStatusFromPure(new Registered()))) {
             $userIsAlreadyRegisteredValue = $this->replyInCaseOfAnyUncertainty()->value();
             if (!$userIsAlreadyRegisteredValue->isSuccessful()) {

@@ -4,8 +4,7 @@ declare(strict_types=1);
 
 namespace TG\Activities\User\RegistersInBot\UserStories\NonRegisteredUserPressesStart;
 
-use TG\Activities\User\RegistersInBot\UserStories\Domain\Reply\NextReplyToUserToUser;
-use TG\Domain\SentReplyToUser\InCaseOfAnyUncertainty;
+use TG\Activities\User\RegistersInBot\UserStories\Domain\Reply\NextReplyToUser;
 use TG\Infrastructure\Http\Transport\HttpTransport;
 use TG\Infrastructure\Logging\LogItem\FromNonSuccessfulImpureValue;
 use TG\Infrastructure\Logging\LogItem\InformationMessage;
@@ -17,7 +16,6 @@ use TG\Infrastructure\UserStory\Body\Emptie;
 use TG\Infrastructure\UserStory\Existent;
 use TG\Infrastructure\UserStory\Response;
 use TG\Infrastructure\UserStory\Response\Successful;
-use TG\Infrastructure\Uuid\FromString as UuidFromString;
 
 class NonRegisteredUserPressesStart extends Existent
 {
@@ -52,7 +50,7 @@ class NonRegisteredUserPressesStart extends Existent
     private function nextReply()
     {
         return
-            new NextReplyToUserToUser(
+            new NextReplyToUser(
                 new FromParsedTelegramMessage($this->message),
                 $this->httpTransport,
                 $this->connection

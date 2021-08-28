@@ -17,6 +17,9 @@ use TG\Infrastructure\TelegramBot\BotApiUrl;
 use TG\Infrastructure\TelegramBot\Method\SendMessage;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId;
 
+/**
+ * @deprecated
+ */
 class InCaseOfAnyUncertainty implements SentReplyToUser
 {
     private $telegramUserId;
