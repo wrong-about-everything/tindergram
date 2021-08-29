@@ -4,27 +4,32 @@ declare(strict_types=1);
 
 namespace TG\Activities\User\RegistersInBot\UserStories\AnswersRegistrationQuestion;
 
-use TG\Domain\SentReplyToUser\ReplyOptions\ReplyOptions;
-use TG\Domain\SentReplyToUser\ReplyOptions\FromRegistrationQuestion as AnswerOptionsFromRegistrationQuestion;
-use TG\Domain\RegistrationQuestion\Impure\NextRegistrationQuestion;
-use TG\Activities\User\RegistersInBot\UserStories\Domain\Reply\NextReplyToUser;
-use TG\Domain\RegistrationQuestion\Impure\RegistrationQuestion;
-use TG\Domain\SentReplyToUser\ValidationError;
+use TG\Activities\User\RegistersInBot\UserStories\AnswersRegistrationQuestion\Domain\BotUser\RegisteredIfNoMoreQuestionsLeft;
+use TG\Domain\BotUser\ReadModel\FromWriteModel;
+use TG\Domain\RegistrationAnswerOption\Multiple\Impure\FromRegistrationQuestion;
+use TG\Domain\RegistrationAnswerOption\Multiple\Pure\FromImpure;
+use TG\Domain\RegistrationQuestion\Single\Impure\NextRegistrationQuestion;
+use TG\Domain\RegistrationQuestion\Single\Impure\RegistrationQuestion;
+use TG\Domain\RegistrationQuestionAnswer\WriteModel\Persistent;
+use TG\Domain\TelegramBot\KeyboardButtons\KeyboardFromAnswerOptions;
 use TG\Infrastructure\Http\Transport\HttpTransport;
+use TG\Infrastructure\ImpureInteractions\ImpureValue;
 use TG\Infrastructure\Logging\LogItem\FromNonSuccessfulImpureValue;
 use TG\Infrastructure\Logging\LogItem\InformationMessage;
 use TG\Infrastructure\Logging\Logs;
 use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
-use TG\Domain\SentReplyToUser\Sorry;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\FromParsedTelegramMessage;
+use TG\Infrastructure\TelegramBot\MessageToUser\DoNotReplyWithCustomMessagePushTheButtonInstead;
+use TG\Infrastructure\TelegramBot\MessageToUser\Sorry;
+use TG\Infrastructure\TelegramBot\SentReplyToUser\DefaultWithKeyboard;
+use TG\Infrastructure\TelegramBot\SentReplyToUser\DefaultWithNoKeyboard;
+use TG\Infrastructure\TelegramBot\SentReplyToUser\SentReplyToUser;
 use TG\Infrastructure\TelegramBot\UserMessage\Pure\FromParsedTelegramMessage as UserReply;
 use TG\Infrastructure\TelegramBot\UserMessage\Pure\UserMessage;
 use TG\Infrastructure\UserStory\Body\Emptie;
 use TG\Infrastructure\UserStory\Existent;
 use TG\Infrastructure\UserStory\Response;
 use TG\Infrastructure\UserStory\Response\Successful;
-use TG\Infrastructure\Uuid\FromString as UuidFromString;
-use TG\Activities\User\RegistersInBot\UserStories\AnswersRegistrationQuestion\Domain\UserMessage\SavedAnswerToRegistrationQuestion;
 
 class AnswersRegistrationQuestion extends Existent
 {
@@ -46,8 +51,13 @@ class AnswersRegistrationQuestion extends Existent
         $this->logs->receive(new InformationMessage('User answers registration question scenario started.'));
 
         $currentlyAnsweredQuestion = $this->currentlyAnsweredQuestion();
+        if (!$currentlyAnsweredQuestion->value()->isSuccessful()) {
+            $this->logs->receive(new FromNonSuccessfulImpureValue($currentlyAnsweredQuestion->value()));
+            $this->sorry()->value();
+            return new Successful(new Emptie());
+        }
         if ($this->isInvalid($currentlyAnsweredQuestion, new UserReply($this->message))) {
-            $this->validationError(new AnswerOptionsFromRegistrationQuestion($currentlyAnsweredQuestion, $this->botId(), $this->connection))->value();
+            $this->validationError($currentlyAnsweredQuestion);
             return new Successful(new Emptie());
         }
 
@@ -58,7 +68,7 @@ class AnswersRegistrationQuestion extends Existent
             return new Successful(new Emptie());
         }
 
-        $nextReply = $this->nextReplyToUser()->value();
+        $nextReply = $this->nextReply()->value();
         if (!$nextReply->isSuccessful()) {
             $this->logs->receive(new FromNonSuccessfulImpureValue($nextReply));
             $this->sorry()->value();
@@ -79,42 +89,32 @@ class AnswersRegistrationQuestion extends Existent
             );
     }
 
-    private function validationError(ReplyOptions $answerOptions)
+    private function validationError(RegistrationQuestion $registrationQuestion): ImpureValue
     {
         return
-            new ValidationError(
-                $answerOptions,
+            (new DefaultWithKeyboard(
                 new FromParsedTelegramMessage($this->message),
-                new ByBotId(
-                    new FromUuid(new UuidFromString($this->botId)),
-                    $this->connection
+                new DoNotReplyWithCustomMessagePushTheButtonInstead(),
+                new KeyboardFromAnswerOptions(
+                    new FromImpure(
+                        new FromRegistrationQuestion($registrationQuestion)
+                    )
                 ),
                 $this->httpTransport
-            );
+            ))
+                ->value();
     }
 
     private function isInvalid(RegistrationQuestion $currentlyAnsweredQuestion, UserMessage $userReply): bool
     {
-        return
-            (
-                (new FromRegistrationQuestion($currentlyAnsweredQuestion))->equals(new FromPure(new Position()))
-                    &&
-                !(new PositionNameFromString($userReply->value()))->exists()
-            )
-                ||
-            (
-                (new FromRegistrationQuestion($currentlyAnsweredQuestion))->equals(new FromPure(new Experience()))
-                    &&
-                !(new FromString($userReply->value()))->exists()
-            );
+        return !(new FromRegistrationQuestion($currentlyAnsweredQuestion))->contain($userReply);
     }
 
     private function savedAnswer(RegistrationQuestion $currentlyAnsweredQuestion)
     {
         return
-            new SavedAnswerToRegistrationQuestion(
+            new Persistent(
                 new FromParsedTelegramMessage($this->message),
-                new FromUuid(new UuidFromString($this->botId)),
                 new UserReply($this->message),
                 $currentlyAnsweredQuestion,
                 $this->connection
@@ -124,22 +124,25 @@ class AnswersRegistrationQuestion extends Existent
     private function sorry()
     {
         return
-            new Sorry(
+            new DefaultWithNoKeyboard(
                 new FromParsedTelegramMessage($this->message),
-                new ByBotId(
-                    new FromUuid(new UuidFromString($this->botId)),
-                    $this->connection
-                ),
+                new Sorry(),
                 $this->httpTransport
             );
     }
 
-    private function nextReplyToUser()
+
+    private function nextReply(): SentReplyToUser
     {
         return
             new NextReplyToUser(
-                new FromParsedTelegramMessage($this->message),
-                new FromUuid(new UuidFromString($this->botId)),
+                new FromWriteModel(
+                    new RegisteredIfNoMoreQuestionsLeft(
+                        new FromParsedTelegramMessage($this->message),
+                        $this->connection
+                    ),
+                    $this->connection
+                ),
                 $this->httpTransport,
                 $this->connection
             );

@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace TG\Tests\Unit\UserActions\SendsArbitraryMessage;
 
-use Meringue\ISO8601DateTime\FromISO8601;
-use Meringue\ISO8601Interval\Floating\NDays;
-use Meringue\ISO8601Interval\Floating\OneDay;
-use Meringue\Timeline\Point\Now;
-use Meringue\Timeline\Point\Past;
 use PHPUnit\Framework\TestCase;
-use Ramsey\Uuid\Uuid;
+use TG\Domain\BotUser\Preference\Multiple\Impure\FromBotUser;
+use TG\Domain\BotUser\Preference\Single\Pure\Men as MenPreferenceId;
+use TG\Domain\BotUser\Preference\Single\Pure\PreferenceId;
+use TG\Domain\BotUser\ReadModel\ById;
 use TG\Domain\BotUser\ReadModel\ByInternalTelegramUserId;
+use TG\Domain\BotUser\UserStatus\Impure\FromPure;
 use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\ApplicationConnection;
 use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\RootConnection;
 use TG\Domain\BotUser\UserId\FromUuid as UserIdFromUuid;
@@ -21,6 +20,7 @@ use TG\Domain\BotUser\UserStatus\Impure\FromPure as ImpureUserStatusFromPure;
 use TG\Domain\BotUser\UserStatus\Pure\Registered;
 use TG\Domain\BotUser\UserStatus\Pure\RegistrationIsInProgress;
 use TG\Domain\BotUser\UserStatus\Pure\UserStatus;
+use TG\Domain\RegistrationAnswerOption\Single\Pure\WhatDoYouPrefer\Men;
 use TG\Infrastructure\Http\Request\Url\ParsedQuery\FromQuery;
 use TG\Infrastructure\Http\Request\Url\Query\FromUrl;
 use TG\Infrastructure\Http\Transport\HttpTransport;
@@ -37,27 +37,44 @@ use TG\UserActions\SendsArbitraryMessage\SendsArbitraryMessage;
 
 class UserRegistersInBotTest extends TestCase
 {
-    public function testWhenNewUserAnswersTheFirstQuestionThenHisAnswerIsPersistedAndHeSeesTheSecondQuestion()
+    public function testWhenNewUserAnswersTheFirstQuestionWithCustomTextInsteadOfPushingAButtonThenHeSeesValidationError()
     {
-        $this->markTestIncomplete();
-
         $connection = new ApplicationConnection();
-        $this->createBot($this->botId(), $this->availablePositionIds(), $connection);
-        $this->createTelegramUser($this->userId(), $this->telegramUserId(), $connection);
-        $this->createBotUser($this->botId(), $this->userId(), new RegistrationIsInProgress(), $connection);
-        $this->createRegistrationQuestion($this->firstRegistrationQuestionId(), new Position(), $this->botId(), 1, 'Какая у вас должность?', $connection);
-        $this->createRegistrationQuestion($this->secondRegistrationQuestionId(), new Experience(), $this->botId(), 2, 'А опыт?', $connection);
+        $this->createBotUser($this->userId(), $this->telegramUserId(), new RegistrationIsInProgress(), $connection);
         $transport = new Indifferent();
 
-        $response = $this->userReply((new ProductManagerName())->value(), $transport, $connection)->response();
+        $response = $this->userReply('What?', $transport, $connection)->response();
 
         $this->assertTrue($response->isSuccessful());
-        $this->assertUserRegistrationProgressUpdated($this->userId(), $this->firstRegistrationQuestionId(), $connection);
-        $this->assertPositionIs($this->telegramUserId(), $this->botId(), new ProductManager(), $connection);
         $this->assertCount(1, $transport->sentRequests());
         $this->assertEquals(
-            'А опыт?',
+            'К сожалению, мы пока не можем принять ответ в виде текста. Поэтому выберите, пожалуйста, один из вариантов ответа. Если ни один не подходит — напишите в @hey_sweetie_support_bot',
             (new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['text']
+        );
+        $this->assertEquals(
+            [['text' => 'Мужские'], ['text' => 'Женские']],
+            json_decode((new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['reply_markup'], true)['keyboard'][0]
+        );
+    }
+
+    public function testWhenNewUserAnswersTheFirstQuestionThenHisAnswerIsPersistedAndHeSeesTheSecondQuestion()
+    {
+        $connection = new ApplicationConnection();
+        $this->createBotUser($this->userId(), $this->telegramUserId(), new RegistrationIsInProgress(), $connection);
+        $transport = new Indifferent();
+
+        $response = $this->userReply((new Men())->value(), $transport, $connection)->response();
+
+        $this->assertTrue($response->isSuccessful());
+        $this->assertCount(1, $transport->sentRequests());
+        $this->assertUserHasPreferences($this->userId(), new MenPreferenceId(), $connection);
+        $this->assertEquals(
+            'Укажите свой пол',
+            (new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['text']
+        );
+        $this->assertEquals(
+            [['text' => 'Мужской'], ['text' => 'Женский']],
+            json_decode((new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['reply_markup'], true)['keyboard'][0]
         );
     }
 
@@ -152,6 +169,20 @@ class UserRegistersInBotTest extends TestCase
             ))
                 ->equals(
                     new ImpureUserStatusFromPure($userStatus)
+                )
+        );
+    }
+
+    private function assertUserHasPreferences(BotUserId $userId, PreferenceId $preferenceId, OpenConnection $connection)
+    {
+        $this->assertEquals(
+            [$preferenceId->value()],
+            (new FromBotUser(new ById($userId, $connection)))->value()->pure()->raw()
+        );
+        $this->assertTrue(
+            (new UserStatusFromBotUser(new ById($userId, $connection)))
+                ->equals(
+                    new FromPure(new RegistrationIsInProgress())
                 )
         );
     }
