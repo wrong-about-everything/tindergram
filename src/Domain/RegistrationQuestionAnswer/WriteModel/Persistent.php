@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace TG\Domain\RegistrationQuestionAnswer\WriteModel;
 
 use TG\Domain\BotUser\Preference\Single\Pure\FromWhatDoYouPreferQuestionOptionName;
-use TG\Domain\RegistrationAnswerOption\Single\Pure\WhatDoYouPrefer\FromString;
+use TG\Domain\BotUser\Preference\Single\Pure\FromWhatIsYourGenderQuestionOptionName;
+use TG\Domain\RegistrationAnswerOption\Single\Pure\WhatDoYouPrefer\FromString as WhatDoYouPreferOptionNameFromString;
+use TG\Domain\RegistrationAnswerOption\Single\Pure\WhatIsYourGender\FromString as WhatIsYourGenderOptionNameFromString;
 use TG\Domain\RegistrationQuestion\Single\Impure\RegistrationQuestion;
 use TG\Domain\RegistrationQuestion\Single\Pure\FromImpure;
 use TG\Domain\RegistrationQuestion\Single\RegistrationQuestionId\Pure\FromRegistrationQuestion;
@@ -46,7 +48,7 @@ class Persistent implements RegistrationQuestionAnswer
                         [
                             json_encode([
                                 (new FromWhatDoYouPreferQuestionOptionName(
-                                    new FromString($this->userReply->value())
+                                    new WhatDoYouPreferOptionNameFromString($this->userReply->value())
                                 ))
                                     ->value()
                             ]),
@@ -57,6 +59,19 @@ class Persistent implements RegistrationQuestionAnswer
                         ->response();
 
             case (new WhatIsYourGenderId())->value():
+                return
+                    (new SingleMutating(
+                        'update bot_user set gender = ? where telegram_id = ?',
+                        [
+                            (new FromWhatIsYourGenderQuestionOptionName(
+                                new WhatIsYourGenderOptionNameFromString($this->userReply->value())
+                            ))
+                                ->value(),
+                            $this->telegramUserId->value()
+                        ],
+                        $this->connection
+                    ))
+                        ->response();
         }
     }
 }

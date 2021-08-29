@@ -11,6 +11,10 @@ use TG\Domain\BotUser\Preference\Single\Pure\PreferenceId;
 use TG\Domain\BotUser\ReadModel\ById;
 use TG\Domain\BotUser\ReadModel\ByInternalTelegramUserId;
 use TG\Domain\BotUser\UserStatus\Impure\FromPure;
+use TG\Domain\Gender\Impure\FromBotUser as BotUserGender;
+use TG\Domain\Gender\Impure\FromPure as ImpureGender;
+use TG\Domain\Gender\Pure\Gender;
+use TG\Domain\Gender\Pure\Male as MaleGender;
 use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\ApplicationConnection;
 use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\RootConnection;
 use TG\Domain\BotUser\UserId\FromUuid as UserIdFromUuid;
@@ -21,6 +25,7 @@ use TG\Domain\BotUser\UserStatus\Pure\Registered;
 use TG\Domain\BotUser\UserStatus\Pure\RegistrationIsInProgress;
 use TG\Domain\BotUser\UserStatus\Pure\UserStatus;
 use TG\Domain\RegistrationAnswerOption\Single\Pure\WhatDoYouPrefer\Men;
+use TG\Domain\RegistrationAnswerOption\Single\Pure\WhatIsYourGender\Male;
 use TG\Infrastructure\Http\Request\Url\ParsedQuery\FromQuery;
 use TG\Infrastructure\Http\Request\Url\Query\FromUrl;
 use TG\Infrastructure\Http\Transport\HttpTransport;
@@ -78,29 +83,36 @@ class UserRegistersInBotTest extends TestCase
         );
     }
 
-    public function testWhenExistingButNotYetRegisteredUserAnswersTheLastQuestionThenHeBecomesRegisteredAndSeesCongratulations()
+    public function testWhenNewUserAnswersTheSecondQuestionThenHisAnswerIsPersistedAndHeSeesThePhotosToBeShawnToOtherUsers()
     {
-        $this->markTestIncomplete();
-
         $connection = new ApplicationConnection();
-        $this->createBot($this->botId(), $this->availablePositionIds(), $connection);
-        $this->createTelegramUser($this->userId(), $this->telegramUserId(), $connection);
-        $this->createBotUser($this->botId(), $this->userId(), new RegistrationIsInProgress(), $connection);
-        $this->createRegistrationQuestion($this->firstRegistrationQuestionId(), new Position(), $this->botId(), 1, 'Какая у вас должность?', $connection);
-        $this->createRegistrationQuestion($this->secondRegistrationQuestionId(), new Experience(), $this->botId(), 2, 'А опыт?', $connection);
-        $this->createRegistrationProgress($this->firstRegistrationQuestionId(), $this->userId(), $connection);
+        $this->createBotUser($this->userId(), $this->telegramUserId(), new RegistrationIsInProgress(), $connection);
         $transport = new Indifferent();
 
-        $response = $this->userReply((new LessThanAYearName())->value(), $transport, $connection)->response();
+        $this->userReply((new Men())->value(), $transport, $connection)->response();
 
-        $this->assertTrue($response->isSuccessful());
-        $this->assertUserRegistrationProgressUpdated($this->userId(), $this->secondRegistrationQuestionId(), $connection);
-        $this->assertExperienceIs($this->telegramUserId(), $this->botId(), new LessThanAYear(), $connection);
-        $this->assertUserIs($this->telegramUserId(), $this->botId(), new Registered(), $connection);
         $this->assertCount(1, $transport->sentRequests());
+        $this->assertUserHasPreferences($this->userId(), new MenPreferenceId(), $connection);
         $this->assertEquals(
-            'Поздравляю, вы зарегистрировались! Если хотите что-то спросить или уточнить, смело пишите на @hey_sweetie_support_bot',
+            'Укажите свой пол',
             (new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['text']
+        );
+        $this->assertEquals(
+            [['text' => 'Мужской'], ['text' => 'Женский']],
+            json_decode((new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['reply_markup'], true)['keyboard'][0]
+        );
+
+        $this->userReply((new Male())->value(), $transport, $connection)->response();
+
+        $this->assertCount(2, $transport->sentRequests());
+        $this->assertUserHasGender($this->userId(), new MaleGender(), $connection);
+        $this->assertEquals(
+            'Вот фотачки, которые увидят другие пользователи',
+            (new FromQuery(new FromUrl($transport->sentRequests()[1]->url())))->value()['text']
+        );
+        $this->assertEquals(
+            [['text' => 'Зарегистрироваться']],
+            json_decode((new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['reply_markup'], true)['keyboard'][1]
         );
     }
 
@@ -161,23 +173,27 @@ class UserRegistersInBotTest extends TestCase
             );
     }
 
-    private function assertUserIs(InternalTelegramUserId $telegramUserId, BotId $botId, UserStatus $userStatus, OpenConnection $connection)
-    {
-        $this->assertTrue(
-            (new UserStatusFromBotUser(
-                new ByInternalTelegramUserId($telegramUserId, $botId, $connection)
-            ))
-                ->equals(
-                    new ImpureUserStatusFromPure($userStatus)
-                )
-        );
-    }
-
     private function assertUserHasPreferences(BotUserId $userId, PreferenceId $preferenceId, OpenConnection $connection)
     {
         $this->assertEquals(
             [$preferenceId->value()],
             (new FromBotUser(new ById($userId, $connection)))->value()->pure()->raw()
+        );
+        $this->assertTrue(
+            (new UserStatusFromBotUser(new ById($userId, $connection)))
+                ->equals(
+                    new FromPure(new RegistrationIsInProgress())
+                )
+        );
+    }
+
+    private function assertUserHasGender(BotUserId $userId, Gender $gender, OpenConnection $connection)
+    {
+        $this->assertTrue(
+            (new BotUserGender(new ById($userId, $connection)))
+                ->equals(
+                    new ImpureGender($gender)
+                )
         );
         $this->assertTrue(
             (new UserStatusFromBotUser(new ById($userId, $connection)))
