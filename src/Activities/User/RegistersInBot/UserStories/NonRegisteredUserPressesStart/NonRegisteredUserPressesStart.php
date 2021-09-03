@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace TG\Activities\User\RegistersInBot\UserStories\NonRegisteredUserPressesStart;
 
-use TG\Activities\User\RegistersInBot\Domain\Reply\NextRegistrationQuestionReply;
+use TG\Activities\User\RegistersInBot\Domain\Reply\NextRegistrationQuestionSentToUser;
 use TG\Infrastructure\Http\Transport\HttpTransport;
 use TG\Infrastructure\ImpureInteractions\ImpureValue;
 use TG\Infrastructure\Logging\LogItem\FromNonSuccessfulImpureValue;
@@ -53,7 +53,7 @@ class NonRegisteredUserPressesStart extends Existent
     private function nextReply(): ImpureValue
     {
         return
-            (new NextRegistrationQuestionReply(
+            (new NextRegistrationQuestionSentToUser(
                 new FromParsedTelegramMessage($this->message),
                 $this->connection,
                 $this->httpTransport

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace TG\Activities\User\RegistersInBot\UserStories\AnswersRegistrationQuestion;
 
-use TG\Activities\User\RegistersInBot\Domain\Reply\NextRegistrationQuestionReply;
+use TG\Activities\User\RegistersInBot\Domain\Reply\NextRegistrationQuestionSentToUser;
 use TG\Domain\BotUser\ReadModel\BotUser;
 use TG\Domain\BotUser\UserStatus\Impure\FromBotUser;
 use TG\Domain\BotUser\UserStatus\Impure\FromPure;
@@ -41,7 +41,7 @@ class NextReplyToUser implements SentReplyToUser
             return $this->congratulations();
         } else {
             return
-                (new NextRegistrationQuestionReply(
+                (new NextRegistrationQuestionSentToUser(
                     new PureInternalTelegramUserId(new InternalTelegramUserId($this->botUser)),
                     $this->connection,
                     $this->httpTransport

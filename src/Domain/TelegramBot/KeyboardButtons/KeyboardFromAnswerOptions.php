@@ -18,8 +18,19 @@ class KeyboardFromAnswerOptions implements KeyboardButtons
 
     public function value(): array
     {
-        return [
-            [['text' => $this->options->value()[0]], ['text' => $this->options->value()[1]]]
-        ];
+        return
+            array_reduce(
+                $this->options->value(),
+                function (array $keyboard, string $currentText) {
+                    if (empty($keyboard) || $keyboard[count($keyboard) - 1] === 2) {
+                        $keyboard[] = [['text' => $currentText]];
+                    } else {
+                        $keyboard[count($keyboard) - 1][] = ['text' => $currentText];
+                    }
+
+                    return $keyboard;
+                },
+                []
+            );
     }
 }

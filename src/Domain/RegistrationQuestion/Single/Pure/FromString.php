@@ -44,6 +44,7 @@ class FromString implements RegistrationQuestion
         return [
             (new WhatDoYouPrefer())->value() => new WhatDoYouPrefer(),
             (new WhatIsYourGender())->value() => new WhatIsYourGender(),
+            (new AreYouReadyToRegister())->value() => new AreYouReadyToRegister(),
         ][$this->registrationQuestionString]
             ??
         new NonExistent($this->registrationQuestionString);

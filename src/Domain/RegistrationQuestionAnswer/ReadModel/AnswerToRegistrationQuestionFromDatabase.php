@@ -7,8 +7,13 @@ namespace TG\Domain\RegistrationQuestionAnswer\ReadModel;
 use Exception;
 use TG\Domain\BotUser\Preference\Multiple\Impure\FromBotUser;
 use TG\Domain\BotUser\ReadModel\BotUser;
+use TG\Domain\BotUser\UserStatus\Impure\FromBotUser as StatusFromBotUser;
+use TG\Domain\BotUser\UserStatus\Impure\FromPure;
+use TG\Domain\BotUser\UserStatus\Pure\Registered;
+use TG\Domain\BotUser\UserStatus\Pure\RegistrationIsInProgress;
 use TG\Domain\Gender\Impure\FromBotUser as UserGender;
 use TG\Domain\RegistrationQuestion\Single\Pure\RegistrationQuestion;
+use TG\Domain\RegistrationQuestion\Single\RegistrationQuestionId\Pure\AreYouReadyToRegisterId;
 use TG\Domain\RegistrationQuestion\Single\RegistrationQuestionId\Pure\FromRegistrationQuestion;
 use TG\Domain\RegistrationQuestion\Single\RegistrationQuestionId\Pure\WhatDoYouPreferId;
 use TG\Domain\RegistrationQuestion\Single\RegistrationQuestionId\Pure\WhatIsYourGenderId;
@@ -65,6 +70,12 @@ class AnswerToRegistrationQuestionFromDatabase implements RegistrationQuestionAn
                                     ? new NonExistent()
                                     : new Existent()
                             );
+
+            case (new AreYouReadyToRegisterId())->value():
+                return
+                    (new StatusFromBotUser($this->botUser))->equals(new FromPure(new RegistrationIsInProgress()))
+                        ? new NonExistent()
+                        : new Existent();
         }
 
         throw

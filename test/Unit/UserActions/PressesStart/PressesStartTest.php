@@ -122,7 +122,7 @@ class PressesStartTest extends TestCase
         $this->assertUserExists($this->telegramUserId(), $connection);
         $this->assertCount(1, $transport->sentRequests());
         $this->assertEquals(
-            'Хотите что-то уточнить? Смело пишите на @hey_sweetie_support_bot!',
+            'Хотите что-то уточнить? Смело пишите на @flurr_support_bot!',
             (new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['text']
         );
 
@@ -132,7 +132,7 @@ class PressesStartTest extends TestCase
         $this->assertUserExists($this->telegramUserId(), $connection);
         $this->assertCount(2, $transport->sentRequests());
         $this->assertEquals(
-            'Хотите что-то уточнить? Смело пишите на @hey_sweetie_support_bot!',
+            'Хотите что-то уточнить? Смело пишите на @flurr_support_bot!',
             (new FromQuery(new FromUrl($transport->sentRequests()[1]->url())))->value()['text']
         );
     }
@@ -159,7 +159,7 @@ class PressesStartTest extends TestCase
         $this->assertUserExists($this->telegramUserId(), $connection);
         $this->assertCount(1, $transport->sentRequests());
         $this->assertEquals(
-            'Хотите что-то уточнить? Смело пишите на @hey_sweetie_support_bot!',
+            'Хотите что-то уточнить? Смело пишите на @flurr_support_bot!',
             (new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['text']
         );
     }

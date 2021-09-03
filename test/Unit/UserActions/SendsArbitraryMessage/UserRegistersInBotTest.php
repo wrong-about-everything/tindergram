@@ -30,6 +30,7 @@ use TG\Infrastructure\Http\Request\Url\ParsedQuery\FromQuery;
 use TG\Infrastructure\Http\Request\Url\Query\FromUrl;
 use TG\Infrastructure\Http\Transport\HttpTransport;
 use TG\Infrastructure\Http\Transport\Indifferent;
+use TG\Infrastructure\Http\Transport\RegistrationTransport;
 use TG\Infrastructure\Logging\Logs\DevNull;
 use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\FromInteger;
@@ -53,7 +54,7 @@ class UserRegistersInBotTest extends TestCase
         $this->assertTrue($response->isSuccessful());
         $this->assertCount(1, $transport->sentRequests());
         $this->assertEquals(
-            'К сожалению, мы пока не можем принять ответ в виде текста. Поэтому выберите, пожалуйста, один из вариантов ответа. Если ни один не подходит — напишите в @hey_sweetie_support_bot',
+            'К сожалению, мы пока не можем принять ответ в виде текста. Поэтому выберите, пожалуйста, один из вариантов ответа. Если ни один не подходит — напишите в @flurr_support_bot',
             (new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['text']
         );
         $this->assertEquals(
@@ -87,7 +88,7 @@ class UserRegistersInBotTest extends TestCase
     {
         $connection = new ApplicationConnection();
         $this->createBotUser($this->userId(), $this->telegramUserId(), new RegistrationIsInProgress(), $connection);
-        $transport = new Indifferent();
+        $transport = new RegistrationTransport();
 
         $this->userReply((new Men())->value(), $transport, $connection)->response();
 
@@ -104,15 +105,19 @@ class UserRegistersInBotTest extends TestCase
 
         $this->userReply((new Male())->value(), $transport, $connection)->response();
 
-        $this->assertCount(2, $transport->sentRequests());
         $this->assertUserHasGender($this->userId(), new MaleGender(), $connection);
         $this->assertEquals(
-            'Вот фотачки, которые увидят другие пользователи',
-            (new FromQuery(new FromUrl($transport->sentRequests()[1]->url())))->value()['text']
+            <<<t
+Вот фотографии, которые увидят другие пользователи. Все они берутся из ваших аватарок, бот их не хранит. Поэтому если вы хотите, чтобы какие-то фото никто не увидел, просто удалите их через сам telegram. Сразу после этого, эти фото пропадут из вашего профиля и их никто не увидит.
+
+Если вас что-то беспокоит, вы всегда можете задать любые вопросы в @flurr_support_bot.
+t
+            ,
+            json_decode((new FromQuery(new FromUrl($transport->sentRequests()[4]->url())))->value()['media'], true)[0]['caption']
         );
         $this->assertEquals(
             [['text' => 'Зарегистрироваться']],
-            json_decode((new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['reply_markup'], true)['keyboard'][1]
+            json_decode((new FromQuery(new FromUrl($transport->sentRequests()[5]->url())))->value()['reply_markup'], true)['keyboard'][0]
         );
     }
 
@@ -127,7 +132,7 @@ class UserRegistersInBotTest extends TestCase
         $this->assertTrue($response->isSuccessful());
         $this->assertCount(1, $transport->sentRequests());
         $this->assertEquals(
-            'Хотите что-то уточнить? Смело пишите на @hey_sweetie_support_bot!',
+            'Хотите что-то уточнить? Смело пишите на @flurr_support_bot!',
             (new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['text']
         );
     }

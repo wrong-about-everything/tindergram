@@ -42,7 +42,7 @@ class InCaseOfAnyUncertainty implements SentReplyToUser
                             new SendMessage(),
                             new FromArray([
                                 'chat_id' => $this->telegramUserId->value(),
-                                'text' => 'Хотите что-то уточнить? Смело пишите на @hey_sweetie_support_bot!',
+                                'text' => 'Хотите что-то уточнить? Смело пишите на @flurr_support_bot!',
                             ])
                         ),
                         [],

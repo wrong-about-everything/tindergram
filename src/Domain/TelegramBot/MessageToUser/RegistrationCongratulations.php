@@ -10,6 +10,6 @@ class RegistrationCongratulations implements MessageToUser
 {
     public function value(): string
     {
-        return 'Поздравляю, вы зарегистрировались! Если хотите что-то спросить или уточнить, смело пишите на @hey_sweetie_support_bot';
+        return 'Поздравляю, вы зарегистрировались! Если хотите что-то спросить или уточнить, смело пишите на @flurr_support_bot';
     }
 }
