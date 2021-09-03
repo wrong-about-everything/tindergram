@@ -10,7 +10,7 @@ use TG\Domain\BotUser\ReadModel\BotUser as ReadModelBotUser;
 use TG\Domain\BotUser\ReadModel\ByInternalTelegramUserId;
 use TG\Domain\BotUser\UserStatus\Pure\Registered;
 use TG\Domain\RegistrationQuestion\Multiple\Impure\Unanswered;
-use TG\Domain\RegistrationQuestion\Multiple\Pure\All;
+use TG\Domain\RegistrationQuestion\Multiple\Pure\AllQuestions;
 use TG\Infrastructure\ImpureInteractions\ImpureValue;
 use TG\Infrastructure\ImpureInteractions\ImpureValue\Successful;
 use TG\Infrastructure\ImpureInteractions\PureValue\Present;
@@ -69,7 +69,7 @@ class RegisteredIfNoMoreQuestionsLeft implements BotUser
     {
         return
             (new Unanswered(
-                new All(),
+                new AllQuestions(),
                 $botUser
             ))
                 ->value();

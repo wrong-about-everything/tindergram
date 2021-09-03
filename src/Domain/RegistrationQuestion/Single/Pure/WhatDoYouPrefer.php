@@ -6,9 +6,9 @@ namespace TG\Domain\RegistrationQuestion\Single\Pure;
 
 class WhatDoYouPrefer implements RegistrationQuestion
 {
-    public function value(): string
+    public function id(): string
     {
-        return 'Какие аккаунты вам показывать?';
+        return '5dc1cca5-0d51-4e26-b46c-6f1251afb2b3';
     }
 
     public function ordinalNumber(): int

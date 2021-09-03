@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace TG\Domain\RegistrationQuestion\Single\Pure;
 
-class FromString implements RegistrationQuestion
+class ById implements RegistrationQuestion
 {
     private $registrationQuestionString;
     private $concrete;
 
-    public function __construct(string $registrationQuestionString)
+    public function __construct(string $registrationQuestionId)
     {
-        $this->registrationQuestionString = $registrationQuestionString;
+        $this->registrationQuestionString = $registrationQuestionId;
         $this->concrete = null;
     }
 
-    public function value(): string
+    public function id(): string
     {
-        return $this->concrete()->value();
+        return $this->concrete()->id();
     }
 
     public function ordinalNumber(): int
@@ -42,11 +42,11 @@ class FromString implements RegistrationQuestion
     private function doConcrete(): RegistrationQuestion
     {
         return [
-            (new WhatDoYouPrefer())->value() => new WhatDoYouPrefer(),
-            (new WhatIsYourGender())->value() => new WhatIsYourGender(),
-            (new AreYouReadyToRegister())->value() => new AreYouReadyToRegister(),
+            (new WhatDoYouPrefer())->id() => new WhatDoYouPrefer(),
+            (new WhatIsYourGender())->id() => new WhatIsYourGender(),
+            (new AreYouReadyToRegister())->id() => new AreYouReadyToRegister(),
         ][$this->registrationQuestionString]
             ??
-        new NonExistent($this->registrationQuestionString);
+        new NonExistentWithId($this->registrationQuestionString);
     }
 }

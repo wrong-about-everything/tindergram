@@ -8,21 +8,14 @@ use Exception;
 
 class NonExistent implements RegistrationQuestion
 {
-    private $nonExistentRegistrationQuestionString;
-
-    public function __construct(string $nonExistentRegistrationQuestionString)
+    public function id(): string
     {
-        $this->nonExistentRegistrationQuestionString = $nonExistentRegistrationQuestionString;
-    }
-
-    public function value(): string
-    {
-        throw new Exception(sprintf('Question %s is unknown', $this->nonExistentRegistrationQuestionString));
+        throw new Exception('Question does not exist');
     }
 
     public function ordinalNumber(): int
     {
-        throw new Exception(sprintf('Question %s is unknown', $this->nonExistentRegistrationQuestionString));
+        throw new Exception('Question does not eixist');
     }
 
     public function exists(): bool

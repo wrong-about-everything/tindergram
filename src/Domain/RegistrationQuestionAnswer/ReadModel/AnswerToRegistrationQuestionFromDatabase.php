@@ -9,14 +9,12 @@ use TG\Domain\BotUser\Preference\Multiple\Impure\FromBotUser;
 use TG\Domain\BotUser\ReadModel\BotUser;
 use TG\Domain\BotUser\UserStatus\Impure\FromBotUser as StatusFromBotUser;
 use TG\Domain\BotUser\UserStatus\Impure\FromPure;
-use TG\Domain\BotUser\UserStatus\Pure\Registered;
 use TG\Domain\BotUser\UserStatus\Pure\RegistrationIsInProgress;
 use TG\Domain\Gender\Impure\FromBotUser as UserGender;
+use TG\Domain\RegistrationQuestion\Single\Pure\AreYouReadyToRegister;
 use TG\Domain\RegistrationQuestion\Single\Pure\RegistrationQuestion;
-use TG\Domain\RegistrationQuestion\Single\RegistrationQuestionId\Pure\AreYouReadyToRegisterId;
-use TG\Domain\RegistrationQuestion\Single\RegistrationQuestionId\Pure\FromRegistrationQuestion;
-use TG\Domain\RegistrationQuestion\Single\RegistrationQuestionId\Pure\WhatDoYouPreferId;
-use TG\Domain\RegistrationQuestion\Single\RegistrationQuestionId\Pure\WhatIsYourGenderId;
+use TG\Domain\RegistrationQuestion\Single\Pure\WhatDoYouPrefer;
+use TG\Domain\RegistrationQuestion\Single\Pure\WhatIsYourGender;
 use TG\Infrastructure\ImpureInteractions\ImpureValue;
 
 class AnswerToRegistrationQuestionFromDatabase implements RegistrationQuestionAnswer
@@ -48,8 +46,8 @@ class AnswerToRegistrationQuestionFromDatabase implements RegistrationQuestionAn
 
     private function doConcrete(): RegistrationQuestionAnswer
     {
-        switch ((new FromRegistrationQuestion($this->registrationQuestion))->value()) {
-            case (new WhatDoYouPreferId())->value():
+        switch ($this->registrationQuestion->id()) {
+            case (new WhatDoYouPrefer())->id():
                 return
                     !(new FromBotUser($this->botUser))->value()->isSuccessful()
                         ? new NonSuccessful((new FromBotUser($this->botUser))->value())
@@ -60,7 +58,7 @@ class AnswerToRegistrationQuestionFromDatabase implements RegistrationQuestionAn
                                     : new Existent()
                             );
 
-            case (new WhatIsYourGenderId())->value():
+            case (new WhatIsYourGender())->id():
                 return
                     !(new UserGender($this->botUser))->exists()->isSuccessful()
                         ? new NonSuccessful((new UserGender($this->botUser))->value())
@@ -71,7 +69,7 @@ class AnswerToRegistrationQuestionFromDatabase implements RegistrationQuestionAn
                                     : new Existent()
                             );
 
-            case (new AreYouReadyToRegisterId())->value():
+            case (new AreYouReadyToRegister())->id():
                 return
                     (new StatusFromBotUser($this->botUser))->equals(new FromPure(new RegistrationIsInProgress()))
                         ? new NonExistent()
@@ -82,7 +80,7 @@ class AnswerToRegistrationQuestionFromDatabase implements RegistrationQuestionAn
             new Exception(
                 sprintf(
                     'Unknown question id: %s',
-                    (new FromRegistrationQuestion($this->registrationQuestion))->value()
+                    $this->registrationQuestion->id()
                 )
             );
     }

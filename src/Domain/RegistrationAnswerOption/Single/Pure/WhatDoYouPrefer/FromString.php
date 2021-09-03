@@ -17,7 +17,7 @@ class FromString extends WhatDoYouPreferOptionName
     public function __construct(string $whatDoYouPreferOptionName)
     {
         if (!(new FromRegistrationQuestion(new FromPure(new WhatDoYouPrefer())))->contain(new UserMessage($whatDoYouPreferOptionName))) {
-            throw new Exception(sprintf('У вопроса "%s" нет варианта ответа "%s"', (new WhatDoYouPrefer())->value(), $whatDoYouPreferOptionName));
+            throw new Exception(sprintf('У вопроса "%s" нет варианта ответа "%s"', (new WhatDoYouPrefer())->id(), $whatDoYouPreferOptionName));
         }
 
         $this->whatDoYouPreferOptionName = $whatDoYouPreferOptionName;

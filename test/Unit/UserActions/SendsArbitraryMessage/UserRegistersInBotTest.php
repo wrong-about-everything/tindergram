@@ -24,18 +24,23 @@ use TG\Domain\BotUser\UserStatus\Impure\FromPure as ImpureUserStatusFromPure;
 use TG\Domain\BotUser\UserStatus\Pure\Registered;
 use TG\Domain\BotUser\UserStatus\Pure\RegistrationIsInProgress;
 use TG\Domain\BotUser\UserStatus\Pure\UserStatus;
+use TG\Domain\RegistrationAnswerOption\Single\Pure\AreYouReadyToRegister\Register;
 use TG\Domain\RegistrationAnswerOption\Single\Pure\WhatDoYouPrefer\Men;
 use TG\Domain\RegistrationAnswerOption\Single\Pure\WhatIsYourGender\Male;
 use TG\Infrastructure\Http\Request\Url\ParsedQuery\FromQuery;
 use TG\Infrastructure\Http\Request\Url\Query\FromUrl;
 use TG\Infrastructure\Http\Transport\HttpTransport;
 use TG\Infrastructure\Http\Transport\Indifferent;
-use TG\Infrastructure\Http\Transport\RegistrationTransport;
+use TG\Infrastructure\Http\Transport\TransportForUserRegistrationWithoutAvatars;
+use TG\Infrastructure\Http\Transport\TransportForUserRegistrationWithTwoAvatars;
+use TG\Infrastructure\Logging\LogId;
 use TG\Infrastructure\Logging\Logs\DevNull;
+use TG\Infrastructure\Logging\Logs\StdOut;
 use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\FromInteger;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId;
 use TG\Infrastructure\Uuid\FromString;
+use TG\Infrastructure\Uuid\RandomUUID;
 use TG\Tests\Infrastructure\Environment\Reset;
 use TG\Tests\Infrastructure\Stub\Table\BotUser;
 use TG\Tests\Infrastructure\Stub\TelegramMessage\UserMessage;
@@ -63,32 +68,11 @@ class UserRegistersInBotTest extends TestCase
         );
     }
 
-    public function testWhenNewUserAnswersTheFirstQuestionThenHisAnswerIsPersistedAndHeSeesTheSecondQuestion()
+    public function testNewUserWithTwoAvatarsRegisters()
     {
         $connection = new ApplicationConnection();
         $this->createBotUser($this->userId(), $this->telegramUserId(), new RegistrationIsInProgress(), $connection);
-        $transport = new Indifferent();
-
-        $response = $this->userReply((new Men())->value(), $transport, $connection)->response();
-
-        $this->assertTrue($response->isSuccessful());
-        $this->assertCount(1, $transport->sentRequests());
-        $this->assertUserHasPreferences($this->userId(), new MenPreferenceId(), $connection);
-        $this->assertEquals(
-            'Укажите свой пол',
-            (new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['text']
-        );
-        $this->assertEquals(
-            [['text' => 'Мужской'], ['text' => 'Женский']],
-            json_decode((new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['reply_markup'], true)['keyboard'][0]
-        );
-    }
-
-    public function testWhenNewUserAnswersTheSecondQuestionThenHisAnswerIsPersistedAndHeSeesThePhotosToBeShawnToOtherUsers()
-    {
-        $connection = new ApplicationConnection();
-        $this->createBotUser($this->userId(), $this->telegramUserId(), new RegistrationIsInProgress(), $connection);
-        $transport = new RegistrationTransport();
+        $transport = new TransportForUserRegistrationWithTwoAvatars();
 
         $this->userReply((new Men())->value(), $transport, $connection)->response();
 
@@ -108,7 +92,8 @@ class UserRegistersInBotTest extends TestCase
         $this->assertUserHasGender($this->userId(), new MaleGender(), $connection);
         $this->assertEquals(
             <<<t
-Вот фотографии, которые увидят другие пользователи. Все они берутся из ваших аватарок, бот их не хранит. Поэтому если вы хотите, чтобы какие-то фото никто не увидел, просто удалите их через сам telegram. Сразу после этого, эти фото пропадут из вашего профиля и их никто не увидит.
+Вот фотографии, которые увидят другие пользователи.
+Бот всегда берёт первые пять аватарок из telegram и показывает другим пользователям. Сам он эти фото не хранит. Поэтому, если вы удалите какую-то аватарку в самом telegram, бот перестанет её видеть и не сможет никому показывать. А если загрузите новую аватарку, бот её сразу же увидит и её будут видеть другие пользователи.
 
 Если вас что-то беспокоит, вы всегда можете задать любые вопросы в @flurr_support_bot.
 t
@@ -118,6 +103,63 @@ t
         $this->assertEquals(
             [['text' => 'Зарегистрироваться']],
             json_decode((new FromQuery(new FromUrl($transport->sentRequests()[5]->url())))->value()['reply_markup'], true)['keyboard'][0]
+        );
+
+        $this->userReply((new Register())->value(), $transport, $connection)->response();
+
+        $this->assertUserIsRegistered($this->userId(), $connection);
+        $this->assertCount(7, $transport->sentRequests());
+        $this->assertEquals(
+            'Поздравляю, вы зарегистрировались! Если хотите что-то спросить или уточнить, смело пишите на @flurr_support_bot',
+            (new FromQuery(new FromUrl($transport->sentRequests()[6]->url())))->value()['text']
+        );
+    }
+
+    public function testNewUserWithoutAvatarsRegisters()
+    {
+        $connection = new ApplicationConnection();
+        $this->createBotUser($this->userId(), $this->telegramUserId(), new RegistrationIsInProgress(), $connection);
+        $transport = new TransportForUserRegistrationWithoutAvatars();
+
+        $this->userReply((new Men())->value(), $transport, $connection)->response();
+
+        $this->assertCount(1, $transport->sentRequests());
+        $this->assertUserHasPreferences($this->userId(), new MenPreferenceId(), $connection);
+        $this->assertEquals(
+            'Укажите свой пол',
+            (new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['text']
+        );
+        $this->assertEquals(
+            [['text' => 'Мужской'], ['text' => 'Женский']],
+            json_decode((new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['reply_markup'], true)['keyboard'][0]
+        );
+
+        $this->userReply((new Male())->value(), $transport, $connection)->response();
+
+        $this->assertUserHasGender($this->userId(), new MaleGender(), $connection);
+        $this->assertEquals(
+            <<<t
+Бот всегда берёт первые пять аватарок из telegram и показывает другим пользователям. Сам он эти фото не хранит. Поэтому, если вы удалите какую-то аватарку в самом telegram, бот перестанет её видеть и не сможет никому показывать. А если загрузите новую аватарку, бот её сразу же увидит и её будут видеть другие пользователи.
+
+У вас в профиле telegram пока нет ни одного фото. Можете пока зарегистрироваться, а как будете готовы -- просто загрузите аватарку в telegram.
+
+Если вас что-то беспокоит, вы всегда можете задать любые вопросы в @flurr_support_bot.
+t
+            ,
+            (new FromQuery(new FromUrl($transport->sentRequests()[2]->url())))->value()['text']
+        );
+        $this->assertEquals(
+            [['text' => 'Зарегистрироваться']],
+            json_decode((new FromQuery(new FromUrl($transport->sentRequests()[2]->url())))->value()['reply_markup'], true)['keyboard'][0]
+        );
+
+        $this->userReply((new Register())->value(), $transport, $connection)->response();
+
+        $this->assertUserIsRegistered($this->userId(), $connection);
+        $this->assertCount(4, $transport->sentRequests());
+        $this->assertEquals(
+            'Поздравляю, вы зарегистрировались! Если хотите что-то спросить или уточнить, смело пишите на @flurr_support_bot',
+            (new FromQuery(new FromUrl($transport->sentRequests()[3]->url())))->value()['text']
         );
     }
 
@@ -204,6 +246,16 @@ t
             (new UserStatusFromBotUser(new ById($userId, $connection)))
                 ->equals(
                     new FromPure(new RegistrationIsInProgress())
+                )
+        );
+    }
+
+    private function assertUserIsRegistered(BotUserId $userId, OpenConnection $connection)
+    {
+        $this->assertTrue(
+            (new UserStatusFromBotUser(new ById($userId, $connection)))
+                ->equals(
+                    new FromPure(new Registered())
                 )
         );
     }

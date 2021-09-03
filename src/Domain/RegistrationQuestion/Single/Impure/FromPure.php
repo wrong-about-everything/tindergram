@@ -9,28 +9,27 @@ use TG\Infrastructure\ImpureInteractions\ImpureValue;
 use TG\Infrastructure\ImpureInteractions\ImpureValue\Successful;
 use TG\Infrastructure\ImpureInteractions\PureValue\Present;
 
-class FromPure implements RegistrationQuestion
+class FromPure extends RegistrationQuestion
 {
     private $pureRegistrationQuestion;
-    private $cached;
 
     public function __construct(PureRegistrationQuestion $pureRegistrationQuestion)
     {
         $this->pureRegistrationQuestion = $pureRegistrationQuestion;
-        $this->cached = null;
     }
 
-    public function value(): ImpureValue
+    public function id(): ImpureValue
     {
-        if (is_null($this->cached)) {
-            $this->cached = $this->doValue();
-        }
-
-        return $this->cached;
+        return new Successful(new Present($this->pureRegistrationQuestion->id()));
     }
 
-    private function doValue(): ImpureValue
+    public function ordinalNumber(): ImpureValue
     {
-        return new Successful(new Present($this->pureRegistrationQuestion->value()));
+        return new Successful(new Present($this->pureRegistrationQuestion->ordinalNumber()));
+    }
+
+    public function exists(): ImpureValue
+    {
+        return new Successful(new Present($this->pureRegistrationQuestion->exists()));
     }
 }

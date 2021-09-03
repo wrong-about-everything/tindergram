@@ -17,9 +17,9 @@ class FromImpure implements RegistrationQuestion
         $this->concrete = null;
     }
 
-    public function value(): string
+    public function id(): string
     {
-        return $this->concrete()->value();
+        return $this->concrete()->id();
     }
 
     public function ordinalNumber(): int
@@ -43,6 +43,6 @@ class FromImpure implements RegistrationQuestion
 
     private function doConcrete(): RegistrationQuestion
     {
-        return new FromString($this->impureRegistrationQuestion->value()->pure()->raw());
+        return new ById($this->impureRegistrationQuestion->id()->pure()->raw());
     }
 }

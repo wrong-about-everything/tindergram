@@ -17,7 +17,7 @@ class FromString extends WhatIsYourGenderOptionName
     public function __construct(string $whatIsYourGenderOptionName)
     {
         if (!(new FromRegistrationQuestion(new FromPure(new WhatIsYourGender())))->contain(new UserMessage($whatIsYourGenderOptionName))) {
-            throw new Exception(sprintf('У вопроса "%s" нет варианта ответа "%s"', (new WhatIsYourGender())->value(), $whatIsYourGenderOptionName));
+            throw new Exception(sprintf('У вопроса "%s" нет варианта ответа "%s"', (new WhatIsYourGender())->id(), $whatIsYourGenderOptionName));
         }
 
         $this->whatIsYourGenderOptionName = $whatIsYourGenderOptionName;

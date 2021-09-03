@@ -52,8 +52,8 @@ class FromRegistrationQuestion implements ReplyOptions
 
     private function doValue(): ImpureValue
     {
-        if (!$this->registrationQuestion->value()->isSuccessful()) {
-            return $this->registrationQuestion->value();
+        if (!$this->registrationQuestion->id()->isSuccessful()) {
+            return $this->registrationQuestion->id();
         }
 
         if ((new RegistrationQuestionType($this->registrationQuestion))->equals(new FromPure(new Position()))) {

@@ -8,7 +8,7 @@ use TG\Domain\RegistrationQuestion\Single\Pure\AreYouReadyToRegister;
 use TG\Domain\RegistrationQuestion\Single\Pure\WhatDoYouPrefer;
 use TG\Domain\RegistrationQuestion\Single\Pure\WhatIsYourGender;
 
-class All implements RegistrationQuestions
+class AllQuestions implements RegistrationQuestions
 {
     /**
      * @inheritDoc
@@ -18,7 +18,7 @@ class All implements RegistrationQuestions
         return [
             new WhatDoYouPrefer(),
             new WhatIsYourGender(),
-            new AreYouReadyToRegister(),
+            new AreYouReadyToRegister()
         ];
     }
 }

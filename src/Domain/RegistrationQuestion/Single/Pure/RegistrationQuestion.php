@@ -6,7 +6,7 @@ namespace TG\Domain\RegistrationQuestion\Single\Pure;
 
 interface RegistrationQuestion
 {
-    public function value(): string;
+    public function id(): string;
 
     public function ordinalNumber(): int;
 

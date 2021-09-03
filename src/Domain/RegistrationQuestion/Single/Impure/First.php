@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace TG\Domain\RegistrationQuestion\Single\Impure;
 
 use TG\Domain\RegistrationQuestion\Multiple\Impure\RegistrationQuestions;
+use TG\Domain\RegistrationQuestion\Single\Pure\NonExistent;
 use TG\Infrastructure\ImpureInteractions\ImpureValue;
-use TG\Infrastructure\ImpureInteractions\ImpureValue\Successful;
-use TG\Infrastructure\ImpureInteractions\PureValue\Present;
 
-class First implements RegistrationQuestion
+class First extends RegistrationQuestion
 {
     private $registrationQuestions;
     private $cached;
@@ -20,7 +19,22 @@ class First implements RegistrationQuestion
         $this->cached = null;
     }
 
-    public function value(): ImpureValue
+    public function id(): ImpureValue
+    {
+        return $this->concrete()->id();
+    }
+
+    public function ordinalNumber(): ImpureValue
+    {
+        return $this->concrete()->ordinalNumber();
+    }
+
+    public function exists(): ImpureValue
+    {
+        return $this->concrete()->exists();
+    }
+
+    private function concrete(): RegistrationQuestion
     {
         if (is_null($this->cached)) {
             $this->cached = $this->doValue();
@@ -29,12 +43,15 @@ class First implements RegistrationQuestion
         return $this->cached;
     }
 
-    private function doValue(): ImpureValue
+    private function doValue(): RegistrationQuestion
     {
-        if (!$this->registrationQuestions->value()->isSuccessful() || empty($this->registrationQuestions->value()->pure()->raw())) {
-            return $this->registrationQuestions->value();
+        if (!$this->registrationQuestions->value()->isSuccessful()) {
+            return new NonSuccessful($this->registrationQuestions->value());
+        }
+        if (empty($this->registrationQuestions->value()->pure()->raw())) {
+            return new FromPure(new NonExistent());
         }
 
-        return new Successful(new Present($this->registrationQuestions->value()->pure()->raw()[0]->value()));
+        return new FromPure($this->registrationQuestions->value()->pure()->raw()[0]);
     }
 }

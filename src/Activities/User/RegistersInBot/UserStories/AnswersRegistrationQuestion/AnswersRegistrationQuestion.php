@@ -51,8 +51,8 @@ class AnswersRegistrationQuestion extends Existent
         $this->logs->receive(new InformationMessage('User answers registration question scenario started.'));
 
         $currentlyAnsweredQuestion = $this->currentlyAnsweredQuestion();
-        if (!$currentlyAnsweredQuestion->value()->isSuccessful()) {
-            $this->logs->receive(new FromNonSuccessfulImpureValue($currentlyAnsweredQuestion->value()));
+        if (!$currentlyAnsweredQuestion->id()->isSuccessful()) {
+            $this->logs->receive(new FromNonSuccessfulImpureValue($currentlyAnsweredQuestion->id()));
             $this->sorry()->value();
             return new Successful(new Emptie());
         }

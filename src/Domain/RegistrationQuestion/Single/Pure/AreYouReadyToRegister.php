@@ -6,15 +6,9 @@ namespace TG\Domain\RegistrationQuestion\Single\Pure;
 
 class AreYouReadyToRegister implements RegistrationQuestion
 {
-    public function value(): string
+    public function id(): string
     {
-        return
-        <<<qqq
-Вот фотографии, которые увидят другие пользователи. Все они берутся из ваших аватарок, бот их не хранит. Поэтому если вы хотите, чтобы какие-то фото никто не увидел, просто удалите их через сам telegram. Сразу после этого, эти фото пропадут из вашего профиля и их никто не увидит.
-
-Если вас что-то беспокоит, вы всегда можете задать любые вопросы в @flurr_support_bot.
-qqq
-            ;
+        return '2f71f0bc-9dcb-4e6a-aab6-d8ce61a0c26d';
     }
 
     public function ordinalNumber(): int
