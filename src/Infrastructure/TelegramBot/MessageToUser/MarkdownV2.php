@@ -4,12 +4,17 @@ declare(strict_types=1);
 
 namespace TG\Infrastructure\TelegramBot\MessageToUser;
 
+use Exception;
+
 class MarkdownV2 implements MessageToUser
 {
     private $message;
 
     public function __construct(string $message)
     {
+        if ($message === '') {
+            throw new Exception('Message can not be empty');
+        }
         $this->message = $message;
     }
 

@@ -9,7 +9,6 @@ use TG\Domain\BotUser\Preference\Multiple\Impure\FromBotUser;
 use TG\Domain\BotUser\Preference\Single\Pure\Men as MenPreferenceId;
 use TG\Domain\BotUser\Preference\Single\Pure\PreferenceId;
 use TG\Domain\BotUser\ReadModel\ById;
-use TG\Domain\BotUser\ReadModel\ByInternalTelegramUserId;
 use TG\Domain\BotUser\UserStatus\Impure\FromPure;
 use TG\Domain\Gender\Impure\FromBotUser as BotUserGender;
 use TG\Domain\Gender\Impure\FromPure as ImpureGender;
@@ -20,7 +19,6 @@ use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\RootConnection;
 use TG\Domain\BotUser\UserId\FromUuid as UserIdFromUuid;
 use TG\Domain\BotUser\UserId\BotUserId;
 use TG\Domain\BotUser\UserStatus\Impure\FromBotUser as UserStatusFromBotUser;
-use TG\Domain\BotUser\UserStatus\Impure\FromPure as ImpureUserStatusFromPure;
 use TG\Domain\BotUser\UserStatus\Pure\Registered;
 use TG\Domain\BotUser\UserStatus\Pure\RegistrationIsInProgress;
 use TG\Domain\BotUser\UserStatus\Pure\UserStatus;
@@ -33,14 +31,11 @@ use TG\Infrastructure\Http\Transport\HttpTransport;
 use TG\Infrastructure\Http\Transport\Indifferent;
 use TG\Infrastructure\Http\Transport\TransportForUserRegistrationWithoutAvatars;
 use TG\Infrastructure\Http\Transport\TransportForUserRegistrationWithTwoAvatars;
-use TG\Infrastructure\Logging\LogId;
 use TG\Infrastructure\Logging\Logs\DevNull;
-use TG\Infrastructure\Logging\Logs\StdOut;
 use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\FromInteger;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId;
 use TG\Infrastructure\Uuid\FromString;
-use TG\Infrastructure\Uuid\RandomUUID;
 use TG\Tests\Infrastructure\Environment\Reset;
 use TG\Tests\Infrastructure\Stub\Table\BotUser;
 use TG\Tests\Infrastructure\Stub\TelegramMessage\UserMessage;
@@ -93,7 +88,7 @@ class UserRegistersInBotTest extends TestCase
         $this->assertEquals(
             <<<t
 Вот фотографии, которые увидят другие пользователи.
-Бот всегда берёт первые пять аватарок из telegram и показывает другим пользователям. Сам он эти фото не хранит. Поэтому, если вы удалите какую-то аватарку в самом telegram, бот перестанет её видеть и не сможет никому показывать. А если загрузите новую аватарку, бот её сразу же увидит и её будут видеть другие пользователи.
+Бот всегда показывает первые пять ваших аватарок из telegram. Сам он эти фото не хранит. Поэтому, если вы удалите какую-то аватарку в самом telegram, бот перестанет её видеть и не сможет никому показать. А если загрузите новую аватарку, её сразу начнут видеть другие пользователи.
 
 Если вас что-то беспокоит, вы всегда можете задать любые вопросы в @flurr_support_bot.
 t
@@ -101,7 +96,7 @@ t
             json_decode((new FromQuery(new FromUrl($transport->sentRequests()[4]->url())))->value()['media'], true)[0]['caption']
         );
         $this->assertEquals(
-            [['text' => 'Зарегистрироваться']],
+            [['text' => (new Register())->value()]],
             json_decode((new FromQuery(new FromUrl($transport->sentRequests()[5]->url())))->value()['reply_markup'], true)['keyboard'][0]
         );
 
@@ -139,7 +134,7 @@ t
         $this->assertUserHasGender($this->userId(), new MaleGender(), $connection);
         $this->assertEquals(
             <<<t
-Бот всегда берёт первые пять аватарок из telegram и показывает другим пользователям. Сам он эти фото не хранит. Поэтому, если вы удалите какую-то аватарку в самом telegram, бот перестанет её видеть и не сможет никому показывать. А если загрузите новую аватарку, бот её сразу же увидит и её будут видеть другие пользователи.
+Бот всегда показывает первые пять ваших аватарок из telegram. Сам он эти фото не хранит. Поэтому, если вы удалите какую-то аватарку в самом telegram, бот перестанет её видеть и не сможет никому показать. А если загрузите новую аватарку, её сразу начнут видеть другие пользователи.
 
 У вас в профиле telegram пока нет ни одного фото. Можете пока зарегистрироваться, а как будете готовы -- просто загрузите аватарку в telegram.
 
@@ -149,7 +144,7 @@ t
             (new FromQuery(new FromUrl($transport->sentRequests()[2]->url())))->value()['text']
         );
         $this->assertEquals(
-            [['text' => 'Зарегистрироваться']],
+            [['text' => (new Register())->value()]],
             json_decode((new FromQuery(new FromUrl($transport->sentRequests()[2]->url())))->value()['reply_markup'], true)['keyboard'][0]
         );
 

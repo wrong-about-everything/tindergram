@@ -17,6 +17,7 @@ use TG\Infrastructure\ImpureInteractions\ImpureValue;
 use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId;
 use TG\Infrastructure\TelegramBot\MessageToUser\Emptie;
+use TG\Infrastructure\TelegramBot\MessageToUser\FromString;
 use TG\Infrastructure\TelegramBot\SentReplyToUser\DefaultWithKeyboard;
 use TG\Infrastructure\TelegramBot\SentReplyToUser\SentReplyToUser;
 use TG\Infrastructure\TelegramBot\UserAvatars\InboundModel\FirstFive;
@@ -113,7 +114,7 @@ class NextRegistrationQuestionSentToUser implements SentReplyToUser
         return
             (new DefaultWithKeyboard(
                 $this->internalTelegramUserId,
-                new Emptie(),
+                new FromString('Ну что, поехали?'),
                 new KeyboardFromAnswerOptions(
                     new FromImpure(
                         new FromRegistrationQuestion(

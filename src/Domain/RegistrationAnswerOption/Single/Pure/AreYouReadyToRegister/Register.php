@@ -8,6 +8,6 @@ class Register extends AreYouReadyToRegisterOptionName
 {
     public function value(): string
     {
-        return 'Зарегистрироваться';
+        return 'Поехали 🚀';
     }
 }
