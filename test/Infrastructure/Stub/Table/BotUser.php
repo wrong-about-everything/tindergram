@@ -24,7 +24,7 @@ class BotUser
         $botUserInsertResponse =
             (new SingleMutatingQueryWithMultipleValueSets(
                 <<<q
-insert into bot_user (id, first_name, last_name, telegram_id, telegram_handle, status, preferences, gender)
+insert into bot_user (id, first_name, last_name, telegram_id, telegram_handle, status, preferred_gender, gender)
 values (?, ?, ?, ?, ?, ?, ?, ?)
 q
                 ,
@@ -38,7 +38,7 @@ q
                             $values['telegram_id'],
                             $values['telegram_handle'],
                             $values['status'],
-                            is_null($values['preferences']) ? null : json_encode(is_null($values['preferences'])),
+                            $values['preferred_gender'],
                             $values['gender']
                         ];
                     },
@@ -61,7 +61,7 @@ q
             'telegram_id' => 666,
             'telegram_handle' => '@vasya',
             'status' => (new Registered())->value(),
-            'preferences' => null,
+            'preferred_gender' => null,
             'gender' => null,
         ];
     }

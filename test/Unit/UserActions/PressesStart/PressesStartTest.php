@@ -204,7 +204,7 @@ class PressesStartTest extends TestCase
     {
         (new BotUser($connection))
             ->insert([
-                ['first_name' => 'Vadim', 'last_name' => 'Samokhin', 'telegram_handle' => 'dremuchee_bydlo', 'telegram_id' => $telegramUserId->value(), 'status' => (new RegistrationIsInProgress())->value(), 'preferences' => (new Men())->value()]
+                ['first_name' => 'Vadim', 'last_name' => 'Samokhin', 'telegram_handle' => 'dremuchee_bydlo', 'telegram_id' => $telegramUserId->value(), 'status' => (new RegistrationIsInProgress())->value(), 'preferred_gender' => (new Male())->value()]
             ]);
     }
 
@@ -212,7 +212,7 @@ class PressesStartTest extends TestCase
     {
         (new BotUser($connection))
             ->insert([
-                ['first_name' => 'Vadim', 'last_name' => 'Samokhin', 'telegram_handle' => 'dremuchee_bydlo', 'telegram_id' => $telegramUserId->value(), 'status' => (new Registered())->value(), 'preferences' => (new Men())->value(), 'gender' => (new Male())->value()]
+                ['first_name' => 'Vadim', 'last_name' => 'Samokhin', 'telegram_handle' => 'dremuchee_bydlo', 'telegram_id' => $telegramUserId->value(), 'status' => (new Registered())->value(), 'preferred_gender' => (new Male())->value(), 'gender' => (new Male())->value()]
             ]);
     }
 

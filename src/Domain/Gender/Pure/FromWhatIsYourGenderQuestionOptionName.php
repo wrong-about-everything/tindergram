@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TG\Domain\BotUser\Preference\Single\Pure;
+namespace TG\Domain\Gender\Pure;
 
 use Exception;
 use TG\Domain\Gender\Pure\Female as FemaleGender;
@@ -11,7 +11,7 @@ use TG\Domain\RegistrationAnswerOption\Single\Pure\WhatIsYourGender\Female;
 use TG\Domain\RegistrationAnswerOption\Single\Pure\WhatIsYourGender\Male;
 use TG\Domain\RegistrationAnswerOption\Single\Pure\WhatIsYourGender\WhatIsYourGenderOptionName;
 
-class FromWhatIsYourGenderQuestionOptionName extends PreferenceId
+class FromWhatIsYourGenderQuestionOptionName extends Gender
 {
     private $whatIsYourGenderOptionName;
     private $cached;
@@ -24,6 +24,16 @@ class FromWhatIsYourGenderQuestionOptionName extends PreferenceId
 
     public function value(): int
     {
+        return $this->concrete()->value();
+    }
+
+    public function exists(): bool
+    {
+        return $this->concrete()->exists();
+    }
+
+    private function concrete()
+    {
         if (is_null($this->cached)) {
             $this->cached = $this->doValue();
         }
@@ -31,16 +41,16 @@ class FromWhatIsYourGenderQuestionOptionName extends PreferenceId
         return $this->cached;
     }
 
-    private function doValue(): int
+    private function doValue(): Gender
     {
         switch ($this->whatIsYourGenderOptionName->value()) {
             case (new Male())->value():
-                return (new MaleGender())->value();
+                return new MaleGender();
 
             case (new Female())->value():
-                return (new FemaleGender())->value();
+                return new FemaleGender();
         }
 
-        throw new Exception(sprintf('Unknown preference %s', $this->whatIsYourGenderOptionName->value()));
+        throw new Exception(sprintf('Unknown option name %s', $this->whatIsYourGenderOptionName->value()));
     }
 }

@@ -16,7 +16,6 @@ use TG\Infrastructure\Http\Transport\HttpTransport;
 use TG\Infrastructure\ImpureInteractions\ImpureValue;
 use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId;
-use TG\Infrastructure\TelegramBot\MessageToUser\Emptie;
 use TG\Infrastructure\TelegramBot\MessageToUser\FromString;
 use TG\Infrastructure\TelegramBot\SentReplyToUser\DefaultWithKeyboard;
 use TG\Infrastructure\TelegramBot\SentReplyToUser\SentReplyToUser;

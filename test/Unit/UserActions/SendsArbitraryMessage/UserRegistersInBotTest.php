@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace TG\Tests\Unit\UserActions\SendsArbitraryMessage;
 
 use PHPUnit\Framework\TestCase;
-use TG\Domain\BotUser\Preference\Multiple\Impure\FromBotUser;
-use TG\Domain\BotUser\Preference\Single\Pure\Men as MenPreferenceId;
-use TG\Domain\BotUser\Preference\Single\Pure\PreferenceId;
+use TG\Domain\Gender\Impure\BotUserPreferredGender;
 use TG\Domain\BotUser\ReadModel\ById;
 use TG\Domain\BotUser\UserStatus\Impure\FromPure;
 use TG\Domain\Gender\Impure\FromBotUser as BotUserGender;
@@ -72,7 +70,7 @@ class UserRegistersInBotTest extends TestCase
         $this->userReply((new Men())->value(), $transport, $connection)->response();
 
         $this->assertCount(1, $transport->sentRequests());
-        $this->assertUserHasPreferences($this->userId(), new MenPreferenceId(), $connection);
+        $this->assertUserPreferredGender($this->userId(), new MaleGender(), $connection);
         $this->assertEquals(
             'Укажите свой пол',
             (new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['text']
@@ -88,7 +86,7 @@ class UserRegistersInBotTest extends TestCase
         $this->assertEquals(
             <<<t
 Вот фотографии, которые увидят другие пользователи.
-Бот всегда показывает первые пять ваших аватарок из telegram. Сам он эти фото не хранит. Поэтому, если вы удалите какую-то аватарку в самом telegram, бот перестанет её видеть и не сможет никому показать. А если загрузите новую аватарку, её сразу начнут видеть другие пользователи.
+Бот всегда показывает первые пять ваших аватарок из telegram. Сам он эти фото не хранит. Поэтому, если вы удалите какую-то аватарку в самом telegram, бот перестанет её видеть и не сможет никому показать. А если загрузите новую, её сразу же начнут видеть другие пользователи.
 
 Если вас что-то беспокоит, вы всегда можете задать любые вопросы в @flurr_support_bot.
 t
@@ -119,7 +117,7 @@ t
         $this->userReply((new Men())->value(), $transport, $connection)->response();
 
         $this->assertCount(1, $transport->sentRequests());
-        $this->assertUserHasPreferences($this->userId(), new MenPreferenceId(), $connection);
+        $this->assertUserPreferredGender($this->userId(), new MaleGender(), $connection);
         $this->assertEquals(
             'Укажите свой пол',
             (new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['text']
@@ -134,7 +132,7 @@ t
         $this->assertUserHasGender($this->userId(), new MaleGender(), $connection);
         $this->assertEquals(
             <<<t
-Бот всегда показывает первые пять ваших аватарок из telegram. Сам он эти фото не хранит. Поэтому, если вы удалите какую-то аватарку в самом telegram, бот перестанет её видеть и не сможет никому показать. А если загрузите новую аватарку, её сразу начнут видеть другие пользователи.
+Бот всегда показывает первые пять ваших аватарок из telegram. Сам он эти фото не хранит. Поэтому, если вы удалите какую-то аватарку в самом telegram, бот перестанет её видеть и не сможет никому показать. А если загрузите новую, её сразу же начнут видеть другие пользователи.
 
 У вас в профиле telegram пока нет ни одного фото. Можете пока зарегистрироваться, а как будете готовы -- просто загрузите аватарку в telegram.
 
@@ -215,11 +213,11 @@ t
             );
     }
 
-    private function assertUserHasPreferences(BotUserId $userId, PreferenceId $preferenceId, OpenConnection $connection)
+    private function assertUserPreferredGender(BotUserId $userId, Gender $gender, OpenConnection $connection)
     {
         $this->assertEquals(
-            [$preferenceId->value()],
-            (new FromBotUser(new ById($userId, $connection)))->value()->pure()->raw()
+            $gender->value(),
+            (new BotUserPreferredGender(new ById($userId, $connection)))->value()->pure()->raw()
         );
         $this->assertTrue(
             (new UserStatusFromBotUser(new ById($userId, $connection)))

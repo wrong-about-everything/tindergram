@@ -7,6 +7,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 use Meringue\Timeline\Point\Now;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+use TG\Activities\Cron\ShowsPair\ShowsPair;
 use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\ApplicationConnection;
 use TG\Domain\UserStory\Authorized;
 use TG\Domain\UserStory\Body\TelegramFallbackResponseBody;
@@ -21,6 +22,7 @@ use TG\Infrastructure\Http\Request\Inbound\DefaultInbound;
 use TG\Infrastructure\Http\Request\Inbound\FromPsrHttpRequest;
 use TG\Infrastructure\Http\Request\Inbound\WithPathTakenFromQueryParam;
 use TG\Infrastructure\Http\Request\Method\Get;
+use TG\Infrastructure\Http\Request\Method\Post;
 use TG\Infrastructure\Http\Request\Url\Query;
 use TG\Infrastructure\Http\Transport\EnvironmentDependentTransport;
 use TG\Infrastructure\Logging\LogId;
@@ -95,6 +97,15 @@ function entryPoint(ServerRequestInterface $request): ResponseInterface
                             new ArbitraryTelegramUserMessageRoute(),
                             function (array $parsedTelegramMessage) use ($transport, $logs) {
                                 return new SendsArbitraryMessage($parsedTelegramMessage, $transport, new ApplicationConnection(), $logs);
+                            }
+                        ],
+                        [
+                            new RouteByMethodAndPathPattern(
+                                new Post(),
+                                '/cron/shows_pair'
+                            ),
+                            function () use ($transport, $logs) {
+                                return new ShowsPair($transport, new ApplicationConnection(), $logs);
                             }
                         ],
                         [

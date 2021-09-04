@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TG\Activities\User\RegistersInBot\UserStories\AnswersRegistrationQuestion;
+namespace TG\Activities\User\RegistersInBot\UserStories\AnswersRegistrationQuestion\Domain\SentReplyToUser;
 
 use TG\Activities\User\RegistersInBot\Domain\Reply\NextRegistrationQuestionSentToUser;
 use TG\Domain\BotUser\ReadModel\BotUser;

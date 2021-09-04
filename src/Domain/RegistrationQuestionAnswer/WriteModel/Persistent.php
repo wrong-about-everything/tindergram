@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace TG\Domain\RegistrationQuestionAnswer\WriteModel;
 
 use Exception;
-use TG\Domain\BotUser\Preference\Single\Pure\FromWhatDoYouPreferQuestionOptionName;
-use TG\Domain\BotUser\Preference\Single\Pure\FromWhatIsYourGenderQuestionOptionName;
+use TG\Domain\Gender\Pure\FromWhatDoYouPreferQuestionOptionName;
+use TG\Domain\Gender\Pure\FromWhatIsYourGenderQuestionOptionName;
 use TG\Domain\BotUser\UserStatus\Pure\Registered;
 use TG\Domain\RegistrationAnswerOption\Single\Pure\WhatDoYouPrefer\FromString as WhatDoYouPreferOptionNameFromString;
 use TG\Domain\RegistrationAnswerOption\Single\Pure\WhatIsYourGender\FromString as WhatIsYourGenderOptionNameFromString;
@@ -59,14 +59,12 @@ class Persistent implements RegistrationQuestionAnswer
     {
         return
             (new SingleMutating(
-                'update bot_user set preferences = ? where telegram_id = ?',
+                'update bot_user set preferred_gender = ? where telegram_id = ?',
                 [
-                    json_encode([
-                        (new FromWhatDoYouPreferQuestionOptionName(
-                            new WhatDoYouPreferOptionNameFromString($this->userReply->value())
-                        ))
-                            ->value()
-                    ]),
+                    (new FromWhatDoYouPreferQuestionOptionName(
+                        new WhatDoYouPreferOptionNameFromString($this->userReply->value())
+                    ))
+                        ->value(),
                     $this->telegramUserId->value()
                 ],
                 $this->connection

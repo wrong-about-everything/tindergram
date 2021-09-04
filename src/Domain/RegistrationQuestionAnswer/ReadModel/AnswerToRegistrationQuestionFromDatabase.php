@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace TG\Domain\RegistrationQuestionAnswer\ReadModel;
 
 use Exception;
-use TG\Domain\BotUser\Preference\Multiple\Impure\FromBotUser;
+use TG\Domain\Gender\Impure\BotUserPreferredGender;
 use TG\Domain\BotUser\ReadModel\BotUser;
 use TG\Domain\BotUser\UserStatus\Impure\FromBotUser as StatusFromBotUser;
 use TG\Domain\BotUser\UserStatus\Impure\FromPure;
@@ -48,12 +48,13 @@ class AnswerToRegistrationQuestionFromDatabase implements RegistrationQuestionAn
     {
         switch ($this->registrationQuestion->id()) {
             case (new WhatDoYouPrefer())->id():
+                $preferredGender = new BotUserPreferredGender($this->botUser);
                 return
-                    !(new FromBotUser($this->botUser))->value()->isSuccessful()
-                        ? new NonSuccessful((new FromBotUser($this->botUser))->value())
+                    !$preferredGender->exists()->isSuccessful()
+                        ? new NonSuccessful($preferredGender->exists())
                         :
                             (
-                                !(new FromBotUser($this->botUser))->value()->pure()->isPresent()
+                                !$preferredGender->exists()->pure()->raw()
                                     ? new NonExistent()
                                     : new Existent()
                             );

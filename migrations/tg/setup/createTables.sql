@@ -14,7 +14,7 @@ create table bot_user (
   telegram_handle text,
 
   status int,
-  preferences jsonb,
+  preferred_gender smallint,
   gender smallint,
 
   primary key (id),
