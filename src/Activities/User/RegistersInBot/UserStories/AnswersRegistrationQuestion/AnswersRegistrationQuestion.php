@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace TG\Activities\User\RegistersInBot\UserStories\AnswersRegistrationQuestion;
 
-use TG\Activities\User\RegistersInBot\UserStories\AnswersRegistrationQuestion\Domain\BotUser\RegisteredIfNoMoreQuestionsLeft;
 use TG\Activities\User\RegistersInBot\UserStories\AnswersRegistrationQuestion\Domain\SentReplyToUser\NextReplyToUser;
-use TG\Domain\BotUser\ReadModel\FromWriteModel;
+use TG\Domain\BotUser\ReadModel\ByInternalTelegramUserId;
 use TG\Domain\RegistrationAnswerOption\Multiple\Impure\FromRegistrationQuestion;
 use TG\Domain\RegistrationAnswerOption\Multiple\Pure\FromImpure;
 use TG\Domain\RegistrationQuestion\Single\Impure\NextRegistrationQuestion;
@@ -137,11 +136,8 @@ class AnswersRegistrationQuestion extends Existent
     {
         return
             new NextReplyToUser(
-                new FromWriteModel(
-                    new RegisteredIfNoMoreQuestionsLeft(
-                        new FromParsedTelegramMessage($this->message),
-                        $this->connection
-                    ),
+                new ByInternalTelegramUserId(
+                    new FromParsedTelegramMessage($this->message),
                     $this->connection
                 ),
                 $this->httpTransport,

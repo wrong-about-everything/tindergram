@@ -9,8 +9,10 @@ use TG\Infrastructure\Logging\LogItem\InformationMessage;
 use TG\Infrastructure\Logging\Logs;
 use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
 use TG\Infrastructure\SqlDatabase\Agnostic\Query\Selecting;
+use TG\Infrastructure\UserStory\Body\Emptie;
 use TG\Infrastructure\UserStory\Existent;
 use TG\Infrastructure\UserStory\Response;
+use TG\Infrastructure\UserStory\Response\Successful;
 
 class ShowsPair extends Existent
 {
@@ -44,11 +46,11 @@ class ShowsPair extends Existent
 
         new Selecting(
             <<<query
-select *
-from bot_user recipient join bot_user pair on 
-where gender = ?
-order by seen_qty asc last_seen_at desc
+select distinct on (recipient.id)
+    recipient.*
+from bot_user recipient join bot_user pair on recipient.preferred_gender = pair.gender and recipient.id != pair.id
 where last_seen_at > now() - interval '1 day'
+order by recipient.id, pair.seen_qty asc, pair.last_seen_at desc
 query
             ,
             [],
@@ -56,5 +58,7 @@ query
         );
 
         $this->logs->receive(new InformationMessage('Cron shows pair scenario finished'));
+
+        return new Successful(new Emptie());
     }
 }

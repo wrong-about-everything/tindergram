@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace TG\Domain\RegistrationQuestionAnswer\WriteModel;
 
 use Exception;
+use Meringue\Timeline\Point\Now;
 use TG\Domain\Gender\Pure\FromWhatDoYouPreferQuestionOptionName;
 use TG\Domain\Gender\Pure\FromWhatIsYourGenderQuestionOptionName;
 use TG\Domain\BotUser\UserStatus\Pure\Registered;
@@ -93,9 +94,10 @@ class Persistent implements RegistrationQuestionAnswer
     {
         return
             (new SingleMutating(
-                'update bot_user set status = ? where telegram_id = ?',
+                'update bot_user set status = ?, registered_at = ? where telegram_id = ?',
                 [
                     (new Registered())->value(),
+                    (new Now())->value(),
                     $this->telegramUserId->value()
                 ],
                 $this->connection

@@ -16,6 +16,8 @@ create table bot_user (
   status int,
   preferred_gender smallint,
   gender smallint,
+  last_seen_at timestamptz,
+  registered_at timestamptz,
 
   primary key (id),
   unique (telegram_id)
