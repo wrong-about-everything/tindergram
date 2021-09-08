@@ -41,4 +41,9 @@ class MarkdownV2 implements MessageToUser
                 ''
             );
     }
+
+    public function isNonEmpty(): bool
+    {
+        return true;
+    }
 }

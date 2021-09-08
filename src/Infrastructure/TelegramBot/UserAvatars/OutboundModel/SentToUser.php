@@ -55,21 +55,16 @@ class SentToUser implements UserAvatars
                                         array_reduce(
                                             array_map(
                                                 function (string $fileId) {
-                                                    return [
-                                                        'type' => 'photo',
-                                                        'media' => $fileId,
-                                                    ];
+                                                    return ['type' => 'photo', 'media' => $fileId];
                                                 },
                                                 $this->avatarsOfUser->value()->pure()->raw()
                                             ),
                                             function (array $photos, array $photoBlock) {
-                                                $photos[] =
-                                                    array_merge(
-                                                        $photoBlock,
-                                                        empty($photos) ? ['caption' => $this->message->value()] : []
-                                                    );
+                                                if ($this->message->isNonEmpty() && empty($photos)) {
+                                                    return [array_merge($photoBlock, ['caption' => $this->message->value()])];
+                                                }
 
-                                                return $photos;
+                                                return array_merge($photos, [$photoBlock]);
                                             },
                                             []
                                         )

@@ -6,7 +6,6 @@ namespace TG\Tests\Infrastructure\Stub\Table;
 
 use Exception;
 use Ramsey\Uuid\Uuid;
-use TG\Domain\BotUser\UserStatus\Pure\Registered;
 use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
 use TG\Infrastructure\SqlDatabase\Agnostic\Query\SingleMutatingQueryWithMultipleValueSets;
 
@@ -24,22 +23,31 @@ class BotUser
         $botUserInsertResponse =
             (new SingleMutatingQueryWithMultipleValueSets(
                 <<<q
-insert into bot_user (id, first_name, last_name, telegram_id, telegram_handle, status, preferred_gender, gender)
-values (?, ?, ?, ?, ?, ?, ?, ?)
+insert into bot_user (
+  id, first_name, last_name, telegram_id, telegram_handle,
+
+  preferred_gender, gender, status, registered_at,
+
+  seen_qty, last_seen_at, like_qty, dislike_qty
+)
+values (
+  ?, ?, ?, ?, ?,
+
+  ?, ?, ?, ?,
+
+  ?, ?, ?, ?
+)
 q
                 ,
                 array_map(
                     function (array $record) {
-                        $values = array_merge($this->defaultValues(), $record);
+                        $v = array_merge($this->defaultValues(), $record);
                         return [
-                            $values['id'],
-                            $values['first_name'],
-                            $values['last_name'],
-                            $values['telegram_id'],
-                            $values['telegram_handle'],
-                            $values['status'],
-                            $values['preferred_gender'],
-                            $values['gender']
+                            $v['id'], $v['first_name'], $v['last_name'], $v['telegram_id'], $v['telegram_handle'],
+
+                            $v['preferred_gender'] ?? null, $v['gender'] ?? null, $v['status'] ?? null, $v['registered_at'] ?? null,
+
+                            $v['seen_qty'] ?? null, $v['last_seen_at'] ?? null, $v['like_qty'] ?? null, $v['dislike_qty'] ?? null,
                         ];
                     },
                     $records
@@ -59,10 +67,7 @@ q
             'first_name' => 'Vasya',
             'last_name' => 'Belov',
             'telegram_id' => 666,
-            'telegram_handle' => '@vasya',
-            'status' => (new Registered())->value(),
-            'preferred_gender' => null,
-            'gender' => null,
+            'telegram_handle' => 'vasya',
         ];
     }
 }

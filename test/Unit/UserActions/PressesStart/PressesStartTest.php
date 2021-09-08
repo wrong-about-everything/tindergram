@@ -51,7 +51,7 @@ class PressesStartTest extends TestCase
         $this->assertUserDoesNotExist($this->telegramUserId(), $connection);
         $this->assertCount(1, $transport->sentRequests());
         $this->assertEquals(
-            'Hey sweetie, у тебя не установлен ник! Как установишь, снова жми /start.',
+            'У вас не установлен ник в telegram. Установите и снова нажмите /start.',
             (new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['text']
         );
     }

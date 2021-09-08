@@ -56,7 +56,8 @@ class Reset
                 <<<q
 truncate
     sample_table,
-    bot_user
+    bot_user,
+    view
 
     cascade
 q

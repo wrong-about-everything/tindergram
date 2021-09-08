@@ -12,4 +12,9 @@ class RegistrationCongratulations implements MessageToUser
     {
         return 'Поздравляю, вы зарегистрировались! Если хотите что-то спросить или уточнить, смело пишите на @flurr_support_bot';
     }
+
+    public function isNonEmpty(): bool
+    {
+        return true;
+    }
 }

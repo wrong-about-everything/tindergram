@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace TG\Domain\TelegramBot\KeyboardButtons;
 
 use TG\Domain\RegistrationAnswerOption\Multiple\Pure\RegistrationAnswerOptions;
-use TG\Infrastructure\TelegramBot\KeyboardButtons\KeyboardButtons;
+use TG\Infrastructure\TelegramBot\StandardKeyboardButtons\StandardKeyboardButtons;
 
-class KeyboardFromAnswerOptions implements KeyboardButtons
+class KeyboardFromAnswerOptions implements StandardKeyboardButtons
 {
     private $options;
 

@@ -16,7 +16,7 @@ use TG\Infrastructure\TelegramBot\Method\SendMediaGroup;
 use TG\Infrastructure\TelegramBot\Method\SendMessage;
 use TG\Tests\Infrastructure\Http\Transport\FakeTransport;
 
-class TransportForUserRegistrationWithTwoAvatars implements FakeTransport
+class TransportWithTwoAvatars implements FakeTransport
 {
     private $requests;
 

@@ -13,14 +13,28 @@ create table bot_user (
   telegram_id bigint,
   telegram_handle text,
 
-  status int,
   preferred_gender smallint,
   gender smallint,
-  last_seen_at timestamptz,
+  status int,
   registered_at timestamptz,
 
-  primary key (id),
-  unique (telegram_id)
+  is_initiated bool default false,
+
+  seen_qty int default 0,
+  last_seen_at timestamptz default now(),
+  like_qty int default 0,
+  dislike_qty int default 0,
+
+  primary key (telegram_id),
+  unique (id)
+);
+
+create table view (
+  recipient_telegram_id bigint,
+  pair_telegram_id bigint,
+  viewed_at timestamptz,
+
+  primary key (recipient_telegram_id, pair_telegram_id)
 );
 
 grant usage, select on all sequences in schema public to tg;

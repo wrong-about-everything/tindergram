@@ -13,7 +13,7 @@ class FromString implements MessageToUser
     public function __construct(string $text)
     {
         if ($text === '') {
-            throw new Exception('Text can not be empty');
+            throw new Exception('Text can not be empty. If you want to create an empty message, use class Emptie instead.');
         }
 
         $this->text = $text;
@@ -22,5 +22,10 @@ class FromString implements MessageToUser
     public function value(): string
     {
         return $this->text;
+    }
+
+    public function isNonEmpty(): bool
+    {
+        return true;
     }
 }

@@ -7,7 +7,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 use Meringue\Timeline\Point\Now;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use TG\Activities\Cron\ShowsPair\ShowsPair;
+use TG\Activities\Cron\KicksOffANewSpot\KicksOffANewSpot;
 use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\ApplicationConnection;
 use TG\Domain\UserStory\Authorized;
 use TG\Domain\UserStory\Body\TelegramFallbackResponseBody;
@@ -105,7 +105,7 @@ function entryPoint(ServerRequestInterface $request): ResponseInterface
                                 '/cron/shows_pair'
                             ),
                             function () use ($transport, $logs) {
-                                return new ShowsPair($transport, new ApplicationConnection(), $logs);
+                                return new KicksOffANewSpot($transport, new ApplicationConnection(), $logs);
                             }
                         ],
                         [

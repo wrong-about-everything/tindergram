@@ -8,6 +8,11 @@ class FillInYourUserNameAndFirstName implements MessageToUser
 {
     public function value(): string
     {
-        return 'Hey sweetie, у тебя не установлен ник! Как установишь, снова жми /start.';
+        return 'У вас не установлен ник в telegram. Установите и снова нажмите /start.';
+    }
+
+    public function isNonEmpty(): bool
+    {
+        return true;
     }
 }

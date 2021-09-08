@@ -20,4 +20,9 @@ class QuestionToUserWithoutAvatarsWhetherHeIsReadyToRegister implements MessageT
 qqq
             ;
     }
+
+    public function isNonEmpty(): bool
+    {
+        return true;
+    }
 }

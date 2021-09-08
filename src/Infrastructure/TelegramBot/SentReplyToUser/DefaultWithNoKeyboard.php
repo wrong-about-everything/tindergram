@@ -7,7 +7,7 @@ namespace TG\Infrastructure\TelegramBot\SentReplyToUser;
 use TG\Infrastructure\Http\Transport\HttpTransport;
 use TG\Infrastructure\ImpureInteractions\ImpureValue;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId;
-use TG\Infrastructure\TelegramBot\KeyboardButtons\Emptie as EmptieKeyboard;
+use TG\Infrastructure\TelegramBot\StandardKeyboardButtons\Emptie as EmptieKeyboard;
 use TG\Infrastructure\TelegramBot\MessageToUser\MessageToUser;
 
 class DefaultWithNoKeyboard implements SentReplyToUser

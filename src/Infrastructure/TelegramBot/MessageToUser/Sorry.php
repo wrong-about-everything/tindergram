@@ -10,4 +10,9 @@ class Sorry implements MessageToUser
     {
         return 'Простите, у нас что-то сломалось. Попробуйте ещё пару раз, и если не заработает — напишите, пожалуйста, в @flurr_support_bot';
     }
+
+    public function isNonEmpty(): bool
+    {
+        return true;
+    }
 }

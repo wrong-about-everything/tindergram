@@ -31,4 +31,9 @@ class FromQuestion implements MessageToUser
 
         throw new Exception(sprintf('Unknown question text for question id = %s', $this->registrationQuestion->id()));
     }
+
+    public function isNonEmpty(): bool
+    {
+        return true;
+    }
 }
