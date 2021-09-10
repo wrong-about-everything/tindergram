@@ -8,7 +8,10 @@ use Meringue\Timeline\Point\Now;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TG\Activities\Cron\KicksOffANewSpot\KicksOffANewSpot;
+use TG\Activities\User\RatesAPair\RatesAPair;
 use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\ApplicationConnection;
+use TG\Domain\InternalApi\RateCallbackData\RateCallbackData;
+use TG\Domain\TelegramBot\InlineAction\InlineActionType\Rating;
 use TG\Domain\UserStory\Authorized;
 use TG\Domain\UserStory\Body\TelegramFallbackResponseBody;
 use TG\Infrastructure\Dotenv\EnvironmentDependentEnvFile;
@@ -32,8 +35,10 @@ use TG\Infrastructure\Logging\Logs\GoogleCloudLogs;
 use TG\Infrastructure\Routing\Route\ArbitraryTelegramUserMessageRoute;
 use TG\Infrastructure\Routing\Route\ArbitraryTelegramUserMessageRouteWithBotId;
 use TG\Infrastructure\Routing\Route\MatchingAnyPostRequest;
+use TG\Infrastructure\Routing\Route\RouteByInlineKeyboardActionType;
 use TG\Infrastructure\Routing\Route\RouteByMethodAndPathPattern;
 use TG\Infrastructure\Routing\Route\RouteByTelegramBotCommand;
+use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId;
 use TG\Infrastructure\TelegramBot\UserCommand\Start;
 use TG\Infrastructure\UserStory\ByRoute;
 use TG\Infrastructure\UserStory\Response\Successful;
@@ -100,9 +105,15 @@ function entryPoint(ServerRequestInterface $request): ResponseInterface
                             }
                         ],
                         [
+                            new RouteByInlineKeyboardActionType(new Rating()),
+                            function (InternalTelegramUserId $senderTelegramId, RateCallbackData $rateCallbackData) use ($transport, $logs) {
+                                return new RatesAPair($senderTelegramId, $rateCallbackData, $transport, new ApplicationConnection(), $logs);
+                            }
+                        ],
+                        [
                             new RouteByMethodAndPathPattern(
                                 new Post(),
-                                '/cron/shows_pair'
+                                '/cron/kicks_off_a_new_spot'
                             ),
                             function () use ($transport, $logs) {
                                 return new KicksOffANewSpot($transport, new ApplicationConnection(), $logs);

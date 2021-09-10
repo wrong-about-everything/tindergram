@@ -28,7 +28,7 @@ use TG\Infrastructure\Http\Request\Url\Query\FromUrl;
 use TG\Infrastructure\Http\Transport\HttpTransport;
 use TG\Infrastructure\Http\Transport\Indifferent;
 use TG\Infrastructure\Http\Transport\TransportForUserRegistrationWithoutAvatars;
-use TG\Infrastructure\Http\Transport\TransportWithTwoAvatars;
+use TG\Infrastructure\Http\Transport\TransportWithNAvatars;
 use TG\Infrastructure\Logging\Logs\DevNull;
 use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\FromInteger;
@@ -65,7 +65,7 @@ class UserRegistersInBotTest extends TestCase
     {
         $connection = new ApplicationConnection();
         $this->createBotUser($this->userId(), $this->telegramUserId(), new RegistrationIsInProgress(), $connection);
-        $transport = new TransportWithTwoAvatars();
+        $transport = new TransportWithNAvatars(2);
 
         $this->userReply((new Men())->value(), $transport, $connection)->response();
 

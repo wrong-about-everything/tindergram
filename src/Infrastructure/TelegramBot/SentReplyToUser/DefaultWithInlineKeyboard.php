@@ -20,7 +20,7 @@ use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUs
 use TG\Infrastructure\TelegramBot\MessageToUser\MessageToUser;
 use TG\Infrastructure\TelegramBot\Method\SendMessage;
 
-class DefaultWithInlineKeyboard implements SentReplyToUser
+class DefaultWithInlineKeyboard implements MessageSentToUser
 {
     private $telegramUserId;
     private $messageToUser;

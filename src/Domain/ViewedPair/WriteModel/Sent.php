@@ -2,21 +2,19 @@
 
 declare(strict_types=1);
 
-namespace TG\Domain\ViewedPair;
+namespace TG\Domain\ViewedPair\WriteModel;
 
-use TG\Domain\TelegramBot\InlineAction\ThumbsDown;
-use TG\Domain\TelegramBot\InlineAction\ThumbsUp;
+use TG\Domain\TelegramBot\InlineKeyboardButton\Single\ThumbsDown;
+use TG\Domain\TelegramBot\InlineKeyboardButton\Single\ThumbsUp;
 use TG\Infrastructure\Http\Transport\HttpTransport;
 use TG\Infrastructure\ImpureInteractions\ImpureValue;
 use TG\Infrastructure\TelegramBot\InlineKeyboardButton\Multiple\LinedUpInARow;
-use TG\Infrastructure\TelegramBot\InlineKeyboardButton\Single\WithCallbackData;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId;
 use TG\Infrastructure\TelegramBot\MessageToUser\Emptie;
 use TG\Infrastructure\TelegramBot\MessageToUser\FromString;
 use TG\Infrastructure\TelegramBot\SentReplyToUser\DefaultWithInlineKeyboard;
-use TG\Infrastructure\TelegramBot\UserAvatars\InboundModel\FirstFive;
 use TG\Infrastructure\TelegramBot\UserAvatars\InboundModel\FromTelegram;
-use TG\Infrastructure\TelegramBot\UserAvatars\InboundModel\NonDeleted;
+use TG\Infrastructure\TelegramBot\UserAvatars\InboundModel\FirstNNonDeleted;
 use TG\Infrastructure\TelegramBot\UserAvatars\OutboundModel\SentToUser;
 
 class Sent implements ViewedPair
@@ -50,15 +48,14 @@ class Sent implements ViewedPair
         $sentAvatars =
             (new SentToUser(
                 new Emptie(),
-                new FirstFive(
-                    new NonDeleted(
+                new FirstNNonDeleted(
+                    $this->pairTelegramId,
+                    new FromTelegram(
                         $this->pairTelegramId,
-                        new FromTelegram(
-                            $this->pairTelegramId,
-                            $this->httpTransport
-                        ),
                         $this->httpTransport
-                    )
+                    ),
+                    5,
+                    $this->httpTransport
                 ),
                 $this->recipientTelegramId,
                 $this->httpTransport
@@ -73,8 +70,8 @@ class Sent implements ViewedPair
                 $this->recipientTelegramId,
                 new FromString($this->pairName),
                 new LinedUpInARow([
-                    new WithCallbackData('👎', ['action' => (new ThumbsDown())->value(), 'pair_telegram_id' => $this->pairTelegramId->value()]),
-                    new WithCallbackData('👍', ['action' => (new ThumbsUp())->value(), 'pair_telegram_id' => $this->pairTelegramId->value()]),
+                    new ThumbsDown($this->pairTelegramId),
+                    new ThumbsUp($this->pairTelegramId)
                 ]),
                 $this->httpTransport
             ))

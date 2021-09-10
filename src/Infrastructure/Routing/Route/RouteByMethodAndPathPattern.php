@@ -25,13 +25,13 @@ class RouteByMethodAndPathPattern implements Route
         $this->pathPattern = $pathPattern;
     }
 
-    public function matchResult(Request $httpRequest): MatchResult
+    public function matchResult(Request $request): MatchResult
     {
-        if (!$this->method->equals($httpRequest->method())) {
+        if (!$this->method->equals($request->method())) {
             return new NotMatch();
         }
 
-        $parsedPath = $this->parsedPath($httpRequest);
+        $parsedPath = $this->parsedPath($request);
         $parsedPathPattern = $this->parsedPathPattern();
         if (count($parsedPath) !== count($parsedPathPattern)) {
             return new NotMatch();

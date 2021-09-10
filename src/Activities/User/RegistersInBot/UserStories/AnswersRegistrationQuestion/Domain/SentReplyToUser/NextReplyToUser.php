@@ -16,9 +16,9 @@ use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Impure\FromBotUser as InternalTelegramUserId;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\FromImpure as PureInternalTelegramUserId;
 use TG\Infrastructure\TelegramBot\SentReplyToUser\DefaultWithRemovedKeyboard;
-use TG\Infrastructure\TelegramBot\SentReplyToUser\SentReplyToUser;
+use TG\Infrastructure\TelegramBot\SentReplyToUser\MessageSentToUser;
 
-class NextReplyToUser implements SentReplyToUser
+class NextReplyToUser implements MessageSentToUser
 {
     private $botUser;
     private $httpTransport;

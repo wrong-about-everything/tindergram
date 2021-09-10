@@ -10,7 +10,7 @@ use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUs
 use TG\Infrastructure\TelegramBot\StandardKeyboardButtons\Emptie as EmptieKeyboard;
 use TG\Infrastructure\TelegramBot\MessageToUser\MessageToUser;
 
-class DefaultWithNoKeyboard implements SentReplyToUser
+class DefaultWithNoKeyboard implements MessageSentToUser
 {
     private $concrete;
 

@@ -13,12 +13,12 @@ use TG\Infrastructure\Routing\Route;
 
 class MatchingAnyPostRequest implements Route
 {
-    public function matchResult(Request $httpRequest): MatchResult
+    public function matchResult(Request $request): MatchResult
     {
-        if (!$httpRequest->method()->equals(new Post())) {
+        if (!$request->method()->equals(new Post())) {
             return new NotMatch();
         }
 
-        return new Match([$httpRequest->body()]);
+        return new Match([$request->body()]);
     }
 }

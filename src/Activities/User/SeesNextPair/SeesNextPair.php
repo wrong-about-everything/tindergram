@@ -57,11 +57,11 @@ class SeesNextPair extends Existent
         recipient.telegram_id recipient_telegram_id, pair.telegram_id pair_telegram_id
     from bot_user recipient
         join bot_user pair on recipient.preferred_gender = pair.gender and recipient.telegram_id != pair.telegram_id
-        left join view on view.recipient_telegram_id = recipient.telegram_id and view.pair_telegram_id = pair.telegram_id
+        left join viewed_pair on viewed_pair.recipient_telegram_id = recipient.telegram_id and viewed_pair.pair_telegram_id = pair.telegram_id
     where
         recipient.status = ? and pair.status = ?
             and
-        view.recipient_telegram_id is null
+        viewed_pair.recipient_telegram_id is null
             and
         recipient.is_initiated = ? and pair.is_initiated = ?
     order by recipient.telegram_id, pair.seen_qty asc, pair.last_seen_at desc

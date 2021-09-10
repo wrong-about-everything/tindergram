@@ -23,7 +23,7 @@ use TG\Infrastructure\TelegramBot\MessageToUser\DoNotReplyWithCustomMessagePushT
 use TG\Infrastructure\TelegramBot\MessageToUser\Sorry;
 use TG\Infrastructure\TelegramBot\SentReplyToUser\DefaultWithKeyboard;
 use TG\Infrastructure\TelegramBot\SentReplyToUser\DefaultWithNoKeyboard;
-use TG\Infrastructure\TelegramBot\SentReplyToUser\SentReplyToUser;
+use TG\Infrastructure\TelegramBot\SentReplyToUser\MessageSentToUser;
 use TG\Infrastructure\TelegramBot\UserMessage\Pure\FromParsedTelegramMessage as UserReply;
 use TG\Infrastructure\TelegramBot\UserMessage\Pure\UserMessage;
 use TG\Infrastructure\UserStory\Body\Emptie;
@@ -132,7 +132,7 @@ class AnswersRegistrationQuestion extends Existent
     }
 
 
-    private function nextReply(): SentReplyToUser
+    private function nextReply(): MessageSentToUser
     {
         return
             new NextReplyToUser(

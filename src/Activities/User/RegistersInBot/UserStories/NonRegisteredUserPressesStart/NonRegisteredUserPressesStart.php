@@ -14,7 +14,7 @@ use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\FromParsedTelegramMessage;
 use TG\Infrastructure\TelegramBot\MessageToUser\Sorry;
 use TG\Infrastructure\TelegramBot\SentReplyToUser\DefaultWithNoKeyboard;
-use TG\Infrastructure\TelegramBot\SentReplyToUser\SentReplyToUser;
+use TG\Infrastructure\TelegramBot\SentReplyToUser\MessageSentToUser;
 use TG\Infrastructure\UserStory\Body\Emptie;
 use TG\Infrastructure\UserStory\Existent;
 use TG\Infrastructure\UserStory\Response;
@@ -61,7 +61,7 @@ class NonRegisteredUserPressesStart extends Existent
                 ->value();
     }
 
-    private function sorry(): SentReplyToUser
+    private function sorry(): MessageSentToUser
     {
         return
             new DefaultWithNoKeyboard(

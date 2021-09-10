@@ -29,10 +29,11 @@ create table bot_user (
   unique (id)
 );
 
-create table view (
+create table viewed_pair (
   recipient_telegram_id bigint,
   pair_telegram_id bigint,
   viewed_at timestamptz,
+  reaction smallint,
 
   primary key (recipient_telegram_id, pair_telegram_id)
 );

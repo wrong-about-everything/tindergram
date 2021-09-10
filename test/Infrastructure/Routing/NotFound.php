@@ -11,7 +11,7 @@ use TG\Infrastructure\Routing\Route;
 
 class NotFound implements Route
 {
-    public function matchResult(Request $httpRequest): MatchResult
+    public function matchResult(Request $request): MatchResult
     {
         return new NotMatch();
     }

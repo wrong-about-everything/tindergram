@@ -22,19 +22,19 @@ class RouteByTelegramBotCommand implements Route
         $this->command = $command;
     }
 
-    public function matchResult(Request $httpRequest): MatchResult
+    public function matchResult(Request $request): MatchResult
     {
-        if (!$httpRequest->method()->equals(new Post())) {
+        if (!$request->method()->equals(new Post())) {
             return new NotMatch();
         }
 
-        $userCommand = new FromTelegramMessage($httpRequest->body());
+        $userCommand = new FromTelegramMessage($request->body());
 
         return
             $userCommand->exists() && $userCommand->equals($this->command)
                 ?
                     new Match(
-                        [json_decode($httpRequest->body(), true)]
+                        [json_decode($request->body(), true)]
                     )
                 : new NotMatch()
             ;

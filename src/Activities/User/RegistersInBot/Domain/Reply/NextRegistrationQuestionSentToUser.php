@@ -18,14 +18,13 @@ use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId;
 use TG\Infrastructure\TelegramBot\MessageToUser\FromString;
 use TG\Infrastructure\TelegramBot\SentReplyToUser\DefaultWithKeyboard;
-use TG\Infrastructure\TelegramBot\SentReplyToUser\SentReplyToUser;
-use TG\Infrastructure\TelegramBot\UserAvatars\InboundModel\FirstFive;
+use TG\Infrastructure\TelegramBot\SentReplyToUser\MessageSentToUser;
 use TG\Infrastructure\TelegramBot\UserAvatars\InboundModel\FromTelegram;
-use TG\Infrastructure\TelegramBot\UserAvatars\InboundModel\NonDeleted;
+use TG\Infrastructure\TelegramBot\UserAvatars\InboundModel\FirstNNonDeleted;
 use TG\Infrastructure\TelegramBot\UserAvatars\InboundModel\UserAvatarIds;
 use TG\Infrastructure\TelegramBot\UserAvatars\OutboundModel\SentToUser;
 
-class NextRegistrationQuestionSentToUser implements SentReplyToUser
+class NextRegistrationQuestionSentToUser implements MessageSentToUser
 {
     private $internalTelegramUserId;
     private $connection;
@@ -129,15 +128,14 @@ class NextRegistrationQuestionSentToUser implements SentReplyToUser
     private function firstFiveAvatars(): UserAvatarIds
     {
         return
-            new FirstFive(
-                new NonDeleted(
+            new FirstNNonDeleted(
+                $this->internalTelegramUserId,
+                new FromTelegram(
                     $this->internalTelegramUserId,
-                    new FromTelegram(
-                        $this->internalTelegramUserId,
-                        $this->httpTransport
-                    ),
                     $this->httpTransport
-                )
+                ),
+                5,
+                $this->httpTransport
             );
     }
 }

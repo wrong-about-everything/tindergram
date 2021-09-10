@@ -20,7 +20,7 @@ use TG\Infrastructure\TelegramBot\StandardKeyboardButtons\StandardKeyboardButton
 use TG\Infrastructure\TelegramBot\MessageToUser\MessageToUser;
 use TG\Infrastructure\TelegramBot\Method\SendMessage;
 
-class DefaultWithKeyboard implements SentReplyToUser
+class DefaultWithKeyboard implements MessageSentToUser
 {
     private $telegramUserId;
     private $messageToUser;

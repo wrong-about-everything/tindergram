@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace TG\Tests\Unit\Activities\Cron\KicksOffANewSpot;
 
-use Meringue\Timeline\Point\Now;
 use PHPUnit\Framework\TestCase;
 use TG\Activities\Cron\KicksOffANewSpot\KicksOffANewSpot;
 use TG\Domain\BotUser\UserStatus\Pure\Registered;
@@ -13,8 +12,7 @@ use TG\Domain\Gender\Pure\Gender;
 use TG\Domain\Gender\Pure\Male;
 use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\ApplicationConnection;
 use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\RootConnection;
-use TG\Infrastructure\Http\Transport\Indifferent;
-use TG\Infrastructure\Http\Transport\TransportWithTwoAvatars;
+use TG\Infrastructure\Http\Transport\TransportWithNAvatars;
 use TG\Infrastructure\Logging\LogId;
 use TG\Infrastructure\Logging\Logs\DevNull;
 use TG\Infrastructure\Logging\Logs\StdOut;
@@ -26,13 +24,12 @@ use TG\Infrastructure\Uuid\RandomUUID;
 use TG\Tests\Infrastructure\Environment\Reset;
 use TG\Tests\Infrastructure\Http\Transport\FakeTransport;
 use TG\Tests\Infrastructure\Stub\Table\BotUser;
-use TG\Tests\Infrastructure\Stub\Table\View;
 
 class KickOffANewSpotTest extends TestCase
 {
     public function test()
     {
-        $transport = new TransportWithTwoAvatars();
+        $transport = new TransportWithNAvatars(2);
         $connection = new ApplicationConnection();
 
         $this->seedUser($this->firstManPreferringWomenTelegramId(), new Male(), new Female(), $connection);
@@ -104,7 +101,7 @@ class KickOffANewSpotTest extends TestCase
     private function assertPhotosAreSent(int $usersQty, FakeTransport $transport)
     {
         $this->assertCount(
-            $usersQty * (1/*get user profile images request*/ + 2/*get file requests*/ + 1/*send media request*/ + 1/*send pair info with vote emojis*/),
+            $usersQty * (1/*get user profile images request*/ + 2/*get file requests*/ + 1/*send media request*/ + 1/*send pair info with rate emojis*/),
             $transport->sentRequests()
         );
     }
@@ -136,7 +133,7 @@ class KickOffANewSpotTest extends TestCase
         $this->assertCount(
             $viewsQty,
             (new Selecting(
-                'select * from view',
+                'select * from viewed_pair',
                 [],
                 $connection
             ))

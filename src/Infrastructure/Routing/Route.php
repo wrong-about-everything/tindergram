@@ -8,5 +8,5 @@ use TG\Infrastructure\Http\Request\Inbound\Request;
 
 interface Route
 {
-    public function matchResult(Request $httpRequest): MatchResult;
+    public function matchResult(Request $request): MatchResult;
 }

@@ -18,7 +18,7 @@ class FoundWithParams implements Route
         $this->params = $params;
     }
 
-    public function matchResult(Request $httpRequest): MatchResult
+    public function matchResult(Request $request): MatchResult
     {
         return new Match($this->params);
     }

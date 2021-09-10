@@ -40,6 +40,9 @@ class SentToUser implements UserAvatars
         if (!$this->avatarsOfUser->value()->isSuccessful()) {
             return $this->avatarsOfUser->value();
         }
+        if (count($this->avatarsOfUser->value()->pure()->raw()) === 0) {
+            return new Successful(new Emptie());
+        }
 
         $response =
             $this->httpTransport

@@ -15,19 +15,19 @@ use TG\Infrastructure\Routing\Route;
 
 class ArbitraryTelegramUserMessageRouteWithBotId implements Route
 {
-    public function matchResult(Request $httpRequest): MatchResult
+    public function matchResult(Request $request): MatchResult
     {
-        if (!$httpRequest->method()->equals(new Post())) {
+        if (!$request->method()->equals(new Post())) {
             return new NotMatch();
         }
 
-        $userMessage = new FromTelegramMessage($httpRequest->body());
+        $userMessage = new FromTelegramMessage($request->body());
 
         return
             $userMessage->exists()
                 ?
                     new Match(
-                        [json_decode($httpRequest->body(), true), $this->botId($httpRequest)->value()]
+                        [json_decode($request->body(), true), $this->botId($request)->value()]
                     )
                 : new NotMatch()
             ;

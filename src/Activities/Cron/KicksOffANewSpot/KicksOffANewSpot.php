@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace TG\Activities\Cron\KicksOffANewSpot;
 
 use TG\Domain\BotUser\UserStatus\Pure\Registered;
-use TG\Domain\ViewedPair\RecipientInitiated;
-use TG\Domain\ViewedPair\Sent;
+use TG\Domain\ViewedPair\WriteModel\RecipientInitiated;
+use TG\Domain\ViewedPair\WriteModel\Sent;
 use TG\Infrastructure\Http\Transport\HttpTransport;
 use TG\Infrastructure\Logging\LogItem\FromNonSuccessfulImpureValue;
 use TG\Infrastructure\Logging\LogItem\InformationMessage;

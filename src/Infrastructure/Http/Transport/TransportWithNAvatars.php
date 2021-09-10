@@ -16,12 +16,14 @@ use TG\Infrastructure\TelegramBot\Method\SendMediaGroup;
 use TG\Infrastructure\TelegramBot\Method\SendMessage;
 use TG\Tests\Infrastructure\Http\Transport\FakeTransport;
 
-class TransportWithTwoAvatars implements FakeTransport
+class TransportWithNAvatars implements FakeTransport
 {
+    private $amountOfAvatars;
     private $requests;
 
-    public function __construct()
+    public function __construct(int $amountOfAvatars)
     {
+        $this->amountOfAvatars = $amountOfAvatars;
         $this->requests = [];
     }
 
@@ -41,10 +43,12 @@ class TransportWithTwoAvatars implements FakeTransport
                         [],
                         json_encode([
                             'result' => [
-                                'photos' => [
-                                    [['file_id' => 'vasya']],
-                                    [['file_id' => 'you look so fine']],
-                                ]
+                                'photos' =>
+                                    array_fill(
+                                        0,
+                                        $this->amountOfAvatars,
+                                        [['file_id' => 'vasya']]
+                                    )
                             ]
                         ])
                     );

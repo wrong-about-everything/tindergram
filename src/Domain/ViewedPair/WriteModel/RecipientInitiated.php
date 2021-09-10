@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TG\Domain\ViewedPair;
+namespace TG\Domain\ViewedPair\WriteModel;
 
 use Meringue\Timeline\Point\Now;
 use TG\Infrastructure\ImpureInteractions\ImpureValue;
@@ -34,7 +34,7 @@ class RecipientInitiated implements ViewedPair
         $updatedViewResponse =
             (new SingleMutating(
                 <<<query
-insert into view (recipient_telegram_id, pair_telegram_id, viewed_at)
+insert into viewed_pair (recipient_telegram_id, pair_telegram_id, viewed_at)
 values (?, ?, ?)
 query
                 ,

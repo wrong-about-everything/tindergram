@@ -23,13 +23,13 @@ class RouteByMethodAndPathPatternWithQuery implements Route
         $this->pathPattern = $pathPattern;
     }
 
-    public function matchResult(Request $httpRequest): MatchResult
+    public function matchResult(Request $request): MatchResult
     {
-        $matchResult = (new RouteByMethodAndPathPattern($this->method, $this->pathPattern))->matchResult($httpRequest);
+        $matchResult = (new RouteByMethodAndPathPattern($this->method, $this->pathPattern))->matchResult($request);
         if (!$matchResult->matches()) {
             return $matchResult;
         }
 
-        return new CombinedMatch($matchResult, new Match([new QueryFromUrl($httpRequest->url())]));
+        return new CombinedMatch($matchResult, new Match([new QueryFromUrl($request->url())]));
     }
 }

@@ -10,7 +10,7 @@ use Ramsey\Uuid\Uuid;
 use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
 use TG\Infrastructure\SqlDatabase\Agnostic\Query\SingleMutatingQueryWithMultipleValueSets;
 
-class View
+class ViewedPair
 {
     private $connection;
 
@@ -24,7 +24,7 @@ class View
         $viewInsertResponse =
             (new SingleMutatingQueryWithMultipleValueSets(
                 <<<q
-insert into view (recipient_telegram_id, pair_telegram_id, viewed_at)
+insert into viewed_pair (recipient_telegram_id, pair_telegram_id, viewed_at)
 values (?, ?, ?)
 q
                 ,
@@ -39,7 +39,7 @@ q
             ))
                 ->response();
         if (!$viewInsertResponse->isSuccessful()) {
-            throw new Exception(sprintf('Error while inserting view record: %s', $viewInsertResponse->error()->logMessage()));
+            throw new Exception(sprintf('Error while inserting viewed_pair record: %s', $viewInsertResponse->error()->logMessage()));
         }
     }
 
