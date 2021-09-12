@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace TG\Domain\Reaction\Pure;
 
-use TG\Domain\ViewedPair\ReadModel\ViewedPair;
+use TG\Domain\Pair\ReadModel\Pair;
 
 class FromViewedPair extends Reaction
 {
     private $concrete;
 
-    public function __construct(ViewedPair $viewedPair)
+    public function __construct(Pair $viewedPair)
     {
         $this->concrete = $this->concrete($viewedPair);
     }
@@ -25,7 +25,7 @@ class FromViewedPair extends Reaction
         return $this->concrete->exists();
     }
 
-    private function concrete(ViewedPair $viewedPair): Reaction
+    private function concrete(Pair $viewedPair): Reaction
     {
         return new FromInteger($viewedPair->value()->pure()->raw()['reaction']);
     }

@@ -29,6 +29,8 @@ create table bot_user (
   unique (id)
 );
 
+create index bot_user__seen_qty_asc on bot_user (seen_qty asc);
+
 create table viewed_pair (
   recipient_telegram_id bigint,
   pair_telegram_id bigint,

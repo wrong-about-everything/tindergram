@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace TG\Domain\ViewedPair\ReadModel;
+namespace TG\Domain\Pair\WriteModel;
 
 use TG\Infrastructure\ImpureInteractions\ImpureValue;
 
-interface ViewedPair
+interface Pair
 {
     public function value(): ImpureValue;
 }

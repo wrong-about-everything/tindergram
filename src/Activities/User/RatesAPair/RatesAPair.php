@@ -6,6 +6,8 @@ namespace TG\Activities\User\RatesAPair;
 
 use TG\Domain\BotUser\ReadModel\ByInternalTelegramUserId;
 use TG\Domain\InternalApi\RateCallbackData\RateCallbackData;
+use TG\Activities\User\RatesAPair\Domain\NextMessage;
+use TG\Domain\Pair\WriteModel\SentByHttp;
 use TG\Domain\Reaction\Pure\FromViewedPair;
 use TG\Domain\Reaction\Pure\Like;
 use TG\Domain\TelegramBot\InlineAction\FromRateCallbackData;
@@ -13,18 +15,20 @@ use TG\Domain\TelegramBot\InlineAction\ThumbsUp;
 use TG\Domain\TelegramBot\InternalTelegramUserId\Pure\PairTelegramIdFromRateCallback;
 use TG\Domain\TelegramBot\MessageToUser\YouCanNotRateAUserMoreThanOnce;
 use TG\Domain\TelegramBot\MessageToUser\YouHaveAMatch;
-use TG\Domain\ViewedPair\ReadModel\ByVoterTelegramIdAndRatedTelegramId;
-use TG\Domain\ViewedPair\ReadModel\ViewedPair as ReadModelViewedPair;
-use TG\Domain\ViewedPair\WriteModel\Rated;
-use TG\Domain\ViewedPair\WriteModel\ViewedPair;
+use TG\Domain\Pair\ReadModel\ByVoterTelegramIdAndRatedTelegramId;
+use TG\Domain\Pair\ReadModel\Pair as ReadModelViewedPair;
+use TG\Domain\Pair\WriteModel\Rated;
+use TG\Domain\Pair\WriteModel\Pair;
 use TG\Infrastructure\Http\Transport\HttpTransport;
 use TG\Infrastructure\ImpureInteractions\ImpureValue;
+use TG\Infrastructure\Logging\LogItem\ErrorFromNonSuccessfulImpureValue;
 use TG\Infrastructure\Logging\LogItem\FromNonSuccessfulImpureValue;
 use TG\Infrastructure\Logging\LogItem\InformationMessage;
 use TG\Infrastructure\Logging\Logs;
 use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId;
 use TG\Infrastructure\TelegramBot\SentReplyToUser\DefaultWithNoKeyboard;
+use TG\Infrastructure\TelegramBot\SentReplyToUser\MessageSentToUser;
 use TG\Infrastructure\UserStory\Body\Emptie;
 use TG\Infrastructure\UserStory\Existent;
 use TG\Infrastructure\UserStory\Response;
@@ -49,22 +53,30 @@ class RatesAPair extends Existent
 
     public function response(): Response
     {
-        $this->logs->receive(new InformationMessage('User votes a pair scenario started'));
+        $this->logs->receive(new InformationMessage('User rates a pair scenario started'));
 
         if ($this->viewedPair()->value()->pure()->isPresent()) {
+            $this->logs->receive(new InformationMessage('Someone rated a pair one more time'));
             $this->youCanNotRateAUserMoreThatOnce();
             return new Successful(new Emptie());
         }
 
-        $this->persistentPair();
+        $persistentPair = $this->persistentPair();
+        if (!$persistentPair->value()->isSuccessful()) {
+            $this->logs->receive(new FromNonSuccessfulImpureValue($persistentPair->value()));
+            return new Successful(new Emptie());
+        }
 
         if ($this->thereIsAMatch()) {
             $this->sendContactsToEachOther();
         }
 
-        $this->sendNextPair();
+        $value = $this->nextSentPair()->value();
+        if (!$value->isSuccessful()) {
+            $this->logs->receive(new ErrorFromNonSuccessfulImpureValue($value));
+        }
 
-        $this->logs->receive(new InformationMessage('User votes a pair scenario finished'));
+        $this->logs->receive(new InformationMessage('User rates a pair scenario finished'));
 
         return new Successful(new Emptie());
     }
@@ -90,7 +102,7 @@ class RatesAPair extends Existent
                 ->value();
     }
 
-    private function persistentPair(): ViewedPair
+    private function persistentPair(): Pair
     {
         return
             new Rated(
@@ -103,18 +115,15 @@ class RatesAPair extends Existent
 
     private function thereIsAMatch()
     {
+        $invertedPair = new ByVoterTelegramIdAndRatedTelegramId($this->pairTelegramId(), $this->voterTelegramId, $this->connection);
+
         return
             (new FromRateCallbackData($this->rateCallbackData))->equals(new ThumbsUp())
                 &&
-            (new FromViewedPair(
-                new ByVoterTelegramIdAndRatedTelegramId(
-                    $this->pairTelegramId(),
-                    $this->voterTelegramId,
-                    $this->connection
-                )
-            ))
-                ->equals(new Like())
-            ;
+            $invertedPair->value()->pure()->isPresent()
+                &&
+            (new FromViewedPair($invertedPair))->equals(new Like())
+        ;
     }
 
     private function pairTelegramId(): InternalTelegramUserId
@@ -154,7 +163,7 @@ class RatesAPair extends Existent
             (new DefaultWithNoKeyboard(
                 $this->pairTelegramId(),
                 new YouHaveAMatch(
-                    (new ByInternalTelegramUserId($this->pairTelegramId(), $this->connection))
+                    (new ByInternalTelegramUserId($this->voterTelegramId, $this->connection))
                         ->value()->pure()->raw()['telegram_handle']
                 ),
                 $this->transport
@@ -165,9 +174,8 @@ class RatesAPair extends Existent
         }
     }
 
-    private function sendNextPair()
+    private function nextSentPair(): MessageSentToUser
     {
-        return
-            new SentNextPair();
+        return new NextMessage($this->voterTelegramId, $this->transport, $this->connection);
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace TG\Tests\Infrastructure\Stub\Table;
 
 use Exception;
+use Meringue\Timeline\Point\Now;
 use Ramsey\Uuid\Uuid;
 use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
 use TG\Infrastructure\SqlDatabase\Agnostic\Query\SingleMutatingQueryWithMultipleValueSets;
@@ -28,12 +29,16 @@ insert into bot_user (
 
   preferred_gender, gender, status, registered_at,
 
+  is_initiated,
+
   seen_qty, last_seen_at, like_qty, dislike_qty
 )
 values (
   ?, ?, ?, ?, ?,
 
   ?, ?, ?, ?,
+
+  ?,
 
   ?, ?, ?, ?
 )
@@ -47,7 +52,9 @@ q
 
                             $v['preferred_gender'] ?? null, $v['gender'] ?? null, $v['status'] ?? null, $v['registered_at'] ?? null,
 
-                            $v['seen_qty'] ?? null, $v['last_seen_at'] ?? null, $v['like_qty'] ?? null, $v['dislike_qty'] ?? null,
+                            $v['is_initiated'],
+
+                            $v['seen_qty'], $v['last_seen_at'], $v['like_qty'], $v['dislike_qty'],
                         ];
                     },
                     $records
@@ -68,6 +75,13 @@ q
             'last_name' => 'Belov',
             'telegram_id' => 666,
             'telegram_handle' => 'vasya',
+
+            'is_initiated' => 0,
+
+            'seen_qty' => 0,
+            'last_seen_at' => (new Now())->value(),
+            'like_qty' => 0,
+            'dislike_qty' => 0,
         ];
     }
 }

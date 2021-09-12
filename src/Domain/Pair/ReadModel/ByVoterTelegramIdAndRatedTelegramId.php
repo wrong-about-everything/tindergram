@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TG\Domain\ViewedPair\ReadModel;
+namespace TG\Domain\Pair\ReadModel;
 
 use TG\Infrastructure\ImpureInteractions\ImpureValue;
 use TG\Infrastructure\ImpureInteractions\ImpureValue\Successful;
@@ -12,7 +12,7 @@ use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
 use TG\Infrastructure\SqlDatabase\Agnostic\Query\Selecting;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId;
 
-class ByVoterTelegramIdAndRatedTelegramId implements ViewedPair
+class ByVoterTelegramIdAndRatedTelegramId implements Pair
 {
     private $voterTelegramId;
     private $ratedTelegramId;

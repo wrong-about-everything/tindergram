@@ -26,7 +26,8 @@ class FromInteger extends InlineActionType
     private function concrete(int $typeId): InlineActionType
     {
         return [
-            (new Rating())->value() => new Rating()
+            (new Rating())->value() => new Rating(),
+            (new TestCallbackType())->value() => new TestCallbackType(),
         ][$typeId] ?? new NonExistent();
     }
 }

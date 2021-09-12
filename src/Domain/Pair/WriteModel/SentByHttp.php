@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TG\Domain\ViewedPair\WriteModel;
+namespace TG\Domain\Pair\WriteModel;
 
 use TG\Domain\TelegramBot\InlineKeyboardButton\Single\ThumbsDown;
 use TG\Domain\TelegramBot\InlineKeyboardButton\Single\ThumbsUp;
@@ -17,7 +17,7 @@ use TG\Infrastructure\TelegramBot\UserAvatars\InboundModel\FromTelegram;
 use TG\Infrastructure\TelegramBot\UserAvatars\InboundModel\FirstNNonDeleted;
 use TG\Infrastructure\TelegramBot\UserAvatars\OutboundModel\SentToUser;
 
-class Sent implements ViewedPair
+class SentByHttp implements Pair
 {
     private $recipientTelegramId;
     private $pairTelegramId;

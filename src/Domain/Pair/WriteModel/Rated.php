@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TG\Domain\ViewedPair\WriteModel;
+namespace TG\Domain\Pair\WriteModel;
 
 use Exception;
 use Meringue\Timeline\Point\Now;
@@ -15,12 +15,13 @@ use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
 use TG\Infrastructure\SqlDatabase\Agnostic\Query\SingleMutating;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId;
 
-class Rated implements ViewedPair
+class Rated implements Pair
 {
     private $recipientTelegramId;
     private $pairTelegramId;
     private $action;
     private $connection;
+    private $cached;
 
     public function __construct(InternalTelegramUserId $recipientTelegramId, InternalTelegramUserId $pairTelegramId, InlineAction $action, OpenConnection $connection)
     {
@@ -28,9 +29,19 @@ class Rated implements ViewedPair
         $this->pairTelegramId = $pairTelegramId;
         $this->action = $action;
         $this->connection = $connection;
+        $this->cached = null;
     }
 
     public function value(): ImpureValue
+    {
+        if (is_null($this->cached)) {
+            $this->cached = $this->doValue();
+        }
+
+        return $this->cached;
+    }
+
+    private function doValue(): ImpureValue
     {
         $viewedPairResponse =
             (new SingleMutating(

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace TG\Tests\Unit\Domain\ViewedPair\WriteModel;
 
 use PHPUnit\Framework\TestCase;
-use TG\Domain\ViewedPair\WriteModel\Sent;
+use TG\Domain\Pair\WriteModel\SentByHttp;
 use TG\Infrastructure\Http\Transport\TransportWithNoAvatars;
 use TG\Infrastructure\Http\Transport\TransportWithNAvatars;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\FromInteger;
@@ -16,7 +16,7 @@ class SentTest extends TestCase
     public function testWhenPairHasNoPhotosThenOnlyInfoIsSent()
     {
         $httpTransport = new TransportWithNoAvatars();
-        $value = (new Sent($this->recipientTelegramId(), $this->pairTelegramId(), 'Vasya', $httpTransport))->value();
+        $value = (new SentByHttp($this->recipientTelegramId(), $this->pairTelegramId(), 'Vasya', $httpTransport))->value();
 
         $this->assertTrue($value->isSuccessful());
         $this->assertCount(
@@ -28,7 +28,7 @@ class SentTest extends TestCase
     public function testWhenPairHasMoreThanFivePhotosThenOnlyFiveAreSent()
     {
         $httpTransport = new TransportWithNAvatars(654);
-        $value = (new Sent($this->recipientTelegramId(), $this->pairTelegramId(), 'Vasya', $httpTransport))->value();
+        $value = (new SentByHttp($this->recipientTelegramId(), $this->pairTelegramId(), 'Vasya', $httpTransport))->value();
 
         $this->assertTrue($value->isSuccessful());
         $this->assertCount(

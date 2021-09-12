@@ -24,14 +24,14 @@ class ViewedPair
         $viewInsertResponse =
             (new SingleMutatingQueryWithMultipleValueSets(
                 <<<q
-insert into viewed_pair (recipient_telegram_id, pair_telegram_id, viewed_at)
-values (?, ?, ?)
+insert into viewed_pair (recipient_telegram_id, pair_telegram_id, viewed_at, reaction)
+values (?, ?, ?, ?)
 q
                 ,
                 array_map(
                     function (array $record) {
                         $v = array_merge($this->defaultValues(), $record);
-                        return [$v['recipient_telegram_id'], $v['pair_telegram_id'], $v['viewed_at']];
+                        return [$v['recipient_telegram_id'], $v['pair_telegram_id'], $v['viewed_at'], $v['reaction'] ?? null];
                     },
                     $records
                 ),

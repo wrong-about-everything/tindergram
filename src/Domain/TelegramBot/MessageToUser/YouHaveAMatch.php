@@ -17,7 +17,7 @@ class YouHaveAMatch implements MessageToUser
 
     public function value(): string
     {
-        return sprintf('Поздравляю, у вас новая пара — @%s! Почему бы вам не написать прямо сейчас? Можно начать просто с 👋', $this->matchTelegramHandle);
+        return sprintf('🎉🎉🎉 Поздравляю, у вас новая пара — @%s! Почему бы вам не написать прямо сейчас? Можно начать просто с 👋', $this->matchTelegramHandle);
     }
 
     public function isNonEmpty(): bool

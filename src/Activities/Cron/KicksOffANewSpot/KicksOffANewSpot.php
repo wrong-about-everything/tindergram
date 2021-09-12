@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace TG\Activities\Cron\KicksOffANewSpot;
 
 use TG\Domain\BotUser\UserStatus\Pure\Registered;
-use TG\Domain\ViewedPair\WriteModel\RecipientInitiated;
-use TG\Domain\ViewedPair\WriteModel\Sent;
+use TG\Domain\Pair\WriteModel\SentPair;
+use TG\Activities\Cron\KicksOffANewSpot\Domain\RecipientInitiated;
 use TG\Infrastructure\Http\Transport\HttpTransport;
 use TG\Infrastructure\Logging\LogItem\FromNonSuccessfulImpureValue;
 use TG\Infrastructure\Logging\LogItem\InformationMessage;
@@ -66,14 +66,10 @@ query
             function (array $row) {
                 $recipientInitiated =
                     (new RecipientInitiated(
-                        new Sent(
-                            new FromInteger($row['recipient_telegram_id']),
-                            new FromInteger($row['pair_telegram_id']),
-                            $row['pair_first_name'],
-                            $this->httpTransport
-                        ),
                         new FromInteger($row['recipient_telegram_id']),
                         new FromInteger($row['pair_telegram_id']),
+                        $row['pair_first_name'],
+                        $this->httpTransport,
                         $this->connection
                     ))
                         ->value();
