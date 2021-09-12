@@ -45,12 +45,8 @@ class Rated implements Pair
     {
         $viewedPairResponse =
             (new SingleMutating(
-                <<<query
-insert into viewed_pair (recipient_telegram_id, pair_telegram_id, viewed_at, reaction)
-values (?, ?, ?, ?)
-query
-                ,
-                [$this->recipientTelegramId->value(), $this->pairTelegramId->value(), (new Now())->value(), (new FromAction($this->action))->value()],
+                'update viewed_pair set reaction = ? where recipient_telegram_id = ? and pair_telegram_id = ?',
+                [(new FromAction($this->action))->value(), $this->recipientTelegramId->value(), $this->pairTelegramId->value(), ],
                 $this->connection
             ))
                 ->response();

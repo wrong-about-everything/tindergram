@@ -10,7 +10,7 @@ class RegistrationCongratulations implements MessageToUser
 {
     public function value(): string
     {
-        return 'Поздравляю, вы зарегистрировались! Если хотите что-то спросить или уточнить, смело пишите на @flurr_support_bot';
+        return 'Поздравляю, вы зарегистрировались! Через пару дней начнём присылать профили. Если хотите что-то спросить или уточнить, смело пишите на @flurr_support_bot';
     }
 
     public function isNonEmpty(): bool

@@ -27,6 +27,10 @@ class FromViewedPair extends Reaction
 
     private function concrete(Pair $viewedPair): Reaction
     {
+        if (!$viewedPair->value()->pure()->isPresent() || is_null($viewedPair->value()->pure()->raw()['reaction'])) {
+            return new NonExistent();
+        }
+
         return new FromInteger($viewedPair->value()->pure()->raw()['reaction']);
     }
 }

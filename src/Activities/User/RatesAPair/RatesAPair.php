@@ -55,20 +55,19 @@ class RatesAPair extends Existent
     {
         $this->logs->receive(new InformationMessage('User rates a pair scenario started'));
 
-        if ($this->viewedPair()->value()->pure()->isPresent()) {
+        $reactionToCurrentPair = new FromViewedPair($this->viewedPair());
+        if ($reactionToCurrentPair->exists()) {
             $this->logs->receive(new InformationMessage('Someone rated a pair one more time'));
             $this->youCanNotRateAUserMoreThatOnce();
-            return new Successful(new Emptie());
-        }
-
-        $persistentPair = $this->persistentPair();
-        if (!$persistentPair->value()->isSuccessful()) {
-            $this->logs->receive(new FromNonSuccessfulImpureValue($persistentPair->value()));
-            return new Successful(new Emptie());
-        }
-
-        if ($this->thereIsAMatch()) {
-            $this->sendContactsToEachOther();
+        } else {
+            $persistentPair = $this->persistentPair();
+            if (!$persistentPair->value()->isSuccessful()) {
+                $this->logs->receive(new FromNonSuccessfulImpureValue($persistentPair->value()));
+            } else {
+                if ($this->thereIsAMatch()) {
+                    $this->sendContactsToEachOther();
+                }
+            }
         }
 
         $value = $this->nextSentPair()->value();
@@ -120,7 +119,7 @@ class RatesAPair extends Existent
         return
             (new FromRateCallbackData($this->rateCallbackData))->equals(new ThumbsUp())
                 &&
-            $invertedPair->value()->pure()->isPresent()
+            (new FromViewedPair($invertedPair))->exists()
                 &&
             (new FromViewedPair($invertedPair))->equals(new Like())
         ;

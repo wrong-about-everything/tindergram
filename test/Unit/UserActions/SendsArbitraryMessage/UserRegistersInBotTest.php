@@ -103,7 +103,7 @@ t
         $this->assertUserIsRegistered($this->userId(), $connection);
         $this->assertCount(7, $transport->sentRequests());
         $this->assertEquals(
-            'Поздравляю, вы зарегистрировались! Если хотите что-то спросить или уточнить, смело пишите на @flurr_support_bot',
+            'Поздравляю, вы зарегистрировались! Через пару дней начнём присылать профили. Если хотите что-то спросить или уточнить, смело пишите на @flurr_support_bot',
             (new FromQuery(new FromUrl($transport->sentRequests()[6]->url())))->value()['text']
         );
     }
@@ -151,7 +151,7 @@ t
         $this->assertUserIsRegistered($this->userId(), $connection);
         $this->assertCount(4, $transport->sentRequests());
         $this->assertEquals(
-            'Поздравляю, вы зарегистрировались! Если хотите что-то спросить или уточнить, смело пишите на @flurr_support_bot',
+            'Поздравляю, вы зарегистрировались! Через пару дней начнём присылать профили. Если хотите что-то спросить или уточнить, смело пишите на @flurr_support_bot',
             (new FromQuery(new FromUrl($transport->sentRequests()[3]->url())))->value()['text']
         );
     }
