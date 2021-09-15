@@ -23,7 +23,7 @@ class Indifferent implements FakeTransport
     public function response(Request $request): Response
     {
         $this->requests[] = new EagerlyInvoked($request);
-        return new DefaultResponse(new Ok(), [], '');
+        return new DefaultResponse(new Ok(), [], '{"ok":true}');
     }
 
     /**

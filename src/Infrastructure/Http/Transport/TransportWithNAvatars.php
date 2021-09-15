@@ -33,7 +33,7 @@ class TransportWithNAvatars implements FakeTransport
         $this->requests[] = $eagerlyInvoked;
         switch ((new FromUrl($request->url()))->value()) {
             case (new SendMessage())->value():
-                return new DefaultResponse(new Ok(), [], '');
+                return new DefaultResponse(new Ok(), [], json_encode(['ok' => true]));
 
             case (new SendMediaGroup())->value():
             case (new GetUserProfilePhotos())->value():
@@ -42,6 +42,7 @@ class TransportWithNAvatars implements FakeTransport
                         new Ok(),
                         [],
                         json_encode([
+                            'ok' => true,
                             'result' => [
                                 'photos' =>
                                     array_fill(
@@ -59,6 +60,7 @@ class TransportWithNAvatars implements FakeTransport
                         new Ok(),
                         [],
                         json_encode([
+                            'ok' => true,
                             'result' => [
                                 'file_id' => 'vasya'
                             ]
@@ -67,7 +69,7 @@ class TransportWithNAvatars implements FakeTransport
 
         }
 
-        return new DefaultResponse(new Ok(), [], '');
+        return new DefaultResponse(new Ok(), [], json_encode(['ok' => true]));
     }
 
     /**
