@@ -70,7 +70,7 @@ class RatesAPair extends Existent
             }
         }
 
-        $value = $this->nextSentPair()->value();
+        $value = $this->nextMessage()->value();
         if (!$value->isSuccessful()) {
             $this->logs->receive(new ErrorFromNonSuccessfulImpureValue($value));
         }
@@ -173,7 +173,7 @@ class RatesAPair extends Existent
         }
     }
 
-    private function nextSentPair(): MessageSentToUser
+    private function nextMessage(): MessageSentToUser
     {
         return new NextMessage($this->voterTelegramId, $this->transport, $this->connection);
     }

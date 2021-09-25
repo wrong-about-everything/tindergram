@@ -54,7 +54,7 @@ class NextMessage implements MessageSentToUser
                 <<<query
     select pair.telegram_id pair_telegram_id, pair.first_name pair_first_name
     from bot_user recipient
-        join bot_user pair on recipient.preferred_gender = pair.gender and recipient.telegram_id != pair.telegram_id
+        join bot_user pair on recipient.preferred_gender = pair.gender and recipient.gender = pair.preferred_gender and recipient.telegram_id != pair.telegram_id
         left join viewed_pair on viewed_pair.recipient_telegram_id = recipient.telegram_id and viewed_pair.pair_telegram_id = pair.telegram_id
     where
         recipient.telegram_id = ?
