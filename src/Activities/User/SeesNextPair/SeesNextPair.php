@@ -38,7 +38,7 @@ class SeesNextPair extends Existent
          * 2 (?) Если текущий пользователь зарегался в течение последний X (его надо определить!!) дней, он в инкубации:
          *    показывать ему только тем, кто сами зарегались в течение последний трёх дней.
          *    Это для того, чтоб он видел знакомые лица.
-         * 3. Не показывать текущему польхователю людей, которые в инкубации (is_initiated = false). Когда они выйдут оттуда, их должны видеть местные.
+         *
          */
 
         // Как выбрать следующую пару? Вот какие критерии надо учесть:
@@ -57,13 +57,11 @@ class SeesNextPair extends Existent
         recipient.status = ? and pair.status = ?
             and
         viewed_pair.recipient_telegram_id is null
-            and
-        recipient.is_initiated = ? and pair.is_initiated = ?
     order by recipient.telegram_id, pair.seen_qty asc, pair.last_seen_at desc
     limit 50
 query
                 ,
-                [(new Registered())->value(), (new Registered())->value(), 1, 1],
+                [(new Registered())->value(), (new Registered())->value()],
                 $this->connection
             ))
                 ->response();

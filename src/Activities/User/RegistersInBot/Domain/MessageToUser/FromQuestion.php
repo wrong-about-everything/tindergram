@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TG\Activities\User\RegistersInBot\Domain\Reply;
+namespace TG\Activities\User\RegistersInBot\Domain\MessageToUser;
 
 use Exception;
 use TG\Domain\RegistrationQuestion\Single\Pure\RegistrationQuestion;

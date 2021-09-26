@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace TG\Domain\Pair\WriteModel;
 
 use Exception;
-use Meringue\Timeline\Point\Now;
 use TG\Domain\Reaction\Pure\FromAction;
 use TG\Domain\TelegramBot\InlineAction\InlineAction;
 use TG\Domain\TelegramBot\InlineAction\ThumbsDown;

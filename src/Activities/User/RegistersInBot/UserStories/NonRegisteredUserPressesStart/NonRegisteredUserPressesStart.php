@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace TG\Activities\User\RegistersInBot\UserStories\NonRegisteredUserPressesStart;
 
-use TG\Activities\User\RegistersInBot\Domain\Reply\NextRegistrationQuestionSentToUser;
+use TG\Activities\User\RegistersInBot\Domain\MessageToUser\NextRegistrationQuestionSentToUser;
 use TG\Infrastructure\Http\Transport\HttpTransport;
 use TG\Infrastructure\ImpureInteractions\ImpureValue;
 use TG\Infrastructure\Logging\LogItem\FromNonSuccessfulImpureValue;

@@ -23,17 +23,25 @@ use TG\Domain\BotUser\UserStatus\Pure\UserStatus;
 use TG\Domain\RegistrationAnswerOption\Single\Pure\AreYouReadyToRegister\Register;
 use TG\Domain\RegistrationAnswerOption\Single\Pure\WhatDoYouPrefer\Men;
 use TG\Domain\RegistrationAnswerOption\Single\Pure\WhatIsYourGender\Male;
+use TG\Infrastructure\Http\Request\Url\Basename\FromUrl as BasenameFromUrl;
 use TG\Infrastructure\Http\Request\Url\ParsedQuery\FromQuery;
 use TG\Infrastructure\Http\Request\Url\Query\FromUrl;
 use TG\Infrastructure\Http\Transport\HttpTransport;
 use TG\Infrastructure\Http\Transport\Indifferent;
 use TG\Infrastructure\Http\Transport\TransportForUserRegistrationWithoutAvatars;
 use TG\Infrastructure\Http\Transport\TransportWithNAvatars;
+use TG\Infrastructure\Logging\LogId;
 use TG\Infrastructure\Logging\Logs\DevNull;
+use TG\Infrastructure\Logging\Logs\StdOut;
 use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\FromInteger;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId;
+use TG\Infrastructure\TelegramBot\Method\GetFile;
+use TG\Infrastructure\TelegramBot\Method\GetUserProfilePhotos;
+use TG\Infrastructure\TelegramBot\Method\SendMediaGroup;
+use TG\Infrastructure\TelegramBot\Method\SendMessage;
 use TG\Infrastructure\Uuid\FromString;
+use TG\Infrastructure\Uuid\RandomUUID;
 use TG\Tests\Infrastructure\Environment\Reset;
 use TG\Tests\Infrastructure\Stub\Table\BotUser;
 use TG\Tests\Infrastructure\Stub\TelegramMessage\UserMessage;
@@ -65,6 +73,7 @@ class UserRegistersInBotTest extends TestCase
     {
         $connection = new ApplicationConnection();
         $this->createBotUser($this->userId(), $this->telegramUserId(), new RegistrationIsInProgress(), $connection);
+        $this->createRegisteredGayMale($this->pairUserId(), $this->pairTelegramUserId(), $connection);
         $transport = new TransportWithNAvatars(2);
 
         $this->userReply((new Men())->value(), $transport, $connection)->response();
@@ -101,10 +110,26 @@ t
         $this->userReply((new Register())->value(), $transport, $connection)->response();
 
         $this->assertUserIsRegistered($this->userId(), $connection);
-        $this->assertCount(7, $transport->sentRequests());
+        $this->assertCount(11, $transport->sentRequests());
         $this->assertEquals(
-            'Поздравляю, вы зарегистрировались! Через пару дней начнём присылать профили. Если хотите что-то спросить или уточнить, смело пишите на @flurr_support_bot',
-            (new FromQuery(new FromUrl($transport->sentRequests()[6]->url())))->value()['text']
+            (new GetUserProfilePhotos())->value(),
+            (new BasenameFromUrl($transport->sentRequests()[6]->url()))->value()
+        );
+        $this->assertEquals(
+            (new GetFile())->value(),
+            (new BasenameFromUrl($transport->sentRequests()[7]->url()))->value()
+        );
+        $this->assertEquals(
+            (new GetFile())->value(),
+            (new BasenameFromUrl($transport->sentRequests()[8]->url()))->value()
+        );
+        $this->assertEquals(
+            (new SendMediaGroup())->value(),
+            (new BasenameFromUrl($transport->sentRequests()[9]->url()))->value()
+        );
+        $this->assertEquals(
+            (new SendMessage())->value(),
+            (new BasenameFromUrl($transport->sentRequests()[10]->url()))->value()
         );
     }
 
@@ -112,6 +137,7 @@ t
     {
         $connection = new ApplicationConnection();
         $this->createBotUser($this->userId(), $this->telegramUserId(), new RegistrationIsInProgress(), $connection);
+        $this->createRegisteredGayMale($this->pairUserId(), $this->pairTelegramUserId(), $connection);
         $transport = new TransportForUserRegistrationWithoutAvatars();
 
         $this->userReply((new Men())->value(), $transport, $connection)->response();
@@ -149,10 +175,14 @@ t
         $this->userReply((new Register())->value(), $transport, $connection)->response();
 
         $this->assertUserIsRegistered($this->userId(), $connection);
-        $this->assertCount(4, $transport->sentRequests());
+        $this->assertCount(5, $transport->sentRequests());
         $this->assertEquals(
-            'Поздравляю, вы зарегистрировались! Через пару дней начнём присылать профили. Если хотите что-то спросить или уточнить, смело пишите на @flurr_support_bot',
-            (new FromQuery(new FromUrl($transport->sentRequests()[3]->url())))->value()['text']
+            (new GetUserProfilePhotos())->value(),
+            (new BasenameFromUrl($transport->sentRequests()[3]->url()))->value()
+        );
+        $this->assertEquals(
+            (new SendMessage())->value(),
+            (new BasenameFromUrl($transport->sentRequests()[4]->url()))->value()
         );
     }
 
@@ -182,9 +212,19 @@ t
         return new FromInteger(654987);
     }
 
+    private function pairTelegramUserId(): InternalTelegramUserId
+    {
+        return new FromInteger(12345);
+    }
+
     private function userId(): BotUserId
     {
         return new UserIdFromUuid(new FromString('103729d6-330c-4123-b856-d5196812d509'));
+    }
+
+    private function pairUserId(): BotUserId
+    {
+        return new UserIdFromUuid(new FromString('222729d6-330c-4123-b856-d5196812d222'));
     }
 
     private function createBotUser(BotUserId $userId, InternalTelegramUserId $telegramUserId, UserStatus $status, OpenConnection $connection)
@@ -198,6 +238,23 @@ t
                     'telegram_id' => $telegramUserId->value(),
                     'telegram_handle' => 'dremuchee_bydlo',
                     'status' => $status->value(),
+                ]
+            ]);
+    }
+
+    private function createRegisteredGayMale(BotUserId $userId, InternalTelegramUserId $telegramUserId, OpenConnection $connection)
+    {
+        (new BotUser($connection))
+            ->insert([
+                [
+                    'id' => $userId->value(),
+                    'first_name' => 'Vassil',
+                    'last_name' => 'Krasavchicke',
+                    'telegram_id' => $telegramUserId->value(),
+                    'telegram_handle' => 'vasily_sweet_boi',
+                    'status' => (new Registered())->value(),
+                    'gender' => (new MaleGender())->value(),
+                    'preferred_gender' => (new MaleGender())->value(),
                 ]
             ]);
     }

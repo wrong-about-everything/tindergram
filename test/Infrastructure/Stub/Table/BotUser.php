@@ -29,16 +29,12 @@ insert into bot_user (
 
   preferred_gender, gender, status, registered_at,
 
-  is_initiated,
-
   seen_qty, last_seen_at, like_qty, dislike_qty
 )
 values (
   ?, ?, ?, ?, ?,
 
   ?, ?, ?, ?,
-
-  ?,
 
   ?, ?, ?, ?
 )
@@ -51,8 +47,6 @@ q
                             $v['id'], $v['first_name'], $v['last_name'], $v['telegram_id'], $v['telegram_handle'],
 
                             $v['preferred_gender'] ?? null, $v['gender'] ?? null, $v['status'] ?? null, $v['registered_at'] ?? null,
-
-                            $v['is_initiated'],
 
                             $v['seen_qty'], $v['last_seen_at'], $v['like_qty'], $v['dislike_qty'],
                         ];
@@ -75,8 +69,6 @@ q
             'last_name' => 'Belov',
             'telegram_id' => 666,
             'telegram_handle' => 'vasya',
-
-            'is_initiated' => 0,
 
             'seen_qty' => 0,
             'last_seen_at' => (new Now())->value(),

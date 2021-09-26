@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace TG\Activities\User\RegistersInBot\Domain\Reply;
+namespace TG\Activities\User\RegistersInBot\Domain\MessageToUser;
 
 use TG\Infrastructure\TelegramBot\MessageToUser\MessageToUser;
 

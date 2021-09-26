@@ -215,8 +215,6 @@ class RatesAPairTest extends TestCase
 
                     'gender' => $gender->value(),
                     'preferred_gender' => $preferredGender->value(),
-
-                    'is_initiated' => true,
                 ]
             ]);
     }

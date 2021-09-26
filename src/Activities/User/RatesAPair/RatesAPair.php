@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace TG\Activities\User\RatesAPair;
 
 use TG\Domain\BotUser\ReadModel\ByInternalTelegramUserId;
+use TG\Domain\BotUser\ReadModel\NextCandidateFor;
 use TG\Domain\InternalApi\RateCallbackData\RateCallbackData;
-use TG\Activities\User\RatesAPair\Domain\NextMessage;
-use TG\Domain\Pair\WriteModel\SentByHttp;
+use TG\Domain\Pair\WriteModel\SentIfExists;
 use TG\Domain\Reaction\Pure\FromViewedPair;
 use TG\Domain\Reaction\Pure\Like;
 use TG\Domain\TelegramBot\InlineAction\FromRateCallbackData;
@@ -28,7 +28,6 @@ use TG\Infrastructure\Logging\Logs;
 use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId;
 use TG\Infrastructure\TelegramBot\SentReplyToUser\DefaultWithNoKeyboard;
-use TG\Infrastructure\TelegramBot\SentReplyToUser\MessageSentToUser;
 use TG\Infrastructure\UserStory\Body\Emptie;
 use TG\Infrastructure\UserStory\Existent;
 use TG\Infrastructure\UserStory\Response;
@@ -70,7 +69,7 @@ class RatesAPair extends Existent
             }
         }
 
-        $value = $this->nextMessage()->value();
+        $value = $this->nextSentPairIfExists()->value();
         if (!$value->isSuccessful()) {
             $this->logs->receive(new ErrorFromNonSuccessfulImpureValue($value));
         }
@@ -112,7 +111,7 @@ class RatesAPair extends Existent
             );
     }
 
-    private function thereIsAMatch()
+    private function thereIsAMatch(): bool
     {
         $invertedPair = new ByVoterTelegramIdAndRatedTelegramId($this->pairTelegramId(), $this->voterTelegramId, $this->connection);
 
@@ -173,8 +172,14 @@ class RatesAPair extends Existent
         }
     }
 
-    private function nextMessage(): MessageSentToUser
+    private function nextSentPairIfExists(): Pair
     {
-        return new NextMessage($this->voterTelegramId, $this->transport, $this->connection);
+        return
+            new SentIfExists(
+                new NextCandidateFor($this->voterTelegramId, $this->connection),
+                $this->voterTelegramId,
+                $this->transport,
+                $this->connection
+            );
     }
 }

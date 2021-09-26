@@ -15,8 +15,9 @@ use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
 use TG\Infrastructure\Http\Transport\HttpTransport;
 use TG\Infrastructure\Logging\LogItem\InformationMessage;
 use TG\Infrastructure\Logging\Logs;
-use TG\Domain\SentReplyToUser\Sorry;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\FromParsedTelegramMessage;
+use TG\Infrastructure\TelegramBot\MessageToUser\Sorry;
+use TG\Infrastructure\TelegramBot\SentReplyToUser\DefaultWithNoKeyboard;
 use TG\Infrastructure\UserStory\Body\Emptie;
 use TG\Infrastructure\UserStory\Existent;
 use TG\Infrastructure\UserStory\Response;
@@ -86,14 +87,16 @@ class SendsArbitraryMessage extends Existent
     private function sorry()
     {
         return
-            new Sorry(
+            new DefaultWithNoKeyboard(
                 new FromParsedTelegramMessage($this->message),
+                new Sorry(),
                 $this->httpTransport
             );
     }
 
     private function showNewPair()
     {
+        // @todo: show new pair
         return
             new InCaseOfAnyUncertainty(
                 new FromParsedTelegramMessage($this->message),

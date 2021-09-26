@@ -12,17 +12,15 @@ set_error_handler(
 );
 
 use Dotenv\Dotenv as OneAndOnly;
-use TG\Domain\Infrastructure\Setup\Database\Seed;
-use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\ApplicationConnection;
 use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\Credentials\ApplicationCredentials;
 use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\Credentials\RootCredentials;
 use TG\Infrastructure\Filesystem\DirPath\ExistentFromAbsolutePathString as DirPath;
+use TG\Infrastructure\Filesystem\DirPath\FromAbsolutePathString;
 use TG\Infrastructure\Filesystem\FilePath\ExistentFromAbsolutePathString as FilePath;
 use TG\Infrastructure\Setup\Database\Recreate;
 use TG\Infrastructure\SqlDatabase\Agnostic\Connection\Port\FromString;
 use TG\Infrastructure\SqlDatabase\Agnostic\Connection\DatabaseName\SpecifiedDatabaseName;
 use TG\Infrastructure\SqlDatabase\Agnostic\Connection\Host\FromString as Host;
-use TG\Infrastructure\SqlDatabase\Agnostic\Connection\Credentials\DefaultCredentials;
 
 if (!file_exists(dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . '.env.dev.testing_mode')) {
     throw new Exception('It seems you run this file outside of dev environment. You can not do that.');
@@ -48,24 +46,11 @@ if (!$r1->isSuccessful()) {
     die('111111');
 }
 
-$r2 =
-    (new Seed(
-        new ApplicationConnection()
-    ))
-        ->value();
-
-if (!$r2->isSuccessful()) {
-    var_dump($r2->error()->logMessage());
-    die('222');
-}
-
-die('OK, I stop here for now, fix this if you wan to use migration');
-
 exec(
     sprintf(
         '%s/vendor/bin/phinx migrate -c %s/migrations/%s.php 2>&1',
-        (new FromString(dirname(dirname(__DIR__))))->value(),
-        (new FromString(dirname(dirname(__DIR__))))->value(),
+        (new FromAbsolutePathString(dirname(dirname(__DIR__))))->value()->pure()->raw(),
+        (new FromAbsolutePathString(dirname(dirname(__DIR__))))->value()->pure()->raw(),
         'tg'
     ),
     $output,
@@ -75,12 +60,3 @@ if ($status !== 0) {
     var_dump($output);
     die();
 }
-
-(new DevFixtures(
-    new FromString(dirname(dirname(__DIR__))),
-    new Host(getenv('DB_HOST')),
-    new FromString((int) getenv('DB_PORT')),
-    new SpecifiedDatabaseName(getenv('DB_NAME')),
-    new DefaultCredentials(getenv('DB_ROOT_USER'), getenv('DB_ROOT_PASS'))
-))
-    ->run();
