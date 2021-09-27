@@ -17,6 +17,8 @@ class QuestionToUserWithoutAvatarsWhetherHeIsReadyToRegister implements MessageT
 У вас в профиле telegram пока нет ни одного фото. Можете пока зарегистрироваться, а как будете готовы -- просто загрузите аватарку в telegram.
 
 Если вас что-то беспокоит, вы всегда можете задать любые вопросы в @flurr_support_bot.
+
+Ну что, поехали?
 qqq
             ;
     }
