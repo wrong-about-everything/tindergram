@@ -21,7 +21,7 @@ use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\FromImpure;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId;
 use TG\Infrastructure\TelegramBot\MessageToUser\Emptie;
 use TG\Infrastructure\TelegramBot\MessageToUser\FromString;
-use TG\Infrastructure\TelegramBot\SentReplyToUser\DefaultWithInlineKeyboard;
+use TG\Infrastructure\TelegramBot\SentReplyToUser\DefaultWithInlineKeyboardAndRemovedKeyboard;
 use TG\Infrastructure\TelegramBot\SentReplyToUser\DefaultWithNoKeyboard;
 use TG\Infrastructure\TelegramBot\SentReplyToUser\MessageSentToUser;
 use TG\Infrastructure\TelegramBot\UserAvatars\InboundModel\FirstNNonDeleted;
@@ -127,7 +127,7 @@ class SentIfExists implements Pair
     private function sentInfoAndRatingButtons(InternalTelegramUserId $candidateTelegramId, FirstName $firstName): ImpureValue
     {
         return
-            (new DefaultWithInlineKeyboard(
+            (new DefaultWithInlineKeyboardAndRemovedKeyboard(
                 $this->recipientTelegramId,
                 new FromString($firstName->value()),
                 new LinedUpInARow([
