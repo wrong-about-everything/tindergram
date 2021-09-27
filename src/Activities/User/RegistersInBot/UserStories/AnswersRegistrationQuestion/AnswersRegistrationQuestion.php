@@ -117,6 +117,7 @@ class AnswersRegistrationQuestion extends Existent
                 new FromParsedTelegramMessage($this->message),
                 new UserReply($this->message),
                 $currentlyAnsweredQuestion,
+                $this->httpTransport,
                 $this->connection
             );
     }

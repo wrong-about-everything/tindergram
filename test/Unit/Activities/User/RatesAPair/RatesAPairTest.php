@@ -28,7 +28,7 @@ use TG\Domain\TelegramBot\MessageToUser\YouHaveAMatch;
 use TG\Infrastructure\Http\Request\Url\ParsedQuery\FromQuery;
 use TG\Infrastructure\Http\Request\Url\Query\FromUrl;
 use TG\Infrastructure\Http\Transport\HttpTransport;
-use TG\Infrastructure\Http\Transport\TransportWithNAvatars;
+use TG\Tests\Infrastructure\Http\Transport\TransportWithNAvatars;
 use TG\Infrastructure\Logging\Logs\DevNull;
 use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\FromInteger;

@@ -49,7 +49,6 @@ class DefaultWithInlineKeyboardAndRemovedKeyboard implements MessageSentToUser
                                     [
                                         'chat_id' => $this->telegramUserId->value(),
                                         'text' => $this->messageToUser->value(),
-                                        'reply_markup' => json_encode(['remove_keyboard' => true])
                                     ],
                                     $this->replyMarkup()
                                 )
@@ -75,6 +74,7 @@ class DefaultWithInlineKeyboardAndRemovedKeyboard implements MessageSentToUser
         return [
             'reply_markup' =>
                 json_encode([
+                    'remove_keyboard' => true,
                     'inline_keyboard' => $this->inlineKeyboardButtons->value()
                 ])
         ];

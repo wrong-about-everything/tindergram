@@ -15,10 +15,14 @@ use TG\Domain\RegistrationQuestion\Single\Impure\RegistrationQuestion;
 use TG\Domain\RegistrationQuestion\Single\Pure\AreYouReadyToRegister;
 use TG\Domain\RegistrationQuestion\Single\Pure\WhatDoYouPrefer;
 use TG\Domain\RegistrationQuestion\Single\Pure\WhatIsYourGender;
+use TG\Infrastructure\Http\Transport\HttpTransport;
 use TG\Infrastructure\ImpureInteractions\ImpureValue;
 use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
 use TG\Infrastructure\SqlDatabase\Agnostic\Query\SingleMutating;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId;
+use TG\Infrastructure\TelegramBot\UserAvatars\InboundModel\FirstNNonDeleted;
+use TG\Infrastructure\TelegramBot\UserAvatars\InboundModel\FromTelegram;
+use TG\Infrastructure\TelegramBot\UserAvatars\InboundModel\UserAvatarIds;
 use TG\Infrastructure\TelegramBot\UserMessage\Pure\UserMessage;
 
 class Persistent implements RegistrationQuestionAnswer
@@ -26,13 +30,21 @@ class Persistent implements RegistrationQuestionAnswer
     private $telegramUserId;
     private $userReply;
     private $registrationQuestionId;
+    private $transport;
     private $connection;
 
-    public function __construct(InternalTelegramUserId $telegramUserId, UserMessage $userReply, RegistrationQuestion $registrationQuestionId, OpenConnection $connection)
+    public function __construct(
+        InternalTelegramUserId $telegramUserId,
+        UserMessage $userReply,
+        RegistrationQuestion $registrationQuestionId,
+        HttpTransport $transport,
+        OpenConnection $connection
+    )
     {
         $this->telegramUserId = $telegramUserId;
         $this->userReply = $userReply;
         $this->registrationQuestionId = $registrationQuestionId;
+        $this->transport = $transport;
         $this->connection = $connection;
     }
 
@@ -92,16 +104,35 @@ class Persistent implements RegistrationQuestionAnswer
 
     private function register(): ImpureValue
     {
+        $userAvatars = $this->userAvatars()->value();
+
         return
             (new SingleMutating(
-                'update bot_user set status = ?, registered_at = ? where telegram_id = ?',
+                'update bot_user set status = ?, registered_at = ?, has_avatar = ? where telegram_id = ?',
                 [
                     (new Registered())->value(),
                     (new Now())->value(),
+                    $userAvatars->isSuccessful()
+                        ? (count($userAvatars->pure()->raw()) > 0 ? 1 : 0)
+                        : 0,
                     $this->telegramUserId->value()
                 ],
                 $this->connection
             ))
                 ->response();
+    }
+
+    private function userAvatars(): UserAvatarIds
+    {
+        return
+            new FirstNNonDeleted(
+                $this->telegramUserId,
+                new FromTelegram(
+                    $this->telegramUserId,
+                    $this->transport
+                ),
+                5,
+                $this->transport
+            );
     }
 }

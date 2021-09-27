@@ -26,13 +26,16 @@ use TG\Domain\RegistrationAnswerOption\Single\Pure\WhatIsYourGender\Male;
 use TG\Infrastructure\Http\Request\Url\Basename\FromUrl as BasenameFromUrl;
 use TG\Infrastructure\Http\Request\Url\ParsedQuery\FromQuery;
 use TG\Infrastructure\Http\Request\Url\Query\FromUrl;
+use TG\Tests\Infrastructure\Http\Response\Inbound\EmptyGetUserProfilePhotosResponse;
+use TG\Tests\Infrastructure\Http\Response\Inbound\EmptySuccessfulResponse;
+use TG\Tests\Infrastructure\Http\Response\Inbound\GetUserProfilePhotosResponse;
+use TG\Tests\Infrastructure\Http\Response\Inbound\SuccessfulGetFileResponse;
+use TG\Tests\Infrastructure\Http\Transport\ConfiguredByTelegramUserId;
 use TG\Infrastructure\Http\Transport\HttpTransport;
 use TG\Infrastructure\Http\Transport\Indifferent;
-use TG\Infrastructure\Http\Transport\TransportForUserRegistrationWithoutAvatars;
-use TG\Infrastructure\Http\Transport\TransportWithNAvatars;
-use TG\Infrastructure\Logging\LogId;
+use TG\Tests\Infrastructure\Http\Transport\TransportWithNAvatars;
+use TG\Tests\Infrastructure\Http\Transport\TransportWithNoAvatars;
 use TG\Infrastructure\Logging\Logs\DevNull;
-use TG\Infrastructure\Logging\Logs\StdOut;
 use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\FromInteger;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId;
@@ -41,7 +44,6 @@ use TG\Infrastructure\TelegramBot\Method\GetUserProfilePhotos;
 use TG\Infrastructure\TelegramBot\Method\SendMediaGroup;
 use TG\Infrastructure\TelegramBot\Method\SendMessage;
 use TG\Infrastructure\Uuid\FromString;
-use TG\Infrastructure\Uuid\RandomUUID;
 use TG\Tests\Infrastructure\Environment\Reset;
 use TG\Tests\Infrastructure\Stub\Table\BotUser;
 use TG\Tests\Infrastructure\Stub\TelegramMessage\UserMessage;
@@ -52,7 +54,7 @@ class UserRegistersInBotTest extends TestCase
     public function testWhenNewUserAnswersTheFirstQuestionWithCustomTextInsteadOfPushingAButtonThenHeSeesValidationError()
     {
         $connection = new ApplicationConnection();
-        $this->createBotUser($this->userId(), $this->telegramUserId(), new RegistrationIsInProgress(), $connection);
+        $this->createNonRegisteredBotUser($this->userId(), $this->telegramUserId(), $connection);
         $transport = new Indifferent();
 
         $response = $this->userReply('What?', $transport, $connection)->response();
@@ -72,7 +74,7 @@ class UserRegistersInBotTest extends TestCase
     public function testNewUserWithTwoAvatarsRegisters()
     {
         $connection = new ApplicationConnection();
-        $this->createBotUser($this->userId(), $this->telegramUserId(), new RegistrationIsInProgress(), $connection);
+        $this->createNonRegisteredBotUser($this->userId(), $this->telegramUserId(), $connection);
         $this->createRegisteredGayMale($this->pairUserId(), $this->pairTelegramUserId(), $connection);
         $transport = new TransportWithNAvatars(2);
 
@@ -110,35 +112,35 @@ t
         $this->userReply((new Register())->value(), $transport, $connection)->response();
 
         $this->assertUserIsRegistered($this->userId(), $connection);
-        $this->assertCount(11, $transport->sentRequests());
+        $this->assertCount(14, $transport->sentRequests());
         $this->assertEquals(
             (new GetUserProfilePhotos())->value(),
-            (new BasenameFromUrl($transport->sentRequests()[6]->url()))->value()
-        );
-        $this->assertEquals(
-            (new GetFile())->value(),
-            (new BasenameFromUrl($transport->sentRequests()[7]->url()))->value()
-        );
-        $this->assertEquals(
-            (new GetFile())->value(),
-            (new BasenameFromUrl($transport->sentRequests()[8]->url()))->value()
-        );
-        $this->assertEquals(
-            (new SendMediaGroup())->value(),
             (new BasenameFromUrl($transport->sentRequests()[9]->url()))->value()
         );
         $this->assertEquals(
-            (new SendMessage())->value(),
+            (new GetFile())->value(),
             (new BasenameFromUrl($transport->sentRequests()[10]->url()))->value()
+        );
+        $this->assertEquals(
+            (new GetFile())->value(),
+            (new BasenameFromUrl($transport->sentRequests()[11]->url()))->value()
+        );
+        $this->assertEquals(
+            (new SendMediaGroup())->value(),
+            (new BasenameFromUrl($transport->sentRequests()[12]->url()))->value()
+        );
+        $this->assertEquals(
+            (new SendMessage())->value(),
+            (new BasenameFromUrl($transport->sentRequests()[13]->url()))->value()
         );
     }
 
     public function testNewUserWithoutAvatarsRegisters()
     {
         $connection = new ApplicationConnection();
-        $this->createBotUser($this->userId(), $this->telegramUserId(), new RegistrationIsInProgress(), $connection);
+        $this->createNonRegisteredBotUser($this->userId(), $this->telegramUserId(), $connection);
         $this->createRegisteredGayMale($this->pairUserId(), $this->pairTelegramUserId(), $connection);
-        $transport = new TransportForUserRegistrationWithoutAvatars();
+        $transport = new TransportWithNoAvatars();
 
         $this->userReply((new Men())->value(), $transport, $connection)->response();
 
@@ -160,7 +162,7 @@ t
             <<<t
 Бот всегда показывает первые пять ваших аватарок из telegram. Сам он эти фото не хранит. Поэтому, если вы удалите какую-то аватарку в самом telegram, бот перестанет её видеть и не сможет никому показать. А если загрузите новую, её начнут видеть другие пользователи.
 
-У вас в профиле telegram пока нет ни одного фото. Можете пока зарегистрироваться, а как будете готовы -- просто загрузите аватарку в telegram.
+У вас в профиле telegram пока нет ни одного фото, и пока вы не загрузите хотя бы одно, другие пользователи вас не увидят. Можете пока зарегистрироваться и как будете готовы — просто загрузите аватарку в telegram.
 
 Если вас что-то беспокоит, вы всегда можете задать любые вопросы в @flurr_support_bot.
 
@@ -174,33 +176,52 @@ t
             json_decode((new FromQuery(new FromUrl($transport->sentRequests()[2]->url())))->value()['reply_markup'], true)['keyboard'][0]
         );
 
-        $this->userReply((new Register())->value(), $transport, $connection)->response();
+        $transportWithNoAvatarsForUserJustRegisteredAndTwoAvatarsForPair = $this->transportWithNoAvatarsForUserJustRegisteredAndTwoAvatarsForPair();
+        $this->userReply((new Register())->value(), $transportWithNoAvatarsForUserJustRegisteredAndTwoAvatarsForPair, $connection)->response();
 
         $this->assertUserIsRegistered($this->userId(), $connection);
+        $this->assertUserHasNoAvatars($this->userId(), $connection);
+        $this->assertCount(6, $transportWithNoAvatarsForUserJustRegisteredAndTwoAvatarsForPair->sentRequests());
+        $this->assertEquals(
+            (new GetUserProfilePhotos())->value(),
+            (new BasenameFromUrl($transportWithNoAvatarsForUserJustRegisteredAndTwoAvatarsForPair->sentRequests()[0]->url()))->value()
+        );
+        $this->assertEquals(
+            (new SendMessage())->value(),
+            (new BasenameFromUrl($transportWithNoAvatarsForUserJustRegisteredAndTwoAvatarsForPair->sentRequests()[5]->url()))->value()
+        );
+    }
+
+    public function testWhenRegisteredUserSendsArbitraryMessageThenHeSeesNextPair()
+    {
+        $connection = new ApplicationConnection();
+        $this->createRegisteredGayMale($this->userId(), $this->telegramUserId(), $connection);
+        $this->createRegisteredGayMale($this->secondUserId(), $this->pairTelegramUserId(), $connection);
+        $transport = new TransportWithNAvatars(2);
+
+        $response = $this->userReply('эм..', $transport, $connection)->response();
+
+        $this->assertTrue($response->isSuccessful());
         $this->assertCount(5, $transport->sentRequests());
         $this->assertEquals(
             (new GetUserProfilePhotos())->value(),
+            (new BasenameFromUrl($transport->sentRequests()[0]->url()))->value()
+        );
+        $this->assertEquals(
+            (new GetFile())->value(),
+            (new BasenameFromUrl($transport->sentRequests()[1]->url()))->value()
+        );
+        $this->assertEquals(
+            (new GetFile())->value(),
+            (new BasenameFromUrl($transport->sentRequests()[2]->url()))->value()
+        );
+        $this->assertEquals(
+            (new SendMediaGroup())->value(),
             (new BasenameFromUrl($transport->sentRequests()[3]->url()))->value()
         );
         $this->assertEquals(
             (new SendMessage())->value(),
             (new BasenameFromUrl($transport->sentRequests()[4]->url()))->value()
-        );
-    }
-
-    public function testWhenRegisteredUserSendsArbitraryMessageThenHeSeesStatusInfo()
-    {
-        $connection = new ApplicationConnection();
-        $this->createBotUser($this->userId(), $this->telegramUserId(), new Registered(), $connection);
-        $transport = new Indifferent();
-
-        $response = $this->userReply('эм..', $transport, $connection)->response();
-
-        $this->assertTrue($response->isSuccessful());
-        $this->assertCount(1, $transport->sentRequests());
-        $this->assertEquals(
-            'Хотите что-то уточнить? Смело пишите на @flurr_support_bot!',
-            (new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['text']
         );
     }
 
@@ -224,12 +245,17 @@ t
         return new UserIdFromUuid(new FromString('103729d6-330c-4123-b856-d5196812d509'));
     }
 
+    private function secondUserId(): BotUserId
+    {
+        return new UserIdFromUuid(new FromString('222729d6-330c-4123-b856-d5196812d222'));
+    }
+
     private function pairUserId(): BotUserId
     {
         return new UserIdFromUuid(new FromString('222729d6-330c-4123-b856-d5196812d222'));
     }
 
-    private function createBotUser(BotUserId $userId, InternalTelegramUserId $telegramUserId, UserStatus $status, OpenConnection $connection)
+    private function createNonRegisteredBotUser(BotUserId $userId, InternalTelegramUserId $telegramUserId, OpenConnection $connection)
     {
         (new BotUser($connection))
             ->insert([
@@ -239,7 +265,7 @@ t
                     'last_name' => 'Samokhin',
                     'telegram_id' => $telegramUserId->value(),
                     'telegram_handle' => 'dremuchee_bydlo',
-                    'status' => $status->value(),
+                    'status' => (new RegistrationIsInProgress())->value(),
                 ]
             ]);
     }
@@ -310,5 +336,28 @@ t
                     new FromPure(new Registered())
                 )
         );
+    }
+
+    private function assertUserHasNoAvatars(BotUserId $userId, OpenConnection $connection)
+    {
+        $this->assertFalse(
+            (new ById($userId, $connection))->value()->pure()->raw()['has_avatar']
+        );
+    }
+
+    private function transportWithNoAvatarsForUserJustRegisteredAndTwoAvatarsForPair()
+    {
+        return
+            new ConfiguredByTelegramUserId([
+                $this->telegramUserId()->value() => [
+                    (new GetUserProfilePhotos())->value() => new EmptyGetUserProfilePhotosResponse(),
+                    (new SendMediaGroup())->value() => new EmptySuccessfulResponse(),
+                    (new SendMessage())->value() => new EmptySuccessfulResponse(),
+                ],
+                $this->pairTelegramUserId()->value() => [
+                    (new GetUserProfilePhotos())->value() => new GetUserProfilePhotosResponse(2),
+                    (new GetFile())->value() => new SuccessfulGetFileResponse(),
+                ]
+            ]);
     }
 }

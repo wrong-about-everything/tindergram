@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace TG\Infrastructure\Http\Transport;
+namespace TG\Tests\Infrastructure\Http\Transport;
 
 use TG\Infrastructure\Http\Request\Outbound\EagerlyInvoked;
 use TG\Infrastructure\Http\Request\Outbound\Request;
@@ -16,12 +16,14 @@ use TG\Infrastructure\TelegramBot\Method\SendMediaGroup;
 use TG\Infrastructure\TelegramBot\Method\SendMessage;
 use TG\Tests\Infrastructure\Http\Transport\FakeTransport;
 
-class TransportForUserRegistrationWithoutAvatars implements FakeTransport
+class TransportWithNAvatars implements FakeTransport
 {
+    private $amountOfAvatars;
     private $requests;
 
-    public function __construct()
+    public function __construct(int $amountOfAvatars)
     {
+        $this->amountOfAvatars = $amountOfAvatars;
         $this->requests = [];
     }
 
@@ -31,7 +33,7 @@ class TransportForUserRegistrationWithoutAvatars implements FakeTransport
         $this->requests[] = $eagerlyInvoked;
         switch ((new FromUrl($request->url()))->value()) {
             case (new SendMessage())->value():
-                return new DefaultResponse(new Ok(), [], '');
+                return new DefaultResponse(new Ok(), [], json_encode(['ok' => true]));
 
             case (new SendMediaGroup())->value():
             case (new GetUserProfilePhotos())->value():
@@ -40,8 +42,14 @@ class TransportForUserRegistrationWithoutAvatars implements FakeTransport
                         new Ok(),
                         [],
                         json_encode([
+                            'ok' => true,
                             'result' => [
-                                'photos' => []
+                                'photos' =>
+                                    array_fill(
+                                        0,
+                                        $this->amountOfAvatars,
+                                        [['file_id' => 'vasya']]
+                                    )
                             ]
                         ])
                     );
@@ -52,13 +60,16 @@ class TransportForUserRegistrationWithoutAvatars implements FakeTransport
                         new Ok(),
                         [],
                         json_encode([
-                            'result' => []
+                            'ok' => true,
+                            'result' => [
+                                'file_id' => 'vasya'
+                            ]
                         ])
                     );
 
         }
 
-        return new DefaultResponse(new Ok(), [], '');
+        return new DefaultResponse(new Ok(), [], json_encode(['ok' => true]));
     }
 
     /**

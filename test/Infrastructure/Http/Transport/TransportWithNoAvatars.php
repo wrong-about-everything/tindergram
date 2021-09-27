@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace TG\Infrastructure\Http\Transport;
+namespace TG\Tests\Infrastructure\Http\Transport;
 
 use TG\Infrastructure\Http\Request\Outbound\EagerlyInvoked;
 use TG\Infrastructure\Http\Request\Outbound\Request;
@@ -14,7 +14,9 @@ use TG\Infrastructure\TelegramBot\Method\GetFile;
 use TG\Infrastructure\TelegramBot\Method\GetUserProfilePhotos;
 use TG\Infrastructure\TelegramBot\Method\SendMediaGroup;
 use TG\Infrastructure\TelegramBot\Method\SendMessage;
-use TG\Tests\Infrastructure\Http\Transport\FakeTransport;
+use TG\Tests\Infrastructure\Http\Response\Inbound\EmptyGetUserProfilePhotosResponse;
+use TG\Tests\Infrastructure\Http\Response\Inbound\EmptyResultResponse;
+use TG\Tests\Infrastructure\Http\Response\Inbound\EmptySuccessfulResponse;
 
 class TransportWithNoAvatars implements FakeTransport
 {
@@ -31,31 +33,14 @@ class TransportWithNoAvatars implements FakeTransport
         $this->requests[] = $eagerlyInvoked;
         switch ((new FromUrl($request->url()))->value()) {
             case (new SendMessage())->value():
-                return new DefaultResponse(new Ok(), [], '');
+                return new EmptySuccessfulResponse();
 
             case (new SendMediaGroup())->value():
             case (new GetUserProfilePhotos())->value():
-                return
-                    new DefaultResponse(
-                        new Ok(),
-                        [],
-                        json_encode([
-                            'result' => [
-                                'photos' => []
-                            ]
-                        ])
-                    );
+                return new EmptyGetUserProfilePhotosResponse();
 
             case (new GetFile())->value():
-                return
-                    new DefaultResponse(
-                        new Ok(),
-                        [],
-                        json_encode([
-                            'result' => []
-                        ])
-                    );
-
+                return new EmptyResultResponse();
         }
 
         return new DefaultResponse(new Ok(), [], '');
