@@ -54,11 +54,13 @@ class NextCandidateFor implements BotUser
         viewed_pair.recipient_telegram_id is null
             and
         candidate.status = ?
+            and
+        candidate.has_avatar = ?
     order by candidate.seen_qty asc
     limit 1
 query
                 ,
-                [$this->recipientTelegramId->value(), (new Registered())->value()],
+                [$this->recipientTelegramId->value(), (new Registered())->value(), 1],
                 $this->connection
             ))
                 ->response();

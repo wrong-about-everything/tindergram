@@ -29,14 +29,14 @@ insert into bot_user (
 
   preferred_gender, gender, status, registered_at,
 
-  seen_qty, last_seen_at, like_qty, dislike_qty
+  has_avatar, seen_qty, last_seen_at, like_qty, dislike_qty
 )
 values (
   ?, ?, ?, ?, ?,
 
   ?, ?, ?, ?,
 
-  ?, ?, ?, ?
+  ?, ?, ?, ?, ?
 )
 q
                 ,
@@ -48,7 +48,7 @@ q
 
                             $v['preferred_gender'] ?? null, $v['gender'] ?? null, $v['status'] ?? null, $v['registered_at'] ?? null,
 
-                            $v['seen_qty'], $v['last_seen_at'], $v['like_qty'], $v['dislike_qty'],
+                            $v['has_avatar'], $v['seen_qty'], $v['last_seen_at'], $v['like_qty'], $v['dislike_qty'],
                         ];
                     },
                     $records
@@ -70,6 +70,7 @@ q
             'telegram_id' => 666,
             'telegram_handle' => 'vasya',
 
+            'has_avatar' => 1,
             'seen_qty' => 0,
             'last_seen_at' => (new Now())->value(),
             'like_qty' => 0,
