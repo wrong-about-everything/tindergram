@@ -20,6 +20,7 @@ use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUs
 use TG\Infrastructure\TelegramBot\MessageToUser\MessageToUser;
 use TG\Infrastructure\TelegramBot\Method\SendMediaGroup;
 use TG\Infrastructure\TelegramBot\UserAvatars\InboundModel\AllAvatarsExcluding;
+use TG\Infrastructure\TelegramBot\UserAvatars\InboundModel\FromArray as UserAvatarsArray;
 use TG\Infrastructure\TelegramBot\UserAvatars\InboundModel\UserAvatarIds as InboundModelUserAvatars;
 
 class SentToUser implements UserAvatars
@@ -43,10 +44,37 @@ class SentToUser implements UserAvatars
             return $this->avatarsOfUser->value();
         }
         if (count($this->avatarsOfUser->value()->pure()->raw()) === 0) {
-            return new Successful(new Emptie());
+            return $this->defaultNoPhotoAvatarIsSent();
         }
 
-        $response =
+        $response = $this->sendMediaGroupResponse();
+
+        if (!$response->isAvailable()) {
+            return new Failed(new AlarmDeclineWithDefaultUserMessage('sendMediaGroup response is not successful', []));
+        } elseif ($this->someAvatarIsInvalid($response)) {
+            return $this->sentAvatarsExcept($this->invalidAvatarIndex($response));
+        } elseif (!$response->code()->equals(new Ok())) {
+            return new Failed(new AlarmDeclineWithDefaultUserMessage('sendMediaGroup response is not successful', []));
+        }
+
+        return new Successful(new Emptie());
+    }
+
+    private function defaultNoPhotoAvatarIsSent(): ImpureValue
+    {
+        return
+            (new SentToUser(
+                $this->message,
+                new UserAvatarsArray(['https://storage.googleapis.com/51d3a3b0-a6e0-41f2-ab53-7ef0495996d0/no_photo_gray.png']),
+                $this->sendTo,
+                $this->httpTransport
+            ))
+                ->value();
+    }
+
+    private function sendMediaGroupResponse(): Response
+    {
+        return
             $this->httpTransport
                 ->response(
                     new OutboundRequest(
@@ -80,22 +108,6 @@ class SentToUser implements UserAvatars
                         ''
                     )
                 );
-        if (!$response->isAvailable()) {
-            return new Failed(new AlarmDeclineWithDefaultUserMessage('sendMediaGroup response is not successful', []));
-        } elseif ($this->someAvatarIsInvalid($response)) {
-            return
-                (new SentToUser(
-                    $this->message,
-                    new AllAvatarsExcluding($this->avatarsOfUser, $this->invalidAvatarIndex($response)),
-                    $this->sendTo,
-                    $this->httpTransport
-                ))
-                    ->value();
-        } elseif (!$response->code()->equals(new Ok())) {
-            return new Failed(new AlarmDeclineWithDefaultUserMessage('sendMediaGroup response is not successful', []));
-        }
-
-        return new Successful(new Emptie());
     }
 
     private function someAvatarIsInvalid(Response $response): bool
@@ -107,8 +119,20 @@ class SentToUser implements UserAvatars
         return strpos(json_decode($response->body(), true)['description'], 'Bad Request: FILE_REFERENCE_') !== false;
     }
 
+    private function sentAvatarsExcept(int $invalidAvatarIndex): ImpureValue
+    {
+        return
+            (new SentToUser(
+                $this->message,
+                new AllAvatarsExcluding($this->avatarsOfUser, $invalidAvatarIndex),
+                $this->sendTo,
+                $this->httpTransport
+            ))
+                ->value();
+    }
+
     private function invalidAvatarIndex(Response $response): int
     {
-        return (int) substr(json_decode($response->body(), true)['description'], 0, strlen('Bad Request: FILE_REFERENCE_'))[0];
+        return (int) substr(json_decode($response->body(), true)['description'], strlen('Bad Request: FILE_REFERENCE_'), 1);
     }
 }
