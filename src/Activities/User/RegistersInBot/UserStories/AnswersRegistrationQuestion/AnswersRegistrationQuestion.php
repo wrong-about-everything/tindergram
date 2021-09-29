@@ -132,7 +132,6 @@ class AnswersRegistrationQuestion extends Existent
             );
     }
 
-
     private function nextReply(): MessageSentToUser
     {
         return

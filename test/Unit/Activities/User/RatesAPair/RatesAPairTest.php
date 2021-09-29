@@ -25,6 +25,8 @@ use TG\Domain\TelegramBot\InlineKeyboardButton\Single\ThumbsDown as ThumbsDownBu
 use TG\Domain\TelegramBot\MessageToUser\ThatsAllForNow;
 use TG\Domain\TelegramBot\MessageToUser\YouCanNotRateAUserMoreThanOnce;
 use TG\Domain\TelegramBot\MessageToUser\YouHaveAMatch;
+use TG\Domain\UserMode\Pure\Invisible;
+use TG\Domain\UserMode\Pure\Visible;
 use TG\Infrastructure\Http\Request\Url\ParsedQuery\FromQuery;
 use TG\Infrastructure\Http\Request\Url\Query\FromUrl;
 use TG\Infrastructure\Http\Transport\HttpTransport;
@@ -39,14 +41,15 @@ use TG\Tests\Infrastructure\Stub\Table\ViewedPair;
 
 class RatesAPairTest extends TestCase
 {
-    public function testWhenUserRatesAPairThenHeSeesTheNextOneWithAvatar()
+    public function testWhenUserRatesAPairThenHeSeesTheNextOneWithAvatarAndInVisibleMode()
     {
         $connection = new ApplicationConnection();
-        $this->createBotUserWithAvatar($this->recipientTelegramId(), 'Vasya', 'vasya', new Male(), new Female(), 0, $connection);
-        $this->createBotUserWithAvatar($this->firstPairTelegramId(), 'Fedya', 'fedya', new Female(), new Male(), 0, $connection);
+        $this->createBotUserWithAvatarAndInVisibleMode($this->recipientTelegramId(), 'Vasya', 'vasya', new Male(), new Female(), 0, $connection);
+        $this->createBotUserWithAvatarAndInVisibleMode($this->firstPairTelegramId(), 'Fedya', 'fedya', new Female(), new Male(), 0, $connection);
         $this->seedPair($this->recipientTelegramId(), $this->firstPairTelegramId(), new NonExistent(), $connection);
         $this->createBotUserWithoutAvatar($this->thirdPairTelegramId(), new Female(), new Male(), 0, $connection);
-        $this->createBotUserWithAvatar($this->secondPairTelegramId(), 'Anatoly', 'anatol', new Female(), new Male(), 10, $connection);
+        $this->createBotUserWithAvatarButInInvisibleMode($this->fourthPairTelegramId(), new Female(), new Male(), 5, $connection);
+        $this->createBotUserWithAvatarAndInVisibleMode($this->secondPairTelegramId(), 'Anatoly', 'anatol', new Female(), new Male(), 10, $connection);
         $transport = new TransportWithNAvatars(2);
 
         $response = $this->userReply($this->recipientTelegramId(), new ThumbsDownCallbackData($this->firstPairTelegramId()), $transport, $connection)->response();
@@ -66,11 +69,11 @@ class RatesAPairTest extends TestCase
     public function testGivenPairViewedCurrentUserButHaventRatedHimYetWhenUserDownvotesAPairThenHisChoiceIsPersistedAndHeSeesANextPair()
     {
         $connection = new ApplicationConnection();
-        $this->createBotUserWithAvatar($this->recipientTelegramId(), 'Vasya', 'vasya', new Male(), new Female(), 0, $connection);
-        $this->createBotUserWithAvatar($this->firstPairTelegramId(), 'Fedya', 'fedya', new Female(), new Male(), 0, $connection);
+        $this->createBotUserWithAvatarAndInVisibleMode($this->recipientTelegramId(), 'Vasya', 'vasya', new Male(), new Female(), 0, $connection);
+        $this->createBotUserWithAvatarAndInVisibleMode($this->firstPairTelegramId(), 'Fedya', 'fedya', new Female(), new Male(), 0, $connection);
         $this->seedPair($this->recipientTelegramId(), $this->firstPairTelegramId(), new NonExistent(), $connection);
         $this->seedPair($this->firstPairTelegramId(), $this->recipientTelegramId(), new NonExistent(), $connection);
-        $this->createBotUserWithAvatar($this->secondPairTelegramId(), 'Anatoly', 'anatol', new Female(), new Male(), 0, $connection);
+        $this->createBotUserWithAvatarAndInVisibleMode($this->secondPairTelegramId(), 'Anatoly', 'anatol', new Female(), new Male(), 0, $connection);
         $transport = new TransportWithNAvatars(2);
 
         $response = $this->userReply($this->recipientTelegramId(), new ThumbsDownCallbackData($this->firstPairTelegramId()), $transport, $connection)->response();
@@ -90,10 +93,10 @@ class RatesAPairTest extends TestCase
     public function testGivenPairHasntViewedCurrentUserWhenUserUpvotesAPairThenHisChoiceIsPersistedAndHeSeesANextPair()
     {
         $connection = new ApplicationConnection();
-        $this->createBotUserWithAvatar($this->recipientTelegramId(), 'Vasya', 'vasya', new Male(), new Female(), 0, $connection);
-        $this->createBotUserWithAvatar($this->firstPairTelegramId(), 'Fedya', 'fedya', new Female(), new Male(), 0, $connection);
+        $this->createBotUserWithAvatarAndInVisibleMode($this->recipientTelegramId(), 'Vasya', 'vasya', new Male(), new Female(), 0, $connection);
+        $this->createBotUserWithAvatarAndInVisibleMode($this->firstPairTelegramId(), 'Fedya', 'fedya', new Female(), new Male(), 0, $connection);
         $this->seedPair($this->recipientTelegramId(), $this->firstPairTelegramId(), new NonExistent(), $connection);
-        $this->createBotUserWithAvatar($this->secondPairTelegramId(), 'Anatoly', 'trol', new Female(), new Male(), 0, $connection);
+        $this->createBotUserWithAvatarAndInVisibleMode($this->secondPairTelegramId(), 'Anatoly', 'trol', new Female(), new Male(), 0, $connection);
         $transport = new TransportWithNAvatars(2);
 
         $response = $this->userReply($this->recipientTelegramId(), new ThumbsUpCallbackData($this->firstPairTelegramId()), $transport, $connection)->response();
@@ -113,11 +116,11 @@ class RatesAPairTest extends TestCase
     public function testGivenPairDownvotedCurrentUserWhenUserDownvotesAPairThenHisChoiceIsPersistedAndHeSeesANextPair()
     {
         $connection = new ApplicationConnection();
-        $this->createBotUserWithAvatar($this->recipientTelegramId(), 'Vasya', 'vasya', new Male(), new Female(), 0, $connection);
-        $this->createBotUserWithAvatar($this->firstPairTelegramId(), 'Fedya', 'fedya', new Female(), new Male(), 0, $connection);
+        $this->createBotUserWithAvatarAndInVisibleMode($this->recipientTelegramId(), 'Vasya', 'vasya', new Male(), new Female(), 0, $connection);
+        $this->createBotUserWithAvatarAndInVisibleMode($this->firstPairTelegramId(), 'Fedya', 'fedya', new Female(), new Male(), 0, $connection);
         $this->seedPair($this->recipientTelegramId(), $this->firstPairTelegramId(), new NonExistent(), $connection);
         $this->seedPair($this->firstPairTelegramId(), $this->recipientTelegramId(), new Dislike(), $connection);
-        $this->createBotUserWithAvatar($this->secondPairTelegramId(), 'Anatoly', 'anatol', new Female(), new Male(), 0, $connection);
+        $this->createBotUserWithAvatarAndInVisibleMode($this->secondPairTelegramId(), 'Anatoly', 'anatol', new Female(), new Male(), 0, $connection);
         $transport = new TransportWithNAvatars(2);
 
         $response = $this->userReply($this->recipientTelegramId(), new ThumbsDownCallbackData($this->firstPairTelegramId()), $transport, $connection)->response();
@@ -137,11 +140,11 @@ class RatesAPairTest extends TestCase
     public function testGivenPairDownvotedCurrentUserWhenUserUpvotesAPairThenHisChoiceIsPersistedAndHeSeesANextPair()
     {
         $connection = new ApplicationConnection();
-        $this->createBotUserWithAvatar($this->recipientTelegramId(), 'Vasya', 'vasya', new Male(), new Female(), 0, $connection);
-        $this->createBotUserWithAvatar($this->firstPairTelegramId(), 'Fedya', 'fedya', new Female(), new Male(), 0, $connection);
+        $this->createBotUserWithAvatarAndInVisibleMode($this->recipientTelegramId(), 'Vasya', 'vasya', new Male(), new Female(), 0, $connection);
+        $this->createBotUserWithAvatarAndInVisibleMode($this->firstPairTelegramId(), 'Fedya', 'fedya', new Female(), new Male(), 0, $connection);
         $this->seedPair($this->recipientTelegramId(), $this->firstPairTelegramId(), new NonExistent(), $connection);
         $this->seedPair($this->firstPairTelegramId(), $this->recipientTelegramId(), new Dislike(), $connection);
-        $this->createBotUserWithAvatar($this->secondPairTelegramId(), 'Anatoly', 'anatol', new Female(), new Male(), 0, $connection);
+        $this->createBotUserWithAvatarAndInVisibleMode($this->secondPairTelegramId(), 'Anatoly', 'anatol', new Female(), new Male(), 0, $connection);
         $transport = new TransportWithNAvatars(2);
 
         $response = $this->userReply($this->recipientTelegramId(), new ThumbsUpCallbackData($this->firstPairTelegramId()), $transport, $connection)->response();
@@ -161,11 +164,11 @@ class RatesAPairTest extends TestCase
     public function testGivenPairUpvotedCurrentUserWhenUserUpvotesAPairThenHisChoiceIsPersistedAndHeSeesCongratulationsAndANextPair()
     {
         $connection = new ApplicationConnection();
-        $this->createBotUserWithAvatar($this->recipientTelegramId(), 'Vasya', 'vasya', new Male(), new Female(), 0, $connection);
-        $this->createBotUserWithAvatar($this->firstPairTelegramId(), 'Fedya', 'fedya', new Female(), new Male(), 0, $connection);
+        $this->createBotUserWithAvatarAndInVisibleMode($this->recipientTelegramId(), 'Vasya', 'vasya', new Male(), new Female(), 0, $connection);
+        $this->createBotUserWithAvatarAndInVisibleMode($this->firstPairTelegramId(), 'Fedya', 'fedya', new Female(), new Male(), 0, $connection);
         $this->seedPair($this->recipientTelegramId(), $this->firstPairTelegramId(), new NonExistent(), $connection);
         $this->seedPair($this->firstPairTelegramId(), $this->recipientTelegramId(), new Like(), $connection);
-        $this->createBotUserWithAvatar($this->secondPairTelegramId(), 'Anatoly', 'anatoly', new Female(), new Male(), 0, $connection);
+        $this->createBotUserWithAvatarAndInVisibleMode($this->secondPairTelegramId(), 'Anatoly', 'anatoly', new Female(), new Male(), 0, $connection);
         $transport = new TransportWithNAvatars(2);
 
         $response = $this->userReply($this->recipientTelegramId(), new ThumbsUpCallbackData($this->firstPairTelegramId()), $transport, $connection)->response();
@@ -193,8 +196,8 @@ class RatesAPairTest extends TestCase
     public function testGivenNoPairsLeftWhenUserRatesCurrentPairThenHeSeesThatsAllForNowMessage()
     {
         $connection = new ApplicationConnection();
-        $this->createBotUserWithAvatar($this->recipientTelegramId(), 'Vasya', 'vasya', new Male(), new Female(), 0, $connection);
-        $this->createBotUserWithAvatar($this->firstPairTelegramId(), 'Fedya', 'fedya', new Female(), new Male(), 0, $connection);
+        $this->createBotUserWithAvatarAndInVisibleMode($this->recipientTelegramId(), 'Vasya', 'vasya', new Male(), new Female(), 0, $connection);
+        $this->createBotUserWithAvatarAndInVisibleMode($this->firstPairTelegramId(), 'Fedya', 'fedya', new Female(), new Male(), 0, $connection);
         $this->seedPair($this->recipientTelegramId(), $this->firstPairTelegramId(), new NonExistent(), $connection);
         $this->seedPair($this->firstPairTelegramId(), $this->recipientTelegramId(), new Dislike(), $connection);
         $transport = new TransportWithNAvatars(2);
@@ -212,10 +215,10 @@ class RatesAPairTest extends TestCase
     public function testWhenUserRatesPairOneMoreTimeThenHeSeesThatItIsNotAllowedAndHeSeesNextPair()
     {
         $connection = new ApplicationConnection();
-        $this->createBotUserWithAvatar($this->recipientTelegramId(), 'Vasya', 'vasya', new Male(), new Female(), 0, $connection);
-        $this->createBotUserWithAvatar($this->firstPairTelegramId(), 'Fedya', 'fedya', new Female(), new Male(), 0, $connection);
+        $this->createBotUserWithAvatarAndInVisibleMode($this->recipientTelegramId(), 'Vasya', 'vasya', new Male(), new Female(), 0, $connection);
+        $this->createBotUserWithAvatarAndInVisibleMode($this->firstPairTelegramId(), 'Fedya', 'fedya', new Female(), new Male(), 0, $connection);
         $this->seedPair($this->recipientTelegramId(), $this->firstPairTelegramId(), new Dislike(), $connection);
-        $this->createBotUserWithAvatar($this->secondPairTelegramId(), 'Anatoly', 'anatoly', new Female(), new Male(), 0, $connection);
+        $this->createBotUserWithAvatarAndInVisibleMode($this->secondPairTelegramId(), 'Anatoly', 'anatoly', new Female(), new Male(), 0, $connection);
         $transport = new TransportWithNAvatars(2);
 
         $response = $this->userReply($this->recipientTelegramId(), new ThumbsUpCallbackData($this->firstPairTelegramId()), $transport, $connection)->response();
@@ -235,8 +238,8 @@ class RatesAPairTest extends TestCase
     public function testGivenNoMorePairsLeftWhenUserRatesPairOneMoreTimeThenHeSeesThatItIsNotAllowedAndHeSeesThatsAllForNowMessage()
     {
         $connection = new ApplicationConnection();
-        $this->createBotUserWithAvatar($this->recipientTelegramId(), 'Vasya', 'vasya', new Male(), new Female(), 0, $connection);
-        $this->createBotUserWithAvatar($this->firstPairTelegramId(), 'Fedya', 'fedya', new Female(), new Male(), 0, $connection);
+        $this->createBotUserWithAvatarAndInVisibleMode($this->recipientTelegramId(), 'Vasya', 'vasya', new Male(), new Female(), 0, $connection);
+        $this->createBotUserWithAvatarAndInVisibleMode($this->firstPairTelegramId(), 'Fedya', 'fedya', new Female(), new Male(), 0, $connection);
         $this->seedPair($this->recipientTelegramId(), $this->firstPairTelegramId(), new Dislike(), $connection);
         $transport = new TransportWithNAvatars(2);
 
@@ -279,7 +282,12 @@ class RatesAPairTest extends TestCase
         return new FromInteger(44444444);
     }
 
-    private function createBotUserWithAvatar(
+    private function fourthPairTelegramId(): InternalTelegramUserId
+    {
+        return new FromInteger(55555);
+    }
+
+    private function createBotUserWithAvatarAndInVisibleMode(
         InternalTelegramUserId $telegramUserId,
         string $name,
         string $handle,
@@ -300,6 +308,26 @@ class RatesAPairTest extends TestCase
 
                     'gender' => $gender->value(),
                     'preferred_gender' => $preferredGender->value(),
+                    'user_mode' => (new Visible())->value(),
+
+                    'has_avatar' => 1,
+                    'seen_qty' => $seenQty
+                ]
+            ]);
+    }
+
+    private function createBotUserWithAvatarButInInvisibleMode(InternalTelegramUserId $telegramUserId, Gender $gender, Gender $preferredGender, int $seenQty, OpenConnection $connection)
+    {
+        (new BotUser($connection))
+            ->insert([
+                [
+                    'id' => Uuid::uuid4()->toString(),
+                    'telegram_id' => $telegramUserId->value(),
+                    'status' => (new Registered())->value(),
+
+                    'gender' => $gender->value(),
+                    'preferred_gender' => $preferredGender->value(),
+                    'user_mode' => (new Invisible())->value(),
 
                     'has_avatar' => 1,
                     'seen_qty' => $seenQty

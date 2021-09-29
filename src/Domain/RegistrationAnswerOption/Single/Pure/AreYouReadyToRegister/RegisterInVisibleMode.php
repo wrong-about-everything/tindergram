@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace TG\Domain\RegistrationAnswerOption\Single\Pure\AreYouReadyToRegister;
 
-class Register extends AreYouReadyToRegisterOptionName
+class RegisterInVisibleMode extends AreYouReadyToRegisterOptionName
 {
     public function value(): string
     {

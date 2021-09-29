@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace TG\Domain\RegistrationAnswerOption\Multiple\Impure;
 
 use Exception;
-use TG\Domain\RegistrationAnswerOption\Single\Pure\AreYouReadyToRegister\Register;
+use TG\Domain\RegistrationAnswerOption\Single\Pure\AreYouReadyToRegister\RegisterInInvisibleMode;
+use TG\Domain\RegistrationAnswerOption\Single\Pure\AreYouReadyToRegister\RegisterInVisibleMode;
 use TG\Domain\RegistrationAnswerOption\Single\Pure\WhatDoYouPrefer\Men;
 use TG\Domain\RegistrationAnswerOption\Single\Pure\WhatDoYouPrefer\Women;
 use TG\Domain\RegistrationAnswerOption\Single\Pure\WhatIsYourGender\Female;
@@ -41,7 +42,7 @@ class FromRegistrationQuestion extends RegistrationAnswerOptions
                 return new Successful(new Present([(new Male())->value(), (new Female())->value()]));
 
             case (new AreYouReadyToRegister())->id():
-                return new Successful(new Present([(new Register())->value()]));
+                return new Successful(new Present([(new RegisterInVisibleMode())->value(), (new RegisterInInvisibleMode())->value()]));
         }
 
         throw new Exception(sprintf('Registration question "%s" is unknown', $this->registrationQuestionId->id()->pure()->raw()));

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace TG\Domain\BotUser\ReadModel;
 
 use TG\Domain\BotUser\UserStatus\Pure\Registered;
+use TG\Domain\UserMode\Pure\Visible;
 use TG\Infrastructure\ImpureInteractions\ImpureValue;
 use TG\Infrastructure\ImpureInteractions\ImpureValue\Successful;
 use TG\Infrastructure\ImpureInteractions\PureValue\Emptie;
@@ -56,11 +57,13 @@ class NextCandidateFor implements BotUser
         candidate.status = ?
             and
         candidate.has_avatar = ?
+            and
+        candidate.user_mode = ?
     order by candidate.seen_qty asc
     limit 1
 query
                 ,
-                [$this->recipientTelegramId->value(), (new Registered())->value(), 1],
+                [$this->recipientTelegramId->value(), (new Registered())->value(), 1, (new Visible())->value()],
                 $this->connection
             ))
                 ->response();

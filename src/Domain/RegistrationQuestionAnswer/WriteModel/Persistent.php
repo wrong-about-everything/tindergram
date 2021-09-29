@@ -11,10 +11,13 @@ use TG\Domain\Gender\Pure\FromWhatIsYourGenderQuestionOptionName;
 use TG\Domain\BotUser\UserStatus\Pure\Registered;
 use TG\Domain\RegistrationAnswerOption\Single\Pure\WhatDoYouPrefer\FromString as WhatDoYouPreferOptionNameFromString;
 use TG\Domain\RegistrationAnswerOption\Single\Pure\WhatIsYourGender\FromString as WhatIsYourGenderOptionNameFromString;
+use TG\Domain\RegistrationAnswerOption\Single\Pure\AreYouReadyToRegister\FromString as AreYouReadyToRegisterOptionNameFromString;
 use TG\Domain\RegistrationQuestion\Single\Impure\RegistrationQuestion;
 use TG\Domain\RegistrationQuestion\Single\Pure\AreYouReadyToRegister;
 use TG\Domain\RegistrationQuestion\Single\Pure\WhatDoYouPrefer;
 use TG\Domain\RegistrationQuestion\Single\Pure\WhatIsYourGender;
+use TG\Domain\UserMode\Pure\FromAreYouReadyToRegisterOptionName;
+use TG\Domain\UserMode\Pure\Visible;
 use TG\Infrastructure\Http\Transport\HttpTransport;
 use TG\Infrastructure\ImpureInteractions\ImpureValue;
 use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
@@ -108,13 +111,17 @@ class Persistent implements RegistrationQuestionAnswer
 
         return
             (new SingleMutating(
-                'update bot_user set status = ?, registered_at = ?, has_avatar = ? where telegram_id = ?',
+                'update bot_user set status = ?, registered_at = ?, has_avatar = ?, user_mode = ? where telegram_id = ?',
                 [
                     (new Registered())->value(),
                     (new Now())->value(),
                     $userAvatars->isSuccessful()
                         ? (count($userAvatars->pure()->raw()) > 0 ? 1 : 0)
                         : 0,
+                    (new FromAreYouReadyToRegisterOptionName(
+                        new AreYouReadyToRegisterOptionNameFromString($this->userReply->value())
+                    ))
+                        ->value(),
                     $this->telegramUserId->value()
                 ],
                 $this->connection
