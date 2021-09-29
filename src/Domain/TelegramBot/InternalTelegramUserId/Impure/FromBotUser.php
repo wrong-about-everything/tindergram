@@ -9,6 +9,7 @@ use TG\Infrastructure\ImpureInteractions\ImpureValue;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Impure\FromPure;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Impure\InternalTelegramUserId;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Impure\NonSuccessful;
+use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\FromBotUserDatabaseRecord;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\FromInteger;
 
 class FromBotUser extends InternalTelegramUserId
@@ -47,6 +48,6 @@ class FromBotUser extends InternalTelegramUserId
             return new NonSuccessful($this->botUser->value());
         }
 
-        return new FromPure(new FromInteger($this->botUser->value()->pure()->raw()['telegram_id']));
+        return new FromPure(new FromBotUserDatabaseRecord($this->botUser->value()->pure()->raw()));
     }
 }

@@ -20,7 +20,7 @@ use TG\Infrastructure\ImpureInteractions\ImpureValue;
 use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
 use TG\Infrastructure\SqlDatabase\Agnostic\Query\SingleMutating;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId;
-use TG\Infrastructure\TelegramBot\UserAvatars\InboundModel\FirstNNonDeleted;
+use TG\Infrastructure\TelegramBot\UserAvatars\InboundModel\FirstN;
 use TG\Infrastructure\TelegramBot\UserAvatars\InboundModel\FromTelegram;
 use TG\Infrastructure\TelegramBot\UserAvatars\InboundModel\UserAvatarIds;
 use TG\Infrastructure\TelegramBot\UserMessage\Pure\UserMessage;
@@ -125,14 +125,12 @@ class Persistent implements RegistrationQuestionAnswer
     private function userAvatars(): UserAvatarIds
     {
         return
-            new FirstNNonDeleted(
-                $this->telegramUserId,
+            new FirstN(
                 new FromTelegram(
                     $this->telegramUserId,
                     $this->transport
                 ),
-                5,
-                $this->transport
+                5
             );
     }
 }

@@ -24,7 +24,7 @@ use TG\Infrastructure\TelegramBot\MessageToUser\FromString;
 use TG\Infrastructure\TelegramBot\SentReplyToUser\DefaultWithInlineKeyboardAndRemovedKeyboard;
 use TG\Infrastructure\TelegramBot\SentReplyToUser\DefaultWithNoKeyboard;
 use TG\Infrastructure\TelegramBot\SentReplyToUser\MessageSentToUser;
-use TG\Infrastructure\TelegramBot\UserAvatars\InboundModel\FirstNNonDeleted;
+use TG\Infrastructure\TelegramBot\UserAvatars\InboundModel\FirstN;
 use TG\Infrastructure\TelegramBot\UserAvatars\InboundModel\FromTelegram;
 use TG\Infrastructure\TelegramBot\UserAvatars\OutboundModel\SentToUser;
 
@@ -109,14 +109,12 @@ class SentIfExists implements Pair
         return
             (new SentToUser(
                 new Emptie(),
-                new FirstNNonDeleted(
-                    $candidateTelegramId,
+                new FirstN(
                     new FromTelegram(
                         $candidateTelegramId,
                         $this->transport
                     ),
-                    5,
-                    $this->transport
+                    5
                 ),
                 $this->recipientTelegramId,
                 $this->transport

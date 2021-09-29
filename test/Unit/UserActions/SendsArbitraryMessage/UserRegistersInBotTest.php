@@ -19,7 +19,6 @@ use TG\Domain\BotUser\UserId\BotUserId;
 use TG\Domain\BotUser\UserStatus\Impure\FromBotUser as UserStatusFromBotUser;
 use TG\Domain\BotUser\UserStatus\Pure\Registered;
 use TG\Domain\BotUser\UserStatus\Pure\RegistrationIsInProgress;
-use TG\Domain\BotUser\UserStatus\Pure\UserStatus;
 use TG\Domain\RegistrationAnswerOption\Single\Pure\AreYouReadyToRegister\Register;
 use TG\Domain\RegistrationAnswerOption\Single\Pure\WhatDoYouPrefer\Men;
 use TG\Domain\RegistrationAnswerOption\Single\Pure\WhatIsYourGender\Male;
@@ -30,7 +29,7 @@ use TG\Tests\Infrastructure\Http\Response\Inbound\EmptyGetUserProfilePhotosRespo
 use TG\Tests\Infrastructure\Http\Response\Inbound\EmptySuccessfulResponse;
 use TG\Tests\Infrastructure\Http\Response\Inbound\GetUserProfilePhotosResponse;
 use TG\Tests\Infrastructure\Http\Response\Inbound\SuccessfulGetFileResponse;
-use TG\Tests\Infrastructure\Http\Transport\ConfiguredByTelegramUserId;
+use TG\Tests\Infrastructure\Http\Transport\ConfiguredByTelegramUserIdAndTelegramMethod;
 use TG\Infrastructure\Http\Transport\HttpTransport;
 use TG\Infrastructure\Http\Transport\Indifferent;
 use TG\Tests\Infrastructure\Http\Transport\TransportWithNAvatars;
@@ -93,6 +92,7 @@ class UserRegistersInBotTest extends TestCase
 
         $this->userReply((new Male())->value(), $transport, $connection)->response();
 
+        $this->assertCount(1 + 1/* getProfilePictures */ + 1/* sendMedia */ + 1/* Поехали? */, $transport->sentRequests());
         $this->assertUserHasGender($this->userId(), new MaleGender(), $connection);
         $this->assertEquals(
             <<<t
@@ -102,36 +102,39 @@ class UserRegistersInBotTest extends TestCase
 Если вас что-то беспокоит, вы всегда можете задать любые вопросы в @flurr_support_bot.
 t
             ,
-            json_decode((new FromQuery(new FromUrl($transport->sentRequests()[4]->url())))->value()['media'], true)[0]['caption']
+            json_decode((new FromQuery(new FromUrl($transport->sentRequests()[2]->url())))->value()['media'], true)[0]['caption']
         );
         $this->assertEquals(
             [['text' => (new Register())->value()]],
-            json_decode((new FromQuery(new FromUrl($transport->sentRequests()[5]->url())))->value()['reply_markup'], true)['keyboard'][0]
+            json_decode((new FromQuery(new FromUrl($transport->sentRequests()[3]->url())))->value()['reply_markup'], true)['keyboard'][0]
         );
 
         $this->userReply((new Register())->value(), $transport, $connection)->response();
 
         $this->assertUserIsRegistered($this->userId(), $connection);
-        $this->assertCount(14, $transport->sentRequests());
+        $this->assertCount(
+            4
+            + 1/* getProfilePictures for currently registered user */
+            + 1/* getProfilePictures for a pair */
+            + 1/* sendMedia to current user */
+            + 1/* sendMessage with name and reaction buttons to current user */,
+            $transport->sentRequests()
+        );
         $this->assertEquals(
             (new GetUserProfilePhotos())->value(),
-            (new BasenameFromUrl($transport->sentRequests()[9]->url()))->value()
+            (new BasenameFromUrl($transport->sentRequests()[4]->url()))->value()
         );
         $this->assertEquals(
-            (new GetFile())->value(),
-            (new BasenameFromUrl($transport->sentRequests()[10]->url()))->value()
-        );
-        $this->assertEquals(
-            (new GetFile())->value(),
-            (new BasenameFromUrl($transport->sentRequests()[11]->url()))->value()
+            (new GetUserProfilePhotos())->value(),
+            (new BasenameFromUrl($transport->sentRequests()[5]->url()))->value()
         );
         $this->assertEquals(
             (new SendMediaGroup())->value(),
-            (new BasenameFromUrl($transport->sentRequests()[12]->url()))->value()
+            (new BasenameFromUrl($transport->sentRequests()[6]->url()))->value()
         );
         $this->assertEquals(
             (new SendMessage())->value(),
-            (new BasenameFromUrl($transport->sentRequests()[13]->url()))->value()
+            (new BasenameFromUrl($transport->sentRequests()[7]->url()))->value()
         );
     }
 
@@ -181,14 +184,14 @@ t
 
         $this->assertUserIsRegistered($this->userId(), $connection);
         $this->assertUserHasNoAvatars($this->userId(), $connection);
-        $this->assertCount(6, $transportWithNoAvatarsForUserJustRegisteredAndTwoAvatarsForPair->sentRequests());
+        $this->assertCount(4, $transportWithNoAvatarsForUserJustRegisteredAndTwoAvatarsForPair->sentRequests());
         $this->assertEquals(
             (new GetUserProfilePhotos())->value(),
             (new BasenameFromUrl($transportWithNoAvatarsForUserJustRegisteredAndTwoAvatarsForPair->sentRequests()[0]->url()))->value()
         );
         $this->assertEquals(
             (new SendMessage())->value(),
-            (new BasenameFromUrl($transportWithNoAvatarsForUserJustRegisteredAndTwoAvatarsForPair->sentRequests()[5]->url()))->value()
+            (new BasenameFromUrl($transportWithNoAvatarsForUserJustRegisteredAndTwoAvatarsForPair->sentRequests()[3]->url()))->value()
         );
     }
 
@@ -202,26 +205,18 @@ t
         $response = $this->userReply('эм..', $transport, $connection)->response();
 
         $this->assertTrue($response->isSuccessful());
-        $this->assertCount(5, $transport->sentRequests());
+        $this->assertCount(3, $transport->sentRequests());
         $this->assertEquals(
             (new GetUserProfilePhotos())->value(),
             (new BasenameFromUrl($transport->sentRequests()[0]->url()))->value()
         );
         $this->assertEquals(
-            (new GetFile())->value(),
+            (new SendMediaGroup())->value(),
             (new BasenameFromUrl($transport->sentRequests()[1]->url()))->value()
         );
         $this->assertEquals(
-            (new GetFile())->value(),
-            (new BasenameFromUrl($transport->sentRequests()[2]->url()))->value()
-        );
-        $this->assertEquals(
-            (new SendMediaGroup())->value(),
-            (new BasenameFromUrl($transport->sentRequests()[3]->url()))->value()
-        );
-        $this->assertEquals(
             (new SendMessage())->value(),
-            (new BasenameFromUrl($transport->sentRequests()[4]->url()))->value()
+            (new BasenameFromUrl($transport->sentRequests()[2]->url()))->value()
         );
     }
 
@@ -348,7 +343,7 @@ t
     private function transportWithNoAvatarsForUserJustRegisteredAndTwoAvatarsForPair()
     {
         return
-            new ConfiguredByTelegramUserId([
+            new ConfiguredByTelegramUserIdAndTelegramMethod([
                 $this->telegramUserId()->value() => [
                     (new GetUserProfilePhotos())->value() => new EmptyGetUserProfilePhotosResponse(),
                     (new SendMediaGroup())->value() => new EmptySuccessfulResponse(),

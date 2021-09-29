@@ -52,14 +52,14 @@ class RatesAPairTest extends TestCase
         $response = $this->userReply($this->recipientTelegramId(), new ThumbsDownCallbackData($this->firstPairTelegramId()), $transport, $connection)->response();
 
         $this->assertTrue($response->isSuccessful());
-        $this->assertCount(5, $transport->sentRequests());
+        $this->assertCount(3, $transport->sentRequests());
         $this->assertEquals(
             'Anatoly',
-            (new FromQuery(new FromUrl($transport->sentRequests()[4]->url())))->value()['text']
+            (new FromQuery(new FromUrl($transport->sentRequests()[2]->url())))->value()['text']
         );
         $this->assertEquals(
             [(new ThumbsDownButton($this->secondPairTelegramId()))->value(), (new ThumbsUpButton($this->secondPairTelegramId()))->value()],
-            json_decode((new FromQuery(new FromUrl($transport->sentRequests()[4]->url())))->value()['reply_markup'], true)['inline_keyboard'][0]
+            json_decode((new FromQuery(new FromUrl($transport->sentRequests()[2]->url())))->value()['reply_markup'], true)['inline_keyboard'][0]
         );
     }
 
@@ -76,14 +76,14 @@ class RatesAPairTest extends TestCase
         $response = $this->userReply($this->recipientTelegramId(), new ThumbsDownCallbackData($this->firstPairTelegramId()), $transport, $connection)->response();
 
         $this->assertTrue($response->isSuccessful());
-        $this->assertCount(5, $transport->sentRequests());
+        $this->assertCount(3, $transport->sentRequests());
         $this->assertEquals(
             'Anatoly',
-            (new FromQuery(new FromUrl($transport->sentRequests()[4]->url())))->value()['text']
+            (new FromQuery(new FromUrl($transport->sentRequests()[2]->url())))->value()['text']
         );
         $this->assertEquals(
             [(new ThumbsDownButton($this->secondPairTelegramId()))->value(), (new ThumbsUpButton($this->secondPairTelegramId()))->value()],
-            json_decode((new FromQuery(new FromUrl($transport->sentRequests()[4]->url())))->value()['reply_markup'], true)['inline_keyboard'][0]
+            json_decode((new FromQuery(new FromUrl($transport->sentRequests()[2]->url())))->value()['reply_markup'], true)['inline_keyboard'][0]
         );
     }
 
@@ -99,14 +99,14 @@ class RatesAPairTest extends TestCase
         $response = $this->userReply($this->recipientTelegramId(), new ThumbsUpCallbackData($this->firstPairTelegramId()), $transport, $connection)->response();
 
         $this->assertTrue($response->isSuccessful());
-        $this->assertCount(5, $transport->sentRequests());
+        $this->assertCount(3, $transport->sentRequests());
         $this->assertEquals(
             'Anatoly',
-            (new FromQuery(new FromUrl($transport->sentRequests()[4]->url())))->value()['text']
+            (new FromQuery(new FromUrl($transport->sentRequests()[2]->url())))->value()['text']
         );
         $this->assertEquals(
             [(new ThumbsDownButton($this->secondPairTelegramId()))->value(), (new ThumbsUpButton($this->secondPairTelegramId()))->value()],
-            json_decode((new FromQuery(new FromUrl($transport->sentRequests()[4]->url())))->value()['reply_markup'], true)['inline_keyboard'][0]
+            json_decode((new FromQuery(new FromUrl($transport->sentRequests()[2]->url())))->value()['reply_markup'], true)['inline_keyboard'][0]
         );
     }
 
@@ -123,14 +123,14 @@ class RatesAPairTest extends TestCase
         $response = $this->userReply($this->recipientTelegramId(), new ThumbsDownCallbackData($this->firstPairTelegramId()), $transport, $connection)->response();
 
         $this->assertTrue($response->isSuccessful());
-        $this->assertCount(5, $transport->sentRequests());
+        $this->assertCount(3, $transport->sentRequests());
         $this->assertEquals(
             'Anatoly',
-            (new FromQuery(new FromUrl($transport->sentRequests()[4]->url())))->value()['text']
+            (new FromQuery(new FromUrl($transport->sentRequests()[2]->url())))->value()['text']
         );
         $this->assertEquals(
             [(new ThumbsDownButton($this->secondPairTelegramId()))->value(), (new ThumbsUpButton($this->secondPairTelegramId()))->value()],
-            json_decode((new FromQuery(new FromUrl($transport->sentRequests()[4]->url())))->value()['reply_markup'], true)['inline_keyboard'][0]
+            json_decode((new FromQuery(new FromUrl($transport->sentRequests()[2]->url())))->value()['reply_markup'], true)['inline_keyboard'][0]
         );
     }
 
@@ -147,14 +147,14 @@ class RatesAPairTest extends TestCase
         $response = $this->userReply($this->recipientTelegramId(), new ThumbsUpCallbackData($this->firstPairTelegramId()), $transport, $connection)->response();
 
         $this->assertTrue($response->isSuccessful());
-        $this->assertCount(5, $transport->sentRequests());
+        $this->assertCount(3, $transport->sentRequests());
         $this->assertEquals(
             'Anatoly',
-            (new FromQuery(new FromUrl($transport->sentRequests()[4]->url())))->value()['text']
+            (new FromQuery(new FromUrl($transport->sentRequests()[2]->url())))->value()['text']
         );
         $this->assertEquals(
             [(new ThumbsDownButton($this->secondPairTelegramId()))->value(), (new ThumbsUpButton($this->secondPairTelegramId()))->value()],
-            json_decode((new FromQuery(new FromUrl($transport->sentRequests()[4]->url())))->value()['reply_markup'], true)['inline_keyboard'][0]
+            json_decode((new FromQuery(new FromUrl($transport->sentRequests()[2]->url())))->value()['reply_markup'], true)['inline_keyboard'][0]
         );
     }
 
@@ -171,7 +171,7 @@ class RatesAPairTest extends TestCase
         $response = $this->userReply($this->recipientTelegramId(), new ThumbsUpCallbackData($this->firstPairTelegramId()), $transport, $connection)->response();
 
         $this->assertTrue($response->isSuccessful());
-        $this->assertCount(7, $transport->sentRequests());
+        $this->assertCount(5, $transport->sentRequests());
         $this->assertEquals(
             (new YouHaveAMatch('fedya'))->value(),
             (new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['text']
@@ -182,11 +182,11 @@ class RatesAPairTest extends TestCase
         );
         $this->assertEquals(
             'Anatoly',
-            (new FromQuery(new FromUrl($transport->sentRequests()[6]->url())))->value()['text']
+            (new FromQuery(new FromUrl($transport->sentRequests()[4]->url())))->value()['text']
         );
         $this->assertEquals(
             [(new ThumbsDownButton($this->secondPairTelegramId()))->value(), (new ThumbsUpButton($this->secondPairTelegramId()))->value()],
-            json_decode((new FromQuery(new FromUrl($transport->sentRequests()[6]->url())))->value()['reply_markup'], true)['inline_keyboard'][0]
+            json_decode((new FromQuery(new FromUrl($transport->sentRequests()[4]->url())))->value()['reply_markup'], true)['inline_keyboard'][0]
         );
     }
 
@@ -221,14 +221,14 @@ class RatesAPairTest extends TestCase
         $response = $this->userReply($this->recipientTelegramId(), new ThumbsUpCallbackData($this->firstPairTelegramId()), $transport, $connection)->response();
 
         $this->assertTrue($response->isSuccessful());
-        $this->assertCount(6, $transport->sentRequests());
+        $this->assertCount(4, $transport->sentRequests());
         $this->assertEquals(
             (new YouCanNotRateAUserMoreThanOnce())->value(),
             (new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['text']
         );
         $this->assertEquals(
             'Anatoly',
-            (new FromQuery(new FromUrl($transport->sentRequests()[5]->url())))->value()['text']
+            (new FromQuery(new FromUrl($transport->sentRequests()[3]->url())))->value()['text']
         );
     }
 

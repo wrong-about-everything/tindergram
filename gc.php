@@ -7,7 +7,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 use Meringue\Timeline\Point\Now;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use TG\Activities\Cron\KicksOffANewSpot\KicksOffANewSpot;
+use TG\Activities\Cron\ChecksUserAvatar\ChecksUserAvatar;
 use TG\Activities\User\RatesAPair\RatesAPair;
 use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\ApplicationConnection;
 use TG\Domain\InternalApi\RateCallbackData\RateCallbackData;
@@ -33,7 +33,6 @@ use TG\Infrastructure\Logging\Logs\EnvironmentDependentLogs;
 use TG\Infrastructure\Logging\Logs\File;
 use TG\Infrastructure\Logging\Logs\GoogleCloudLogs;
 use TG\Infrastructure\Routing\Route\ArbitraryTelegramUserMessageRoute;
-use TG\Infrastructure\Routing\Route\ArbitraryTelegramUserMessageRouteWithBotId;
 use TG\Infrastructure\Routing\Route\MatchingAnyPostRequest;
 use TG\Infrastructure\Routing\Route\RouteByInlineKeyboardActionType;
 use TG\Infrastructure\Routing\Route\RouteByMethodAndPathPattern;
@@ -113,10 +112,10 @@ function entryPoint(ServerRequestInterface $request): ResponseInterface
                         [
                             new RouteByMethodAndPathPattern(
                                 new Post(),
-                                '/cron/kicks_off_a_new_spot'
+                                '/cron/checks_user_avatar'
                             ),
                             function () use ($transport, $logs) {
-                                return new KicksOffANewSpot($transport, new ApplicationConnection(), $logs);
+                                return new ChecksUserAvatar(new Now(), $transport, new ApplicationConnection(), $logs);
                             }
                         ],
                         [

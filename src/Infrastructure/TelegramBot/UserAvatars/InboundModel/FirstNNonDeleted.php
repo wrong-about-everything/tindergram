@@ -17,6 +17,9 @@ use TG\Infrastructure\TelegramBot\BotApiUrl;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId;
 use TG\Infrastructure\TelegramBot\Method\GetFile;
 
+/**
+ * This class doesn't seem to bring any value: getFile method might succeed on an absent avatar.
+ */
 class FirstNNonDeleted implements UserAvatarIds
 {
     private $avatarsOf;

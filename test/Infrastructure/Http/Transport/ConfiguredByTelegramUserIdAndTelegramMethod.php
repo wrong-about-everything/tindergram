@@ -10,7 +10,7 @@ use TG\Infrastructure\Http\Request\Url\Basename\FromUrl as BasenameFromUrl;
 use TG\Infrastructure\Http\Response\Inbound\Response;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\FromOutboundTelegramRequest;
 
-class ConfiguredByTelegramUserId implements FakeTransport
+class ConfiguredByTelegramUserIdAndTelegramMethod implements FakeTransport
 {
     private $config;
     private $requests;

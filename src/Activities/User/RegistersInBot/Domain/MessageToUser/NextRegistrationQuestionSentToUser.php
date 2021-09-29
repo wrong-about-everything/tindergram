@@ -19,8 +19,8 @@ use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUs
 use TG\Infrastructure\TelegramBot\MessageToUser\FromString;
 use TG\Infrastructure\TelegramBot\SentReplyToUser\DefaultWithKeyboard;
 use TG\Infrastructure\TelegramBot\SentReplyToUser\MessageSentToUser;
+use TG\Infrastructure\TelegramBot\UserAvatars\InboundModel\FirstN;
 use TG\Infrastructure\TelegramBot\UserAvatars\InboundModel\FromTelegram;
-use TG\Infrastructure\TelegramBot\UserAvatars\InboundModel\FirstNNonDeleted;
 use TG\Infrastructure\TelegramBot\UserAvatars\InboundModel\UserAvatarIds;
 use TG\Infrastructure\TelegramBot\UserAvatars\OutboundModel\SentToUser;
 
@@ -128,14 +128,12 @@ class NextRegistrationQuestionSentToUser implements MessageSentToUser
     private function firstFiveAvatars(): UserAvatarIds
     {
         return
-            new FirstNNonDeleted(
-                $this->internalTelegramUserId,
+            new FirstN(
                 new FromTelegram(
                     $this->internalTelegramUserId,
                     $this->httpTransport
                 ),
-                5,
-                $this->httpTransport
+                5
             );
     }
 }
