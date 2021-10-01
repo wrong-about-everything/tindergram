@@ -46,10 +46,6 @@ if (!$r1->isSuccessful()) {
     die();
 }
 
-if (!$r2->isSuccessful()) {
-    var_dump($r2->error()->logMessage());
-    die();
-}
 exec(
     sprintf(
         '%s/vendor/bin/phinx migrate -c %s/migrations/%s.php 2>&1',
