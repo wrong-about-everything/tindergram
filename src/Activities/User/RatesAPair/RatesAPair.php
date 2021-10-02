@@ -6,6 +6,9 @@ namespace TG\Activities\User\RatesAPair;
 
 use TG\Domain\BotUser\ReadModel\ByInternalTelegramUserId;
 use TG\Domain\BotUser\ReadModel\NextCandidateFor;
+use TG\Domain\BotUser\WriteModel\SwitchedToVisibleModeIfLike;
+use TG\Domain\Reaction\Pure\FromAction;
+use TG\Domain\TelegramBot\InternalTelegramUserId\Impure\FromWriteModelBotUser;
 use TG\Domain\InternalApi\RateCallbackData\RateCallbackData;
 use TG\Domain\Pair\WriteModel\SentIfExists;
 use TG\Domain\Reaction\Pure\FromViewedPair;
@@ -26,6 +29,7 @@ use TG\Infrastructure\Logging\LogItem\FromNonSuccessfulImpureValue;
 use TG\Infrastructure\Logging\LogItem\InformationMessage;
 use TG\Infrastructure\Logging\Logs;
 use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
+use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Impure\FromPure;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId;
 use TG\Infrastructure\TelegramBot\SentReplyToUser\DefaultWithNoKeyboard;
 use TG\Infrastructure\UserStory\Body\Emptie;
@@ -104,9 +108,15 @@ class RatesAPair extends Existent
     {
         return
             new Rated(
-                $this->voterTelegramId,
-                $this->pairTelegramId(),
-                new FromRateCallbackData($this->rateCallbackData),
+                new FromWriteModelBotUser(
+                    new SwitchedToVisibleModeIfLike(
+                        $this->voterTelegramId,
+                        new FromAction(new FromRateCallbackData($this->rateCallbackData)),
+                        $this->connection
+                    )
+                ),
+                new FromPure($this->pairTelegramId()),
+                new FromAction(new FromRateCallbackData($this->rateCallbackData)),
                 $this->connection
             );
     }

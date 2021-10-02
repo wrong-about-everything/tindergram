@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace TG\Domain\BotUser\ReadModel;
 
-use TG\Domain\BotUser\UserId\FromWriteModelBotUser;
+use TG\Domain\TelegramBot\InternalTelegramUserId\Impure\FromWriteModelBotUser;
 use TG\Domain\BotUser\WriteModel\BotUser as WriteModelBotUser;
 use TG\Infrastructure\ImpureInteractions\ImpureValue;
 use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
+use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\FromImpure;
 
 class FromWriteModel implements BotUser
 {
@@ -37,6 +38,13 @@ class FromWriteModel implements BotUser
             return $this->writeModelBotUser->value();
         }
 
-        return (new ById(new FromWriteModelBotUser($this->writeModelBotUser), $this->connection))->value();
+        return
+            (new ByInternalTelegramUserId(
+                new FromImpure(
+                    new FromWriteModelBotUser($this->writeModelBotUser)
+                ),
+                $this->connection
+            ))
+                ->value();
     }
 }

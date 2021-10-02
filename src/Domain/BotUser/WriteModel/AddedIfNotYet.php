@@ -13,6 +13,7 @@ use TG\Infrastructure\ImpureInteractions\ImpureValue\Successful;
 use TG\Infrastructure\ImpureInteractions\PureValue\Present;
 use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
 use TG\Infrastructure\SqlDatabase\Agnostic\Query\SingleMutating;
+use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\FromBotUserDatabaseRecord;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId;
 
 class AddedIfNotYet implements BotUser
@@ -51,7 +52,7 @@ class AddedIfNotYet implements BotUser
             return $botUserFromDb->value();
         }
         if ($botUserFromDb->value()->pure()->isPresent()) {
-            return new Successful(new Present((new FromReadModelBotUser($botUserFromDb))->value()));
+            return new Successful(new Present($this->telegramUserId->value()));
         }
 
         $generatedUserId = Uuid::uuid4()->toString();
@@ -78,6 +79,6 @@ q
             return $registerUserResponse;
         }
 
-        return new Successful(new Present($generatedUserId));
+        return new Successful(new Present($this->telegramUserId->value()));
     }
 }

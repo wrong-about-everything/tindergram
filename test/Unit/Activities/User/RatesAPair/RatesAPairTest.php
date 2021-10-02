@@ -7,6 +7,7 @@ namespace TG\Tests\Unit\Activities\User\RatesAPair;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 use TG\Activities\User\RatesAPair\RatesAPair;
+use TG\Domain\BotUser\ReadModel\ByInternalTelegramUserId;
 use TG\Domain\Gender\Pure\Female;
 use TG\Domain\Gender\Pure\Gender;
 use TG\Domain\Gender\Pure\Male;
@@ -25,6 +26,8 @@ use TG\Domain\TelegramBot\InlineKeyboardButton\Single\ThumbsDown as ThumbsDownBu
 use TG\Domain\TelegramBot\MessageToUser\ThatsAllForNow;
 use TG\Domain\TelegramBot\MessageToUser\YouCanNotRateAUserMoreThanOnce;
 use TG\Domain\TelegramBot\MessageToUser\YouHaveAMatch;
+use TG\Domain\UserMode\Impure\FromBotUser;
+use TG\Domain\UserMode\Impure\FromPure;
 use TG\Domain\UserMode\Pure\Invisible;
 use TG\Domain\UserMode\Pure\Visible;
 use TG\Infrastructure\Http\Request\Url\ParsedQuery\FromQuery;
@@ -41,6 +44,58 @@ use TG\Tests\Infrastructure\Stub\Table\ViewedPair;
 
 class RatesAPairTest extends TestCase
 {
+    public function testWhenUserInInvisibleModeUpvotesAPairThenHeSwitchesToVisibleModeAndSeesTheNextOneWithAvatarAndInVisibleMode()
+    {
+        $connection = new ApplicationConnection();
+        $this->createBotUserWithAvatarAndInInvisibleMode($this->recipientTelegramId(), 'Vasya', 'vasya', new Male(), new Female(), 0, $connection);
+        $this->createBotUserWithAvatarAndInVisibleMode($this->firstPairTelegramId(), 'Fedya', 'fedya', new Female(), new Male(), 0, $connection);
+        $this->seedPair($this->recipientTelegramId(), $this->firstPairTelegramId(), new NonExistent(), $connection);
+        $this->createBotUserWithoutAvatar($this->thirdPairTelegramId(), new Female(), new Male(), 0, $connection);
+        $this->createBotUserWithAvatarButInInvisibleMode($this->fourthPairTelegramId(), new Female(), new Male(), 5, $connection);
+        $this->createBotUserWithAvatarAndInVisibleMode($this->secondPairTelegramId(), 'Anatoly', 'anatol', new Female(), new Male(), 10, $connection);
+        $transport = new TransportWithNAvatars(2);
+
+        $response = $this->userReply($this->recipientTelegramId(), new ThumbsUpCallbackData($this->firstPairTelegramId()), $transport, $connection)->response();
+
+        $this->assertTrue($response->isSuccessful());
+        $this->assertUserIsInVisibleMode($this->recipientTelegramId(), $connection);
+        $this->assertCount(3, $transport->sentRequests());
+        $this->assertEquals(
+            'Anatoly',
+            (new FromQuery(new FromUrl($transport->sentRequests()[2]->url())))->value()['text']
+        );
+        $this->assertEquals(
+            [(new ThumbsDownButton($this->secondPairTelegramId()))->value(), (new ThumbsUpButton($this->secondPairTelegramId()))->value()],
+            json_decode((new FromQuery(new FromUrl($transport->sentRequests()[2]->url())))->value()['reply_markup'], true)['inline_keyboard'][0]
+        );
+    }
+
+    public function testWhenUserInInvisibleModeDownvotesAPairThenHeSwitchesToVisibleModeAndSeesTheNextOneWithAvatarAndInVisibleMode()
+    {
+        $connection = new ApplicationConnection();
+        $this->createBotUserWithAvatarAndInInvisibleMode($this->recipientTelegramId(), 'Vasya', 'vasya', new Male(), new Female(), 0, $connection);
+        $this->createBotUserWithAvatarAndInVisibleMode($this->firstPairTelegramId(), 'Fedya', 'fedya', new Female(), new Male(), 0, $connection);
+        $this->seedPair($this->recipientTelegramId(), $this->firstPairTelegramId(), new NonExistent(), $connection);
+        $this->createBotUserWithoutAvatar($this->thirdPairTelegramId(), new Female(), new Male(), 0, $connection);
+        $this->createBotUserWithAvatarButInInvisibleMode($this->fourthPairTelegramId(), new Female(), new Male(), 5, $connection);
+        $this->createBotUserWithAvatarAndInVisibleMode($this->secondPairTelegramId(), 'Anatoly', 'anatol', new Female(), new Male(), 10, $connection);
+        $transport = new TransportWithNAvatars(2);
+
+        $response = $this->userReply($this->recipientTelegramId(), new ThumbsDownCallbackData($this->firstPairTelegramId()), $transport, $connection)->response();
+
+        $this->assertTrue($response->isSuccessful());
+        $this->assertUserIsInInvisibleMode($this->recipientTelegramId(), $connection);
+        $this->assertCount(3, $transport->sentRequests());
+        $this->assertEquals(
+            'Anatoly',
+            (new FromQuery(new FromUrl($transport->sentRequests()[2]->url())))->value()['text']
+        );
+        $this->assertEquals(
+            [(new ThumbsDownButton($this->secondPairTelegramId()))->value(), (new ThumbsUpButton($this->secondPairTelegramId()))->value()],
+            json_decode((new FromQuery(new FromUrl($transport->sentRequests()[2]->url())))->value()['reply_markup'], true)['inline_keyboard'][0]
+        );
+    }
+
     public function testWhenUserRatesAPairThenHeSeesTheNextOneWithAvatarAndInVisibleMode()
     {
         $connection = new ApplicationConnection();
@@ -316,6 +371,35 @@ class RatesAPairTest extends TestCase
             ]);
     }
 
+    private function createBotUserWithAvatarAndInInvisibleMode(
+        InternalTelegramUserId $telegramUserId,
+        string $name,
+        string $handle,
+        Gender $gender,
+        Gender $preferredGender,
+        int $seenQty,
+        OpenConnection $connection
+    )
+    {
+        (new BotUser($connection))
+            ->insert([
+                [
+                    'id' => Uuid::uuid4()->toString(),
+                    'first_name' => $name,
+                    'telegram_id' => $telegramUserId->value(),
+                    'telegram_handle' => $handle,
+                    'status' => (new Registered())->value(),
+
+                    'gender' => $gender->value(),
+                    'preferred_gender' => $preferredGender->value(),
+                    'user_mode' => (new Invisible())->value(),
+
+                    'has_avatar' => 1,
+                    'seen_qty' => $seenQty
+                ]
+            ]);
+    }
+
     private function createBotUserWithAvatarButInInvisibleMode(InternalTelegramUserId $telegramUserId, Gender $gender, Gender $preferredGender, int $seenQty, OpenConnection $connection)
     {
         (new BotUser($connection))
@@ -377,5 +461,25 @@ class RatesAPairTest extends TestCase
                 $connection,
                 new DevNull()
             );
+    }
+
+    private function assertUserIsInVisibleMode(InternalTelegramUserId $voterTelegramId, OpenConnection $connection)
+    {
+        $this->assertTrue(
+            (new FromBotUser(new ByInternalTelegramUserId($voterTelegramId, $connection)))
+                ->equals(
+                    new FromPure(new Visible())
+                )
+        );
+    }
+
+    private function assertUserIsInInvisibleMode(InternalTelegramUserId $voterTelegramId, OpenConnection $connection)
+    {
+        $this->assertTrue(
+            (new FromBotUser(new ByInternalTelegramUserId($voterTelegramId, $connection)))
+                ->equals(
+                    new FromPure(new Invisible())
+                )
+        );
     }
 }

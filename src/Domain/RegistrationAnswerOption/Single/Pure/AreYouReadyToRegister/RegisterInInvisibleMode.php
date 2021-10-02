@@ -8,6 +8,6 @@ class RegisterInInvisibleMode extends AreYouReadyToRegisterOptionName
 {
     public function value(): string
     {
-        return 'Зарегистрироваться в режиме невидимки 🕵️';
+        return 'В режиме невидимки 🕵️';
     }
 }

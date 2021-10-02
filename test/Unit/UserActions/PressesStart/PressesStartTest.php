@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace TG\Tests\Unit\UserActions\PressesStart;
 
 use PHPUnit\Framework\TestCase;
-use Ramsey\Uuid\Uuid;
-use TG\Domain\BotUser\Preference\Multiple\Pure\Men;
 use TG\Domain\Gender\Pure\Male;
 use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\ApplicationConnection;
 use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\RootConnection;

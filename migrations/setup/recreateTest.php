@@ -22,7 +22,7 @@ use TG\Infrastructure\SqlDatabase\Agnostic\Connection\Port\FromString;
 use TG\Infrastructure\SqlDatabase\Agnostic\Connection\DatabaseName\SpecifiedDatabaseName;
 use TG\Infrastructure\SqlDatabase\Agnostic\Connection\Host\FromString as Host;
 
-if (!file_exists(dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . '.env.dev.testing_mode')) {
+if (!file_exists(dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR)) {
     throw new Exception('It seems you run this file outside of dev environment. You can not do that.');
 }
 

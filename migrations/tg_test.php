@@ -13,7 +13,7 @@ use TG\Infrastructure\SqlDatabase\Agnostic\Connection\DefaultConnection;
 use TG\Infrastructure\SqlDatabase\Agnostic\Connection\Host\FromString;
 use TG\Infrastructure\SqlDatabase\Agnostic\Connection\Port\FromString as PortFromString;
 
-if (file_exists(realpath(dirname(__DIR__)) . DIRECTORY_SEPARATOR . '.env.dev.testing_mode')) {
+if (file_exists(realpath(dirname(__DIR__)) . DIRECTORY_SEPARATOR)) {
     OneAndOnly::createUnsafeImmutable((new FromAbsolutePathString(dirname(__DIR__)))->value()->pure()->raw(), '.env.dev.testing_mode')->load();
 } else {
     die('This file can be run only in a test mode of dev environment');

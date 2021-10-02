@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace TG\Domain\BotUser\WriteModel;
 
+use TG\Domain\Reaction\Pure\Like;
+use TG\Domain\Reaction\Pure\Reaction;
+use TG\Domain\UserMode\Pure\Visible;
 use TG\Infrastructure\ImpureInteractions\ImpureValue;
 use TG\Infrastructure\ImpureInteractions\ImpureValue\Successful;
 use TG\Infrastructure\ImpureInteractions\PureValue\Present;
@@ -11,15 +14,17 @@ use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
 use TG\Infrastructure\SqlDatabase\Agnostic\Query\SingleMutating;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId;
 
-class IncrementedViewsQty implements BotUser
+class SwitchedToVisibleModeIfLike implements BotUser
 {
     private $telegramUserId;
+    private $reaction;
     private $connection;
     private $cached;
 
-    public function __construct(InternalTelegramUserId $telegramUserId, OpenConnection $connection)
+    public function __construct(InternalTelegramUserId $telegramUserId, Reaction $reaction, OpenConnection $connection)
     {
         $this->telegramUserId = $telegramUserId;
+        $this->reaction = $reaction;
         $this->connection = $connection;
 
         $this->cached = null;
@@ -36,15 +41,20 @@ class IncrementedViewsQty implements BotUser
 
     private function doValue(): ImpureValue
     {
-        $response =
-            (new SingleMutating(
-                'update bot_user set seen_qty = seen_qty + 1 where telegram_id = ?',
-                [$this->telegramUserId->value()],
-                $this->connection
-            ))
-                ->response();
-        if (!$response->isSuccessful()) {
-            return $response;
+        if ($this->reaction->equals(new Like())) {
+            $response =
+                (new SingleMutating(
+                    'update bot_user set user_mode = ? where telegram_id = ?',
+                    [
+                        (new Visible())->value(),
+                        $this->telegramUserId->value(),
+                    ],
+                    $this->connection
+                ))
+                    ->response();
+            if (!$response->isSuccessful()) {
+                return $response;
+            }
         }
 
         return new Successful(new Present($this->telegramUserId->value()));
