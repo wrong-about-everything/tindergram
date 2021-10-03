@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace TG\Activities\User\RatesAPair;
 
+use TG\Domain\BotUser\ReadModel\BotUser;
 use TG\Domain\BotUser\ReadModel\ByInternalTelegramUserId;
 use TG\Domain\BotUser\ReadModel\NextCandidateFor;
-use TG\Domain\BotUser\WriteModel\SwitchedToVisibleModeIfLike;
+use TG\Domain\BotUser\WriteModel\SwitchedToVisibleModeOrStayedTheSame;
 use TG\Domain\Reaction\Pure\FromAction;
 use TG\Domain\TelegramBot\InternalTelegramUserId\Impure\FromWriteModelBotUser;
 use TG\Domain\InternalApi\RateCallbackData\RateCallbackData;
@@ -58,17 +59,17 @@ class RatesAPair extends Existent
     {
         $this->logs->receive(new InformationMessage('User rates a pair scenario started'));
 
-        $reactionToCurrentPair = new FromViewedPair($this->viewedPair());
-        if ($reactionToCurrentPair->exists()) {
+        $voterBotUser = new ByInternalTelegramUserId($this->voterTelegramId, $this->connection);
+        if ((new FromViewedPair($this->viewedPair()))->exists()) {
             $this->logs->receive(new InformationMessage('Someone rated a pair one more time'));
             $this->youCanNotRateAUserMoreThatOnce();
         } else {
-            $persistentPair = $this->persistentPair();
+            $persistentPair = $this->persistentPair($voterBotUser);
             if (!$persistentPair->value()->isSuccessful()) {
                 $this->logs->receive(new FromNonSuccessfulImpureValue($persistentPair->value()));
             } else {
                 if ($this->thereIsAMatch()) {
-                    $this->sendContactsToEachOther();
+                    $this->sendContactsToEachOther($voterBotUser);
                 }
             }
         }
@@ -104,13 +105,13 @@ class RatesAPair extends Existent
                 ->value();
     }
 
-    private function persistentPair(): Pair
+    private function persistentPair(BotUser $voterBotUser): Pair
     {
         return
             new Rated(
                 new FromWriteModelBotUser(
-                    new SwitchedToVisibleModeIfLike(
-                        $this->voterTelegramId,
+                    new SwitchedToVisibleModeOrStayedTheSame(
+                        $voterBotUser,
                         new FromAction(new FromRateCallbackData($this->rateCallbackData)),
                         $this->connection
                     )
@@ -139,10 +140,10 @@ class RatesAPair extends Existent
         return new PairTelegramIdFromRateCallback($this->rateCallbackData);
     }
 
-    private function sendContactsToEachOther()
+    private function sendContactsToEachOther(BotUser $voterBotUser)
     {
         $this->sendContactsToCurrentVoter();
-        $this->sendContactsToPair();
+        $this->sendContactsToPair($voterBotUser);
     }
 
     private function sendContactsToCurrentVoter(): void
@@ -165,14 +166,13 @@ class RatesAPair extends Existent
         }
     }
 
-    private function sendContactsToPair(): void
+    private function sendContactsToPair(BotUser $voterBotUser): void
     {
         $secondSentMessageValue =
             (new DefaultWithNoKeyboard(
                 $this->pairTelegramId(),
                 new YouHaveAMatch(
-                    (new ByInternalTelegramUserId($this->voterTelegramId, $this->connection))
-                        ->value()->pure()->raw()['telegram_handle']
+                    $voterBotUser->value()->pure()->raw()['telegram_handle']
                 ),
                 $this->transport
             ))

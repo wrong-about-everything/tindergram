@@ -14,6 +14,6 @@ abstract class VariantId
 
     final public function equals(VariantId $variantId): bool
     {
-        return $this->value() === $variantId->value();
+        return $this->value()->pure()->raw() === $variantId->value()->pure()->raw();
     }
 }
