@@ -7,6 +7,7 @@ namespace TG\Tests\Infrastructure\Stub\Table;
 use Exception;
 use Meringue\Timeline\Point\Now;
 use Ramsey\Uuid\Uuid;
+use TG\Domain\ABTesting\Pure\SwitchToVisibleModeOnUpvote;
 use TG\Domain\UserMode\Pure\Visible;
 use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
 use TG\Infrastructure\SqlDatabase\Agnostic\Query\SingleMutatingQueryWithMultipleValueSets;
@@ -30,14 +31,14 @@ insert into bot_user (
 
   preferred_gender, gender, status, registered_at, user_mode,
 
-  has_avatar, seen_qty, last_seen_at, like_qty, dislike_qty
+  has_avatar, seen_qty, last_seen_at, like_qty, dislike_qty, variant_id
 )
 values (
   ?, ?, ?, ?, ?,
 
   ?, ?, ?, ?, ?,
 
-  ?, ?, ?, ?, ?
+  ?, ?, ?, ?, ?, ?
 )
 q
                 ,
@@ -49,7 +50,7 @@ q
 
                             $v['preferred_gender'] ?? null, $v['gender'] ?? null, $v['status'] ?? null, $v['registered_at'] ?? null, $v['user_mode'],
 
-                            $v['has_avatar'], $v['seen_qty'], $v['last_seen_at'], $v['like_qty'], $v['dislike_qty'],
+                            $v['has_avatar'], $v['seen_qty'], $v['last_seen_at'], $v['like_qty'], $v['dislike_qty'], $v['variant_id'],
                         ];
                     },
                     $records
@@ -78,6 +79,8 @@ q
             'last_seen_at' => (new Now())->value(),
             'like_qty' => 0,
             'dislike_qty' => 0,
+
+            'variant_id' => (new SwitchToVisibleModeOnUpvote())->value(),
         ];
     }
 }

@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace TG\Activities\User\RegistersInBot\Domain\MessageToUser;
 
+use TG\Domain\ABTesting\Impure\FromBotUser;
+use TG\Domain\BotUser\ReadModel\BotUser;
+use TG\Domain\BotUser\ReadModel\ByInternalTelegramUserId;
 use TG\Domain\RegistrationAnswerOption\Multiple\Impure\FromRegistrationQuestion;
 use TG\Domain\RegistrationAnswerOption\Multiple\Pure\FromImpure;
 use TG\Domain\RegistrationQuestion\Single\Impure\NextRegistrationQuestion;
@@ -12,6 +15,7 @@ use TG\Domain\RegistrationQuestion\Single\Pure\FromImpure as PureRegistrationQue
 use TG\Domain\RegistrationQuestion\Single\Impure\FromPure;
 use TG\Domain\RegistrationQuestion\Single\Pure\AreYouReadyToRegister;
 use TG\Domain\TelegramBot\KeyboardButtons\KeyboardFromAnswerOptions;
+use TG\Infrastructure\ABTesting\Pure\FromImpure as PureVariantIdFromImpure;
 use TG\Infrastructure\Http\Transport\HttpTransport;
 use TG\Infrastructure\ImpureInteractions\ImpureValue;
 use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
@@ -39,13 +43,14 @@ class NextRegistrationQuestionSentToUser implements MessageSentToUser
 
     public function value(): ImpureValue
     {
-        $nextRegistrationQuestion = new NextRegistrationQuestion($this->internalTelegramUserId, $this->connection);
+        $botUser = new ByInternalTelegramUserId($this->internalTelegramUserId, $this->connection);
+        $nextRegistrationQuestion = new NextRegistrationQuestion($botUser);
         if (!$nextRegistrationQuestion->id()->isSuccessful()) {
             return $nextRegistrationQuestion->id();
         }
 
         if ($nextRegistrationQuestion->equals(new FromPure(new AreYouReadyToRegister()))) {
-            return $this->areYouReadyToRegister($nextRegistrationQuestion);
+            return $this->areYouReadyToRegister($nextRegistrationQuestion, $botUser);
         } else {
             return
                 (new DefaultWithKeyboard(
@@ -54,7 +59,7 @@ class NextRegistrationQuestionSentToUser implements MessageSentToUser
                     new KeyboardFromAnswerOptions(
                         new FromImpure(
                             new FromRegistrationQuestion(
-                                new NextRegistrationQuestion($this->internalTelegramUserId, $this->connection)
+                                new NextRegistrationQuestion($botUser)
                             )
                         )
                     ),
@@ -64,7 +69,7 @@ class NextRegistrationQuestionSentToUser implements MessageSentToUser
         }
     }
 
-    private function areYouReadyToRegister(RegistrationQuestion $nextRegistrationQuestion): ImpureValue
+    private function areYouReadyToRegister(RegistrationQuestion $nextRegistrationQuestion, BotUser $botUser): ImpureValue
     {
         $firstFiveAvatars = $this->firstFiveAvatars();
         if (!$firstFiveAvatars->value()->isSuccessful()) {
@@ -74,7 +79,7 @@ class NextRegistrationQuestionSentToUser implements MessageSentToUser
             return $this->isUserWithoutAvatarsReadyToRegister($nextRegistrationQuestion);
         }
 
-        return $this->isUserWithAvatarsReadyToRegister($firstFiveAvatars, $nextRegistrationQuestion);
+        return $this->isUserWithAvatarsReadyToRegister($firstFiveAvatars, $nextRegistrationQuestion, $botUser);
     }
 
     private function isUserWithoutAvatarsReadyToRegister(RegistrationQuestion $nextRegistrationQuestion): ImpureValue
@@ -95,11 +100,15 @@ class NextRegistrationQuestionSentToUser implements MessageSentToUser
                 ->value();
     }
 
-    private function isUserWithAvatarsReadyToRegister(UserAvatarIds $firstFiveAvatars, RegistrationQuestion $nextRegistrationQuestion): ImpureValue
+    private function isUserWithAvatarsReadyToRegister(UserAvatarIds $firstFiveAvatars, RegistrationQuestion $nextRegistrationQuestion, BotUser $botUser): ImpureValue
     {
         $sentToUserResult =
             (new SentToUser(
-                new QuestionToUserWithAvatarsWhetherHeIsReadyToRegister(),
+                new VariantDependentQuestionToUserWithAvatarsWhetherHeIsReadyToRegister(
+                    new PureVariantIdFromImpure(
+                        new FromBotUser($botUser)
+                    )
+                ),
                 $firstFiveAvatars,
                 $this->internalTelegramUserId,
                 $this->httpTransport

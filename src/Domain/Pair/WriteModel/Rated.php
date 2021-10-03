@@ -44,10 +44,10 @@ class Rated implements Pair
 
     private function doValue(): ImpureValue
     {
-        if (!$this->recipientTelegramId->exists()->isSuccessful() || !$this->recipientTelegramId->exists()->pure()->raw() !== true) {
+        if (!$this->recipientTelegramId->exists()->isSuccessful() || $this->recipientTelegramId->exists()->pure()->raw() !== true) {
             return $this->recipientTelegramId->exists();
         }
-        if (!$this->pairTelegramId->exists()->isSuccessful() || !$this->pairTelegramId->exists()->pure()->raw() !== true) {
+        if (!$this->pairTelegramId->exists()->isSuccessful() || $this->pairTelegramId->exists()->pure()->raw() !== true) {
             return $this->pairTelegramId->exists();
         }
         $viewedPairResponse =

@@ -17,7 +17,9 @@ use TG\Domain\BotUser\UserStatus\Pure\Registered;
 use TG\Domain\InternalApi\RateCallbackData\RateCallbackData;
 use TG\Domain\InternalApi\RateCallbackData\ThumbsDown as ThumbsDownCallbackData;
 use TG\Domain\InternalApi\RateCallbackData\ThumbsUp as ThumbsUpCallbackData;
+use TG\Domain\Pair\ReadModel\ByVoterTelegramIdAndRatedTelegramId;
 use TG\Domain\Reaction\Pure\Dislike;
+use TG\Domain\Reaction\Pure\FromViewedPair;
 use TG\Domain\Reaction\Pure\Like;
 use TG\Domain\Reaction\Pure\NonExistent;
 use TG\Domain\Reaction\Pure\Reaction;
@@ -42,6 +44,7 @@ use TG\Tests\Infrastructure\Environment\Reset;
 use TG\Tests\Infrastructure\Stub\Table\BotUser;
 use TG\Tests\Infrastructure\Stub\Table\ViewedPair;
 
+// @todo: Add tests for reaction persisting, like_qty and dislike_qty
 class RatesAPairTest extends TestCase
 {
     public function testWhenUserInInvisibleModeUpvotesAPairThenHeSwitchesToVisibleModeAndSeesTheNextOneWithAvatarAndInVisibleMode()
@@ -110,6 +113,7 @@ class RatesAPairTest extends TestCase
         $response = $this->userReply($this->recipientTelegramId(), new ThumbsDownCallbackData($this->firstPairTelegramId()), $transport, $connection)->response();
 
         $this->assertTrue($response->isSuccessful());
+        $this->assertPairPersisted($this->recipientTelegramId(), $this->firstPairTelegramId(), new Dislike(), $connection);
         $this->assertCount(3, $transport->sentRequests());
         $this->assertEquals(
             'Anatoly',
@@ -290,7 +294,7 @@ class RatesAPairTest extends TestCase
         );
     }
 
-    public function testGivenNoMorePairsLeftWhenUserRatesPairOneMoreTimeThenHeSeesThatItIsNotAllowedAndHeSeesThatsAllForNowMessage()
+    public function testGivenNoMorePairsLeftWhenUserUpvotesPairOneMoreTimeThenHeSeesThatItIsNotAllowedAndHeSeesThatsAllForNowMessage()
     {
         $connection = new ApplicationConnection();
         $this->createBotUserWithAvatarAndInVisibleMode($this->recipientTelegramId(), 'Vasya', 'vasya', new Male(), new Female(), 0, $connection);
@@ -299,6 +303,28 @@ class RatesAPairTest extends TestCase
         $transport = new TransportWithNAvatars(2);
 
         $response = $this->userReply($this->recipientTelegramId(), new ThumbsUpCallbackData($this->firstPairTelegramId()), $transport, $connection)->response();
+
+        $this->assertTrue($response->isSuccessful());
+        $this->assertCount(2, $transport->sentRequests());
+        $this->assertEquals(
+            (new YouCanNotRateAUserMoreThanOnce())->value(),
+            (new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['text']
+        );
+        $this->assertEquals(
+            (new ThatsAllForNow())->value(),
+            (new FromQuery(new FromUrl($transport->sentRequests()[1]->url())))->value()['text']
+        );
+    }
+
+    public function testGivenNoMorePairsLeftWhenUserDownvotesPairOneMoreTimeThenHeSeesThatItIsNotAllowedAndHeSeesThatsAllForNowMessage()
+    {
+        $connection = new ApplicationConnection();
+        $this->createBotUserWithAvatarAndInVisibleMode($this->recipientTelegramId(), 'Vasya', 'vasya', new Male(), new Female(), 0, $connection);
+        $this->createBotUserWithAvatarAndInVisibleMode($this->firstPairTelegramId(), 'Fedya', 'fedya', new Female(), new Male(), 0, $connection);
+        $this->seedPair($this->recipientTelegramId(), $this->firstPairTelegramId(), new Dislike(), $connection);
+        $transport = new TransportWithNAvatars(2);
+
+        $response = $this->userReply($this->recipientTelegramId(), new ThumbsDownCallbackData($this->firstPairTelegramId()), $transport, $connection)->response();
 
         $this->assertTrue($response->isSuccessful());
         $this->assertCount(2, $transport->sentRequests());
@@ -481,5 +507,13 @@ class RatesAPairTest extends TestCase
                     new FromPure(new Invisible())
                 )
         );
+    }
+
+
+    private function assertPairPersisted(InternalTelegramUserId $recipientTelegramId, InternalTelegramUserId $firstPairTelegramId, Reaction $reaction, OpenConnection $connection)
+    {
+        $pair = new ByVoterTelegramIdAndRatedTelegramId($recipientTelegramId, $firstPairTelegramId, $connection);
+
+        $this->assertTrue((new FromViewedPair($pair))->equals($reaction));
     }
 }

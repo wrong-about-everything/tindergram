@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace TG\Activities\User\RegistersInBot\UserStories\AnswersRegistrationQuestion;
 
 use TG\Activities\User\RegistersInBot\UserStories\AnswersRegistrationQuestion\Domain\SentReplyToUser\NextReplyToUser;
+use TG\Domain\BotUser\ReadModel\BotUser;
 use TG\Domain\BotUser\ReadModel\ByInternalTelegramUserId;
 use TG\Domain\RegistrationAnswerOption\Multiple\Impure\FromRegistrationQuestion;
 use TG\Domain\RegistrationAnswerOption\Multiple\Pure\FromImpure;
@@ -80,13 +81,18 @@ class AnswersRegistrationQuestion extends Existent
         return new Successful(new Emptie());
     }
 
-    private function currentlyAnsweredQuestion()
+    private function botUser(): BotUser
     {
         return
-            new NextRegistrationQuestion(
+            new ByInternalTelegramUserId(
                 new FromParsedTelegramMessage($this->message),
                 $this->connection
             );
+    }
+
+    private function currentlyAnsweredQuestion()
+    {
+        return new NextRegistrationQuestion($this->botUser());
     }
 
     private function validationError(RegistrationQuestion $registrationQuestion): ImpureValue
@@ -136,10 +142,7 @@ class AnswersRegistrationQuestion extends Existent
     {
         return
             new NextReplyToUser(
-                new ByInternalTelegramUserId(
-                    new FromParsedTelegramMessage($this->message),
-                    $this->connection
-                ),
+                $this->botUser(),
                 $this->httpTransport,
                 $this->connection
             );

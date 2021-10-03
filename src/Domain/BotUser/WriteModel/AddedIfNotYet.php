@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace TG\Domain\BotUser\WriteModel;
 
 use Ramsey\Uuid\Uuid;
+use TG\Domain\ABTesting\Pure\SwitchToVisibleModeOnRequest;
+use TG\Domain\ABTesting\Pure\SwitchToVisibleModeOnUpvote;
 use TG\Domain\BotUser\ReadModel\ByInternalTelegramUserId;
-use TG\Domain\BotUser\UserId\FromReadModelBotUser;
 use TG\Domain\BotUser\UserStatus\Pure\RegistrationIsInProgress;
 use TG\Infrastructure\ImpureInteractions\ImpureValue;
 use TG\Infrastructure\ImpureInteractions\ImpureValue\Successful;
 use TG\Infrastructure\ImpureInteractions\PureValue\Present;
 use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
 use TG\Infrastructure\SqlDatabase\Agnostic\Query\SingleMutating;
-use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\FromBotUserDatabaseRecord;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId;
 
 class AddedIfNotYet implements BotUser
@@ -55,22 +55,21 @@ class AddedIfNotYet implements BotUser
             return new Successful(new Present($this->telegramUserId->value()));
         }
 
-        $generatedUserId = Uuid::uuid4()->toString();
-
         $registerUserResponse =
             (new SingleMutating(
                 <<<q
-insert into bot_user (id, first_name, last_name, telegram_id, telegram_handle, status)
-values (?, ?, ?, ?, ?, ?)
+insert into bot_user (id, first_name, last_name, telegram_id, telegram_handle, status, variant_id)
+values (?, ?, ?, ?, ?, ?, ?)
 q
                 ,
                 [
-                    $generatedUserId,
+                    Uuid::uuid4()->toString(),
                     $this->firstName,
                     $this->lastName,
                     $this->telegramUserId->value(),
                     $this->telegramHandle,
-                    (new RegistrationIsInProgress())->value()
+                    (new RegistrationIsInProgress())->value(),
+                    time() % 2 === 0 ? (new SwitchToVisibleModeOnUpvote())->value() : (new SwitchToVisibleModeOnRequest())->value()
                 ],
                 $this->connection
             ))
