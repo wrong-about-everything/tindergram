@@ -64,6 +64,7 @@ class RatesAPairTest extends TestCase
         $response = $this->userReply($this->recipientTelegramId(), new ThumbsUpCallbackData($this->firstPairTelegramId()), $transport, $connection)->response();
 
         $this->assertTrue($response->isSuccessful());
+        $this->assertPairPersisted($this->recipientTelegramId(), $this->firstPairTelegramId(), new Like(), $connection);
         $this->assertUserIsInVisibleMode($this->recipientTelegramId(), $connection);
         $this->assertCount(3, $transport->sentRequests());
         $this->assertEquals(
@@ -90,6 +91,7 @@ class RatesAPairTest extends TestCase
         $response = $this->userReply($this->recipientTelegramId(), new ThumbsUpCallbackData($this->firstPairTelegramId()), $transport, $connection)->response();
 
         $this->assertTrue($response->isSuccessful());
+        $this->assertPairPersisted($this->recipientTelegramId(), $this->firstPairTelegramId(), new Like(), $connection);
         $this->assertUserIsInInvisibleMode($this->recipientTelegramId(), $connection);
         $this->assertCount(3, $transport->sentRequests());
         $this->assertEquals(
@@ -116,6 +118,7 @@ class RatesAPairTest extends TestCase
         $response = $this->userReply($this->recipientTelegramId(), new ThumbsDownCallbackData($this->firstPairTelegramId()), $transport, $connection)->response();
 
         $this->assertTrue($response->isSuccessful());
+        $this->assertPairPersisted($this->recipientTelegramId(), $this->firstPairTelegramId(), new Dislike(), $connection);
         $this->assertUserIsInInvisibleMode($this->recipientTelegramId(), $connection);
         $this->assertCount(3, $transport->sentRequests());
         $this->assertEquals(
@@ -167,6 +170,7 @@ class RatesAPairTest extends TestCase
         $response = $this->userReply($this->recipientTelegramId(), new ThumbsDownCallbackData($this->firstPairTelegramId()), $transport, $connection)->response();
 
         $this->assertTrue($response->isSuccessful());
+        $this->assertPairPersisted($this->recipientTelegramId(), $this->firstPairTelegramId(), new Dislike(), $connection);
         $this->assertCount(3, $transport->sentRequests());
         $this->assertEquals(
             'Anatoly',
@@ -190,6 +194,7 @@ class RatesAPairTest extends TestCase
         $response = $this->userReply($this->recipientTelegramId(), new ThumbsUpCallbackData($this->firstPairTelegramId()), $transport, $connection)->response();
 
         $this->assertTrue($response->isSuccessful());
+        $this->assertPairPersisted($this->recipientTelegramId(), $this->firstPairTelegramId(), new Like(), $connection);
         $this->assertCount(3, $transport->sentRequests());
         $this->assertEquals(
             'Anatoly',
@@ -214,6 +219,7 @@ class RatesAPairTest extends TestCase
         $response = $this->userReply($this->recipientTelegramId(), new ThumbsDownCallbackData($this->firstPairTelegramId()), $transport, $connection)->response();
 
         $this->assertTrue($response->isSuccessful());
+        $this->assertPairPersisted($this->recipientTelegramId(), $this->firstPairTelegramId(), new Dislike(), $connection);
         $this->assertCount(3, $transport->sentRequests());
         $this->assertEquals(
             'Anatoly',
@@ -238,6 +244,7 @@ class RatesAPairTest extends TestCase
         $response = $this->userReply($this->recipientTelegramId(), new ThumbsUpCallbackData($this->firstPairTelegramId()), $transport, $connection)->response();
 
         $this->assertTrue($response->isSuccessful());
+        $this->assertPairPersisted($this->recipientTelegramId(), $this->firstPairTelegramId(), new Like(), $connection);
         $this->assertCount(3, $transport->sentRequests());
         $this->assertEquals(
             'Anatoly',
@@ -262,6 +269,7 @@ class RatesAPairTest extends TestCase
         $response = $this->userReply($this->recipientTelegramId(), new ThumbsUpCallbackData($this->firstPairTelegramId()), $transport, $connection)->response();
 
         $this->assertTrue($response->isSuccessful());
+        $this->assertPairPersisted($this->recipientTelegramId(), $this->firstPairTelegramId(), new Like(), $connection);
         $this->assertCount(5, $transport->sentRequests());
         $this->assertEquals(
             (new YouHaveAMatch('fedya'))->value(),
@@ -293,6 +301,7 @@ class RatesAPairTest extends TestCase
         $response = $this->userReply($this->recipientTelegramId(), new ThumbsUpCallbackData($this->firstPairTelegramId()), $transport, $connection)->response();
 
         $this->assertTrue($response->isSuccessful());
+        $this->assertPairPersisted($this->recipientTelegramId(), $this->firstPairTelegramId(), new Like(), $connection);
         $this->assertCount(1, $transport->sentRequests());
         $this->assertEquals(
             (new ThatsAllForNow())->value(),
@@ -312,6 +321,7 @@ class RatesAPairTest extends TestCase
         $response = $this->userReply($this->recipientTelegramId(), new ThumbsUpCallbackData($this->firstPairTelegramId()), $transport, $connection)->response();
 
         $this->assertTrue($response->isSuccessful());
+        $this->assertPairPersisted($this->recipientTelegramId(), $this->firstPairTelegramId(), new Dislike(), $connection);
         $this->assertCount(4, $transport->sentRequests());
         $this->assertEquals(
             (new YouCanNotRateAUserMoreThanOnce())->value(),
@@ -334,6 +344,7 @@ class RatesAPairTest extends TestCase
         $response = $this->userReply($this->recipientTelegramId(), new ThumbsUpCallbackData($this->firstPairTelegramId()), $transport, $connection)->response();
 
         $this->assertTrue($response->isSuccessful());
+        $this->assertPairPersisted($this->recipientTelegramId(), $this->firstPairTelegramId(), new Dislike(), $connection);
         $this->assertCount(2, $transport->sentRequests());
         $this->assertEquals(
             (new YouCanNotRateAUserMoreThanOnce())->value(),
@@ -356,6 +367,7 @@ class RatesAPairTest extends TestCase
         $response = $this->userReply($this->recipientTelegramId(), new ThumbsDownCallbackData($this->firstPairTelegramId()), $transport, $connection)->response();
 
         $this->assertTrue($response->isSuccessful());
+        $this->assertPairPersisted($this->recipientTelegramId(), $this->firstPairTelegramId(), new Dislike(), $connection);
         $this->assertCount(2, $transport->sentRequests());
         $this->assertEquals(
             (new YouCanNotRateAUserMoreThanOnce())->value(),
