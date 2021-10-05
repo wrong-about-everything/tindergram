@@ -50,7 +50,7 @@ q
 
                             $v['preferred_gender'] ?? null, $v['gender'] ?? null, $v['status'] ?? null, $v['registered_at'] ?? null, $v['user_mode'],
 
-                            $v['has_avatar'], $v['seen_qty'], $v['last_seen_at'], $v['like_qty'], $v['dislike_qty'], $v['variant_id'],
+                            $v['has_avatar'], $v['seen_qty'], $v['last_seen_at'], $v['like_qty'], $v['dislike_qty'], $v['variant_id'] ?? null,
                         ];
                     },
                     $records
@@ -79,8 +79,6 @@ q
             'last_seen_at' => (new Now())->value(),
             'like_qty' => 0,
             'dislike_qty' => 0,
-
-            'variant_id' => (new SwitchToVisibleModeOnUpvote())->value(),
         ];
     }
 }

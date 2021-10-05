@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace TG\Domain\ABTesting\Pure;
 
+use TG\Infrastructure\ABTesting\Pure\NonExistent;
 use TG\Infrastructure\ABTesting\Pure\VariantId;
 
 class FromBotUserArray extends VariantId
@@ -38,6 +39,10 @@ class FromBotUserArray extends VariantId
 
     private function doConcrete(): VariantId
     {
+        if (is_null($this->botUser['variant_id'])) {
+            return new NonExistent();
+        }
+
         return new FromInteger($this->botUser['variant_id']);
     }
 }

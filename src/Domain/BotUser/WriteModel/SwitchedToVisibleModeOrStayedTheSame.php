@@ -17,7 +17,6 @@ use TG\Infrastructure\ImpureInteractions\ImpureValue\Successful;
 use TG\Infrastructure\ImpureInteractions\PureValue\Present;
 use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
 use TG\Infrastructure\SqlDatabase\Agnostic\Query\SingleMutating;
-use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId;
 
 class SwitchedToVisibleModeOrStayedTheSame implements BotUser
 {
@@ -46,7 +45,7 @@ class SwitchedToVisibleModeOrStayedTheSame implements BotUser
 
     private function doValue(): ImpureValue
     {
-        if ($this->reaction->equals(new Like()) && (new ExperimentVariantFromBotUser($this->botUser))->equals(new FromPure(new SwitchToVisibleModeOnUpvote()))) {
+        if ($this->reaction->equals(new Like()) && (new ExperimentVariantFromBotUser($this->botUser))->exists()->pure()->raw() && (new ExperimentVariantFromBotUser($this->botUser))->equals(new FromPure(new SwitchToVisibleModeOnUpvote()))) {
             $response =
                 (new SingleMutating(
                     'update bot_user set user_mode = ? where telegram_id = ?',

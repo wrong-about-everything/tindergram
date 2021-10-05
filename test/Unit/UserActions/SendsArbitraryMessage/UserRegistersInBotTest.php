@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace TG\Tests\Unit\UserActions\SendsArbitraryMessage;
 
 use PHPUnit\Framework\TestCase;
+use TG\Domain\ABTesting\Pure\SwitchToVisibleModeOnUpvote;
 use TG\Domain\Gender\Impure\BotUserPreferredGender;
 use TG\Domain\BotUser\ReadModel\ById;
 use TG\Domain\BotUser\UserStatus\Impure\FromPure;
@@ -313,6 +314,8 @@ t
                     'telegram_id' => $telegramUserId->value(),
                     'telegram_handle' => 'dremuchee_bydlo',
                     'status' => (new RegistrationIsInProgress())->value(),
+
+                    'variant_id' => (new SwitchToVisibleModeOnUpvote())->value(),
                 ]
             ]);
     }
