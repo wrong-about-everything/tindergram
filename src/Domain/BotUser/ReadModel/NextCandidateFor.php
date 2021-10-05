@@ -48,11 +48,11 @@ class NextCandidateFor implements BotUser
     from bot_user recipient
         join bot_user candidate
             on recipient.preferred_gender = candidate.gender and recipient.gender = candidate.preferred_gender and recipient.telegram_id != candidate.telegram_id
-        left join viewed_pair on viewed_pair.recipient_telegram_id = recipient.telegram_id and viewed_pair.pair_telegram_id = candidate.telegram_id
+        left join viewed_pair vp on vp.recipient_telegram_id = recipient.telegram_id and vp.pair_telegram_id = candidate.telegram_id and vp.reaction is not null
     where
         recipient.telegram_id = ?
             and
-        viewed_pair.recipient_telegram_id is null
+        vp.recipient_telegram_id is null
             and
         candidate.status = ?
             and
