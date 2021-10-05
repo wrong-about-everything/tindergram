@@ -8,6 +8,7 @@ use Meringue\Timeline\Point\Now;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TG\Activities\Cron\ChecksUserAvatar\ChecksUserAvatar;
+use TG\Activities\User\BansBot\BansBot;
 use TG\Activities\User\RatesAPair\RatesAPair;
 use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\ApplicationConnection;
 use TG\Domain\InternalApi\RateCallbackData\RateCallbackData;
@@ -33,6 +34,7 @@ use TG\Infrastructure\Logging\Logs\EnvironmentDependentLogs;
 use TG\Infrastructure\Logging\Logs\File;
 use TG\Infrastructure\Logging\Logs\GoogleCloudLogs;
 use TG\Infrastructure\Routing\Route\ArbitraryTelegramUserMessageRoute;
+use TG\Infrastructure\Routing\Route\BotUserBannedABotRoute;
 use TG\Infrastructure\Routing\Route\MatchingAnyPostRequest;
 use TG\Infrastructure\Routing\Route\RouteByInlineKeyboardActionType;
 use TG\Infrastructure\Routing\Route\RouteByMethodAndPathPattern;
@@ -101,6 +103,12 @@ function entryPoint(ServerRequestInterface $request): ResponseInterface
                             new ArbitraryTelegramUserMessageRoute(),
                             function (array $parsedTelegramMessage) use ($transport, $logs) {
                                 return new SendsArbitraryMessage($parsedTelegramMessage, $transport, new ApplicationConnection(), $logs);
+                            }
+                        ],
+                        [
+                            new BotUserBannedABotRoute(),
+                            function (InternalTelegramUserId $internalTelegramUserId) use ($logs) {
+                                return new BansBot($internalTelegramUserId, new ApplicationConnection(), $logs);
                             }
                         ],
                         [

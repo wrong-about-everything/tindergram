@@ -59,6 +59,8 @@ class NextCandidateFor implements BotUser
         candidate.has_avatar = ?
             and
         candidate.user_mode = ?
+            and
+        candidate.is_active = true
     order by candidate.seen_qty asc
     limit 1
 query

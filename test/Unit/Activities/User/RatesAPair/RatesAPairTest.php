@@ -131,14 +131,15 @@ class RatesAPairTest extends TestCase
         );
     }
 
-    public function testWhenUserRatesAPairThenHeSeesTheNextOneWithAvatarAndInVisibleMode()
+    public function testWhenUserRatesAPairThenHeSeesTheNextOneWithAvatarAndActiveAndInVisibleMode()
     {
         $connection = new ApplicationConnection();
         $this->createRecipientMaleInInvisibleModePreferringFemales($this->recipientTelegramId(), new SwitchToVisibleModeOnUpvote(), $connection);
         $this->createBotUserWithAvatarAndInVisibleMode($this->firstPairTelegramId(), 'Fedya', 'fedya', new Female(), new Male(), 0, $connection);
         $this->seedPair($this->recipientTelegramId(), $this->firstPairTelegramId(), new NonExistent(), $connection);
         $this->createBotUserWithoutAvatar($this->thirdPairTelegramId(), new Female(), new Male(), 0, $connection);
-        $this->createBotUserWithAvatarButInInvisibleMode($this->fourthPairTelegramId(), new Female(), new Male(), 5, $connection);
+        $this->createBotUserWithAvatarButInInvisibleMode($this->fourthPairTelegramId(), new Female(), new Male(), 1, $connection);
+        $this->createInactiveBotUser($this->fifthPairTelegramId(), new Female(), new Male(), 2, $connection);
         $this->createBotUserWithAvatarAndInVisibleMode($this->secondPairTelegramId(), 'Anatoly', 'anatol', new Female(), new Male(), 10, $connection);
         $transport = new TransportWithNAvatars(2);
 
@@ -409,6 +410,11 @@ class RatesAPairTest extends TestCase
         return new FromInteger(55555);
     }
 
+    private function fifthPairTelegramId(): InternalTelegramUserId
+    {
+        return new FromInteger(6666666);
+    }
+
     private function createBotUserWithAvatarAndInVisibleMode(
         InternalTelegramUserId $telegramUserId,
         string $name,
@@ -498,6 +504,26 @@ class RatesAPairTest extends TestCase
                     'gender' => $gender->value(),
                     'preferred_gender' => $preferredGender->value(),
                     'user_mode' => (new Invisible())->value(),
+
+                    'has_avatar' => 1,
+                    'seen_qty' => $seenQty
+                ]
+            ]);
+    }
+
+    private function createInactiveBotUser(InternalTelegramUserId $telegramUserId, Gender $gender, Gender $preferredGender, int $seenQty, OpenConnection $connection)
+    {
+        (new BotUser($connection))
+            ->insert([
+                [
+                    'id' => Uuid::uuid4()->toString(),
+                    'telegram_id' => $telegramUserId->value(),
+                    'status' => (new Registered())->value(),
+
+                    'gender' => $gender->value(),
+                    'preferred_gender' => $preferredGender->value(),
+                    'user_mode' => (new Visible())->value(),
+                    'is_active' => 0,
 
                     'has_avatar' => 1,
                     'seen_qty' => $seenQty
