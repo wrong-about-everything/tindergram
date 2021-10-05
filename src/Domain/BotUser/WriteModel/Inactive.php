@@ -38,7 +38,7 @@ class Inactive implements BotUser
     {
         $response =
             (new SingleMutating(
-                'update bot_user set is_active = false where telegram_id = ?',
+                'update bot_user set account_paused = true where telegram_id = ?',
                 [$this->telegramUserId->value()],
                 $this->connection
             ))

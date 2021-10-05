@@ -50,6 +50,6 @@ class BansBotTest extends TestCase
     private function assertBotUserIsInactive(InternalTelegramUserId $internalTelegramUserId, OpenConnection $connection)
     {
         $botUser = new ByInternalTelegramUserId($internalTelegramUserId, $connection);
-        $this->assertFalse($botUser->value()->pure()->raw()['is_active']);
+        $this->assertTrue($botUser->value()->pure()->raw()['account_paused']);
     }
 }

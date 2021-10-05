@@ -523,7 +523,7 @@ class RatesAPairTest extends TestCase
                     'gender' => $gender->value(),
                     'preferred_gender' => $preferredGender->value(),
                     'user_mode' => (new Visible())->value(),
-                    'is_active' => 0,
+                    'account_paused' => 1,
 
                     'has_avatar' => 1,
                     'seen_qty' => $seenQty

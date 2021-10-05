@@ -60,7 +60,7 @@ class NextCandidateFor implements BotUser
             and
         candidate.user_mode = ?
             and
-        candidate.is_active = true
+        candidate.account_paused = false
     order by candidate.seen_qty asc
     limit 1
 query
