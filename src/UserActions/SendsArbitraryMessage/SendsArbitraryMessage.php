@@ -65,7 +65,7 @@ class SendsArbitraryMessage extends Existent
         } elseif ($userStatus->equals(new ImpureUserStatusFromPure(new Registered()))) {
             $sentPair = $this->sentPair($bot);
             if (!$sentPair->isSuccessful()) {
-                $this->logs->receive(new ErrorFromNonSuccessfulImpureValue($userStatus->value()));
+                $this->logs->receive(new ErrorFromNonSuccessfulImpureValue($sentPair));
             }
         }
 

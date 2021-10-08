@@ -8,6 +8,7 @@ use Meringue\Timeline\Point\Now;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TG\Activities\Cron\ChecksUserAvatar\ChecksUserAvatar;
+use TG\Activities\Cron\SendNewCandidatesToUsers\SendNewCandidatesToUsers;
 use TG\Activities\User\BansBot\BansBot;
 use TG\Activities\User\RatesAPair\RatesAPair;
 use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\ApplicationConnection;
@@ -124,6 +125,15 @@ function entryPoint(ServerRequestInterface $request): ResponseInterface
                             ),
                             function () use ($transport, $logs) {
                                 return new ChecksUserAvatar(new Now(), $transport, new ApplicationConnection(), $logs);
+                            }
+                        ],
+                        [
+                            new RouteByMethodAndPathPattern(
+                                new Post(),
+                                '/cron/send_new_candidates_to_users'
+                            ),
+                            function () use ($transport, $logs) {
+                                return new SendNewCandidatesToUsers(new Now(), $transport, new ApplicationConnection(), $logs);
                             }
                         ],
                         [

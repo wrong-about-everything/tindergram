@@ -41,6 +41,7 @@ class Persistent implements Pair
                 <<<query
 insert into viewed_pair (recipient_telegram_id, pair_telegram_id, viewed_at)
 values (?, ?, ?)
+on conflict (recipient_telegram_id, pair_telegram_id) do nothing
 query
                 ,
                 [$this->recipientTelegramId->value(), $this->pairTelegramId->value(), (new Now())->value()],

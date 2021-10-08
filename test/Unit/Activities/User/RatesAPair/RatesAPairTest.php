@@ -38,6 +38,9 @@ use TG\Infrastructure\ABTesting\Pure\VariantId;
 use TG\Infrastructure\Http\Request\Url\ParsedQuery\FromQuery;
 use TG\Infrastructure\Http\Request\Url\Query\FromUrl;
 use TG\Infrastructure\Http\Transport\HttpTransport;
+use TG\Infrastructure\Logging\LogId;
+use TG\Infrastructure\Logging\Logs\StdOut;
+use TG\Infrastructure\Uuid\RandomUUID;
 use TG\Tests\Infrastructure\Http\Transport\TransportWithNAvatars;
 use TG\Infrastructure\Logging\Logs\DevNull;
 use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
@@ -371,6 +374,45 @@ class RatesAPairTest extends TestCase
         );
     }
 
+    public function testWhenUserUpvotesPairTwiceThenHeSeesTheSameNextPairTwice()
+    {
+        $connection = new ApplicationConnection();
+        $this->createBotUserWithAvatarAndInVisibleMode($this->recipientTelegramId(), 'Vasya', 'vasya', new Male(), new Female(), 0, $connection);
+        $this->createBotUserWithAvatarAndInVisibleMode($this->firstPairTelegramId(), 'Fedya', 'fedya', new Female(), new Male(), 0, $connection);
+        $this->seedPair($this->recipientTelegramId(), $this->firstPairTelegramId(), new NonExistent(), $connection);
+        $this->createBotUserWithAvatarAndInVisibleMode($this->secondPairTelegramId(), 'Anatoly', 'anatoly', new Female(), new Male(), 0, $connection);
+
+        $transport = new TransportWithNAvatars(2);
+
+        $firstResponse = $this->userReply($this->recipientTelegramId(), new ThumbsDownCallbackData($this->firstPairTelegramId()), $transport, $connection)->response();
+
+        $this->assertTrue($firstResponse->isSuccessful());
+        $this->assertPairPersisted($this->recipientTelegramId(), $this->firstPairTelegramId(), new Dislike(), $connection);
+        $this->assertCount(3/*get user profile photos + sendMediaGroup + sendMessage*/, $transport->sentRequests());
+        $this->assertEquals(
+            'Anatoly',
+            (new FromQuery(new FromUrl($transport->sentRequests()[2]->url())))->value()['text']
+        );
+        $this->assertEquals(
+            [(new ThumbsDownButton($this->secondPairTelegramId()))->value(), (new ThumbsUpButton($this->secondPairTelegramId()))->value()],
+            json_decode((new FromQuery(new FromUrl($transport->sentRequests()[2]->url())))->value()['reply_markup'], true)['inline_keyboard'][0]
+        );
+
+        $secondResponse = $this->userReply($this->recipientTelegramId(), new ThumbsDownCallbackData($this->firstPairTelegramId()), $transport, $connection)->response();
+
+        $this->assertTrue($secondResponse->isSuccessful());
+        $this->assertPairPersisted($this->recipientTelegramId(), $this->firstPairTelegramId(), new Dislike(), $connection);
+        $this->assertCount(3 + 3/*get user profile photos + sendMediaGroup + sendMessage*/ + 1/*you can not rate more than once*/, $transport->sentRequests());
+        $this->assertEquals(
+            'Anatoly',
+            (new FromQuery(new FromUrl($transport->sentRequests()[6]->url())))->value()['text']
+        );
+        $this->assertEquals(
+            [(new ThumbsDownButton($this->secondPairTelegramId()))->value(), (new ThumbsUpButton($this->secondPairTelegramId()))->value()],
+            json_decode((new FromQuery(new FromUrl($transport->sentRequests()[6]->url())))->value()['reply_markup'], true)['inline_keyboard'][0]
+        );
+    }
+
     protected function setUp(): void
     {
         (new Reset(new RootConnection()))->run();
@@ -501,11 +543,13 @@ class RatesAPairTest extends TestCase
         );
     }
 
-
     private function assertPairPersisted(InternalTelegramUserId $recipientTelegramId, InternalTelegramUserId $firstPairTelegramId, Reaction $reaction, OpenConnection $connection)
     {
-        $pair = new ByVoterTelegramIdAndRatedTelegramId($recipientTelegramId, $firstPairTelegramId, $connection);
-
-        $this->assertTrue((new FromViewedPair($pair))->equals($reaction));
+        $this->assertTrue(
+            (new FromViewedPair(
+                new ByVoterTelegramIdAndRatedTelegramId($recipientTelegramId, $firstPairTelegramId, $connection)
+            ))
+                ->equals($reaction)
+        );
     }
 }
