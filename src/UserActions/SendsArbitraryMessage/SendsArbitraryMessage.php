@@ -8,7 +8,7 @@ use TG\Domain\BotUser\ReadModel\BotUser;
 use TG\Domain\BotUser\ReadModel\ByInternalTelegramUserId;
 use TG\Domain\BotUser\ReadModel\NextCandidateFor;
 use TG\Domain\BotUser\UserStatus\Impure\UserStatus;
-use TG\Domain\Pair\WriteModel\SentIfExists;
+use TG\Domain\Pair\WriteModel\SentIfExistsThatIsAllForNowOtherwise;
 use TG\Domain\SentReplyToUser\InCaseOfAnyUncertainty;
 use TG\Domain\BotUser\UserStatus\Impure\FromBotUser;
 use TG\Domain\BotUser\UserStatus\Impure\FromPure as ImpureUserStatusFromPure;
@@ -114,7 +114,7 @@ class SendsArbitraryMessage extends Existent
     private function sentPair(BotUser $botUser): ImpureValue
     {
         return
-            (new SentIfExists(
+            (new SentIfExistsThatIsAllForNowOtherwise(
                 new NextCandidateFor(
                     new PureInternalTelegramUserId(new InternalTelegramUserId($botUser)),
                     $this->connection

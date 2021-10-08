@@ -32,6 +32,7 @@ class SentIfExists implements Pair
 {
     private $candidate;
     private $recipientTelegramId;
+    private $otherwise;
     private $transport;
     private $connection;
     private $cached;
@@ -39,12 +40,14 @@ class SentIfExists implements Pair
     public function __construct(
         BotUser $candidate,
         InternalTelegramUserId $recipientTelegramId,
+        MessageSentToUser $otherwise,
         HttpTransport $transport,
         OpenConnection $connection
     )
     {
         $this->candidate = $candidate;
         $this->recipientTelegramId = $recipientTelegramId;
+        $this->otherwise = $otherwise;
         $this->transport = $transport;
         $this->connection = $connection;
         $this->cached = null;
@@ -53,48 +56,43 @@ class SentIfExists implements Pair
     public function value(): ImpureValue
     {
         if (is_null($this->cached)) {
-            if (!$this->candidate->value()->isSuccessful()) {
-                return $this->candidate->value();
-            }
-            if (!$this->candidate->value()->pure()->isPresent()) {
-                return $this->thatsAllForNow()->value();
-            }
-            $candidateTelegramId = new FromBotUser($this->candidate);
-            if (!$candidateTelegramId->value()->isSuccessful()) {
-                return $candidateTelegramId->value();
-            }
-            $candidateName = new BotUserFirstName($this->candidate);
-            if (!$candidateName->value()->isSuccessful()) {
-                return $candidateName->value();
-            }
-
-            $this->cached = $this->doValue(new FromImpure($candidateTelegramId), new PureFirstName($candidateName));
+            $this->cached = $this->doValue();
         }
 
         return $this->cached;
     }
 
-    private function doValue(InternalTelegramUserId $candidateTelegramId, FirstName $firstName): ImpureValue
+    private function doValue(): ImpureValue
     {
-        $sentPair = $this->sent($candidateTelegramId, $firstName);
+        if (!$this->candidate->value()->isSuccessful()) {
+            return $this->candidate->value();
+        }
+        if (!$this->candidate->value()->pure()->isPresent()) {
+            return $this->otherwise->value();
+        }
+        $candidateTelegramId = new FromBotUser($this->candidate);
+        if (!$candidateTelegramId->value()->isSuccessful()) {
+            return $candidateTelegramId->value();
+        }
+        $candidateName = new BotUserFirstName($this->candidate);
+        if (!$candidateName->value()->isSuccessful()) {
+            return $candidateName->value();
+        }
+
+        $sentPair = $this->sentPair(new FromImpure($candidateTelegramId), new PureFirstName($candidateName));
         if (!$sentPair->isSuccessful()) {
             return $sentPair;
         }
 
-        $persistentPair = $this->persistent($candidateTelegramId);
+        $persistentPair = $this->persistent(new FromImpure($candidateTelegramId));
         if (!$persistentPair->value()->isSuccessful()) {
             return $persistentPair->value();
         }
 
-        return (new IncrementedViewsQty($candidateTelegramId, $this->connection))->value();
+        return (new IncrementedViewsQty(new FromImpure($candidateTelegramId), $this->connection))->value();
     }
 
-    private function thatsAllForNow(): MessageSentToUser
-    {
-        return new DefaultWithNoKeyboard($this->recipientTelegramId, new ThatsAllForNow(), $this->transport);
-    }
-
-    private function sent(InternalTelegramUserId $candidateTelegramId, FirstName $firstName): ImpureValue
+    private function sentPair(InternalTelegramUserId $candidateTelegramId, FirstName $firstName): ImpureValue
     {
         $sentAvatars = $this->sentAvatars($candidateTelegramId);
         if (!$sentAvatars->isSuccessful()) {

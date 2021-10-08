@@ -11,7 +11,7 @@ use TG\Domain\BotUser\WriteModel\SwitchedToVisibleModeOrStayedTheSame;
 use TG\Domain\Reaction\Pure\FromAction;
 use TG\Domain\TelegramBot\InternalTelegramUserId\Impure\FromWriteModelBotUser;
 use TG\Domain\InternalApi\RateCallbackData\RateCallbackData;
-use TG\Domain\Pair\WriteModel\SentIfExists;
+use TG\Domain\Pair\WriteModel\SentIfExistsThatIsAllForNowOtherwise;
 use TG\Domain\Reaction\Pure\FromViewedPair;
 use TG\Domain\Reaction\Pure\Like;
 use TG\Domain\TelegramBot\InlineAction\FromRateCallbackData;
@@ -185,7 +185,7 @@ class RatesAPair extends Existent
     private function nextSentPairIfExists(): Pair
     {
         return
-            new SentIfExists(
+            new SentIfExistsThatIsAllForNowOtherwise(
                 new NextCandidateFor($this->voterTelegramId, $this->connection),
                 $this->voterTelegramId,
                 $this->transport,

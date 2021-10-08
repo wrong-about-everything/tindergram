@@ -10,7 +10,7 @@ use TG\Domain\BotUser\ReadModel\BotUser;
 use TG\Domain\BotUser\UserStatus\Impure\FromBotUser;
 use TG\Domain\BotUser\UserStatus\Impure\FromPure;
 use TG\Domain\BotUser\UserStatus\Pure\Registered;
-use TG\Domain\Pair\WriteModel\SentIfExists;
+use TG\Domain\Pair\WriteModel\SentIfExistsThatIsAllForNowOtherwise;
 use TG\Infrastructure\Http\Transport\HttpTransport;
 use TG\Infrastructure\ImpureInteractions\ImpureValue;
 use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
@@ -62,7 +62,7 @@ class NextReplyToUser implements MessageSentToUser
     private function showFirstPair(): ImpureValue
     {
         return
-            (new SentIfExists(
+            (new SentIfExistsThatIsAllForNowOtherwise(
                 new NextCandidateFor(
                     new PureInternalTelegramUserId(new InternalTelegramUserId($this->botUser)),
                     $this->connection
