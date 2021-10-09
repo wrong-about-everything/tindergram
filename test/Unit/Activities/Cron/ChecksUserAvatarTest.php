@@ -12,8 +12,11 @@ use PHPUnit\Framework\TestCase;
 use TG\Activities\Cron\ChecksUserAvatar\ChecksUserAvatar;
 use TG\Domain\BotUser\ReadModel\ByInternalTelegramUserId;
 use TG\Domain\BotUser\UserStatus\Pure\Registered;
+use TG\Domain\BotUser\UserStatus\Pure\RegistrationIsInProgress;
 use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\ApplicationConnection;
 use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\RootConnection;
+use TG\Domain\UserMode\Pure\Invisible;
+use TG\Domain\UserMode\Pure\Visible;
 use TG\Infrastructure\Logging\LogId;
 use TG\Infrastructure\Logging\Logs\DevNull;
 use TG\Infrastructure\Logging\Logs\StdOut;
@@ -34,8 +37,11 @@ class ChecksUserAvatarTest extends TestCase
     public function testGivenThereAreNoCheckedUsersAtAllWhenThereAreNonCheckedUsersTodayThenCheckThem()
     {
         $connection = new ApplicationConnection();
-        $this->createBotUserWithAvatar($this->firstTelegramUserId(), $connection);
-        $this->createBotUserWithoutAvatar($this->secondTelegramUserId(), $connection);
+        $this->createActiveVisibleRegisteredBotUserWithAvatar($this->firstTelegramUserId(), $connection);
+        $this->createActiveVisibleRegisteredBotUserWithoutAvatar($this->secondTelegramUserId(), $connection);
+        $this->createNonActiveVisibleRegisteredBotUser($this->thirdTelegramUserId(), $connection);
+        $this->createActiveInvisibleRegisteredBotUser($this->fourthTelegramUserId(), $connection);
+        $this->createActiveNonRegisteredBotUser($this->fifthTelegramUserId(), $connection);
 
         $transport =
             new ConfiguredByTelegramUserIdAndTelegramMethod([
@@ -63,8 +69,11 @@ class ChecksUserAvatarTest extends TestCase
         $connection = new ApplicationConnection();
         $this->createBotUserAvatarCheck($this->firstTelegramUserId(), new Past(new Now(), new OneDay()), $connection);
         $this->createBotUserAvatarCheck($this->secondTelegramUserId(), new Past(new Now(), new OneDay()), $connection);
-        $this->createBotUserWithAvatar($this->firstTelegramUserId(), $connection);
-        $this->createBotUserWithoutAvatar($this->secondTelegramUserId(), $connection);
+        $this->createActiveVisibleRegisteredBotUserWithAvatar($this->firstTelegramUserId(), $connection);
+        $this->createActiveVisibleRegisteredBotUserWithoutAvatar($this->secondTelegramUserId(), $connection);
+        $this->createNonActiveVisibleRegisteredBotUser($this->thirdTelegramUserId(), $connection);
+        $this->createActiveInvisibleRegisteredBotUser($this->fourthTelegramUserId(), $connection);
+        $this->createActiveNonRegisteredBotUser($this->fifthTelegramUserId(), $connection);
 
         $transport =
             new ConfiguredByTelegramUserIdAndTelegramMethod([
@@ -100,15 +109,39 @@ class ChecksUserAvatarTest extends TestCase
             ]);
     }
 
-    private function createBotUserWithAvatar(InternalTelegramUserId $telegramUserId, OpenConnection $connection)
+    private function createActiveVisibleRegisteredBotUserWithAvatar(InternalTelegramUserId $telegramUserId, OpenConnection $connection)
     {
         (new BotUser($connection))
             ->insert([
-                ['telegram_id' => $telegramUserId->value(), 'status' => (new Registered())->value(), 'has_avatar' => 1]
+                ['telegram_id' => $telegramUserId->value(), 'status' => (new Registered())->value(), 'has_avatar' => 1, 'account_paused' => 0, 'user_mode' => (new Visible())->value()]
             ]);
     }
 
-    private function createBotUserWithoutAvatar(InternalTelegramUserId $telegramUserId, OpenConnection $connection)
+    private function createNonActiveVisibleRegisteredBotUser(InternalTelegramUserId $telegramUserId, OpenConnection $connection)
+    {
+        (new BotUser($connection))
+            ->insert([
+                ['telegram_id' => $telegramUserId->value(), 'status' => (new Registered())->value(), 'account_paused' => 1, 'user_mode' => (new Visible())->value()]
+            ]);
+    }
+
+    private function createActiveInvisibleRegisteredBotUser(InternalTelegramUserId $telegramUserId, OpenConnection $connection)
+    {
+        (new BotUser($connection))
+            ->insert([
+                ['telegram_id' => $telegramUserId->value(), 'status' => (new Registered())->value(), 'account_paused' => 0, 'user_mode' => (new Invisible())->value()]
+            ]);
+    }
+
+    private function createActiveNonRegisteredBotUser(InternalTelegramUserId $telegramUserId, OpenConnection $connection)
+    {
+        (new BotUser($connection))
+            ->insert([
+                ['telegram_id' => $telegramUserId->value(), 'status' => (new RegistrationIsInProgress())->value(), 'account_paused' => 0, 'user_mode' => null]
+            ]);
+    }
+
+    private function createActiveVisibleRegisteredBotUserWithoutAvatar(InternalTelegramUserId $telegramUserId, OpenConnection $connection)
     {
         (new BotUser($connection))
             ->insert([
@@ -124,6 +157,21 @@ class ChecksUserAvatarTest extends TestCase
     private function secondTelegramUserId(): InternalTelegramUserId
     {
         return new FromInteger(2);
+    }
+
+    private function thirdTelegramUserId(): InternalTelegramUserId
+    {
+        return new FromInteger(3);
+    }
+
+    private function fourthTelegramUserId(): InternalTelegramUserId
+    {
+        return new FromInteger(4);
+    }
+
+    private function fifthTelegramUserId(): InternalTelegramUserId
+    {
+        return new FromInteger(5);
     }
 
     private function assertUserHasAvatar(InternalTelegramUserId $internalTelegramUserId, OpenConnection $connection)

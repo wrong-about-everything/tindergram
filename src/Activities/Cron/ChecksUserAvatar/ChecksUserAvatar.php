@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace TG\Activities\Cron\ChecksUserAvatar;
 
-use Meringue\ISO8601Interval\WithFixedStartDateTime\FromRange;
-use Meringue\Timeline\Point\Future;
 use Meringue\Timeline\Point\Now;
+use TG\Domain\BotUser\UserStatus\Pure\Registered;
+use TG\Domain\UserMode\Pure\Visible;
 use TG\Infrastructure\Http\Transport\HttpTransport;
 use TG\Infrastructure\Logging\LogItem\FromNonSuccessfulImpureValue;
 use TG\Infrastructure\Logging\LogItem\InformationMessage;
@@ -50,7 +50,7 @@ class ChecksUserAvatar extends Existent
                 $diff = (int) ((microtime(true) - $everyNow) * 1000); // ms
                 usleep($diff < 35 ? 35 - $diff : 0);
             },
-            $this->usersNotVisitedToday()
+            $this->usersNotCheckedToday()
         );
 
         $this->logs->receive(new InformationMessage('Cron checks user avatar scenario finished'));
@@ -70,7 +70,7 @@ class ChecksUserAvatar extends Existent
             );
     }
 
-    private function usersNotVisitedToday(): array
+    private function usersNotCheckedToday(): array
     {
         return
             (new Selecting(
@@ -78,12 +78,12 @@ class ChecksUserAvatar extends Existent
 select bu.*
 from bot_user bu
     left join bot_user_avatar_check buac on bu.telegram_id = buac.telegram_id and buac.date = ?::date
-where buac.telegram_id is null
+where buac.telegram_id is null and bu.account_paused = ? and bu.status = ? and bu.user_mode = ?
 order by bu.telegram_id asc
 limit 1700 -- (1000 / 35) * 60
 qqqq
                 ,
-                [$this->now->value()],
+                [$this->now->value(), 0, (new Registered())->value(), (new Visible())->value()],
                 $this->connection
             ))
                 ->response()->pure()->raw();
