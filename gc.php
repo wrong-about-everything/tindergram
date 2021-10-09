@@ -8,7 +8,7 @@ use Meringue\Timeline\Point\Now;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TG\Activities\Cron\ChecksUserAvatar\ChecksUserAvatar;
-use TG\Activities\Cron\SendNewCandidatesToUsers\SendNewCandidatesToUsers;
+use TG\Activities\Cron\SendNewCandidatesToUsers\SendNewCandidatesToUsersWhoHaveMadeItToTheEnd;
 use TG\Activities\User\BansBot\BansBot;
 use TG\Activities\User\RatesAPair\RatesAPair;
 use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\ApplicationConnection;
@@ -133,7 +133,7 @@ function entryPoint(ServerRequestInterface $request): ResponseInterface
                                 '/cron/send_new_candidates_to_users'
                             ),
                             function () use ($transport, $logs) {
-                                return new SendNewCandidatesToUsers(new Now(), $transport, new ApplicationConnection(), $logs);
+                                return new SendNewCandidatesToUsersWhoHaveMadeItToTheEnd(new Now(), $transport, new ApplicationConnection(), $logs);
                             }
                         ],
                         [

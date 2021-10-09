@@ -7,14 +7,12 @@ namespace TG\Tests\Unit\Activities\Cron;
 use Meringue\ISO8601DateTime;
 use Meringue\ISO8601DateTime\FromISO8601;
 use Meringue\ISO8601Interval\Floating\NDays;
-use Meringue\Timeline\Point\Now;
 use Meringue\Timeline\Point\Past;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
-use TG\Activities\Cron\SendNewCandidatesToUsers\SendNewCandidatesToUsers;
+use TG\Activities\Cron\SendNewCandidatesToUsers\SendNewCandidatesToUsersWhoHaveMadeItToTheEnd;
 use TG\Domain\BotUser\UserStatus\Pure\Registered;
 use TG\Domain\Gender\Pure\Female;
-use TG\Domain\Gender\Pure\Gender;
 use TG\Domain\Gender\Pure\Male;
 use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\ApplicationConnection;
 use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\RootConnection;
@@ -28,8 +26,6 @@ use TG\Domain\UserMode\Pure\Visible;
 use TG\Infrastructure\Http\Request\Url\ParsedQuery\FromQuery;
 use TG\Infrastructure\Http\Request\Url\Query\FromUrl;
 use TG\Infrastructure\Http\Transport\HttpTransport;
-use TG\Infrastructure\Http\Transport\Indifferent;
-use TG\Infrastructure\Logging\Logs;
 use TG\Infrastructure\Logging\Logs\DevNull;
 use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\FromInteger;
@@ -40,7 +36,7 @@ use TG\Tests\Infrastructure\Http\Transport\TransportWithNAvatars;
 use TG\Tests\Infrastructure\Stub\Table\BotUser;
 use TG\Tests\Infrastructure\Stub\Table\ViewedPair;
 
-class SendNewCandidatesToUsersTest extends TestCase
+class SendNewCandidatesToUsersWhoHaveMadeItToTheEndTest extends TestCase
 {
     public function testWhenSomeUsersHaveMadeItToTheEndThenSendThemNewCandidates()
     {
@@ -48,16 +44,18 @@ class SendNewCandidatesToUsersTest extends TestCase
 
         $now = new FromISO8601('2020-10-11T20:47:45-05');
 
-        $this->createBotUser($this->firstRecipientTelegramId(), 'Vasya', 'vasya', new Male(), new Female(), 0, $connection);
-        $this->createBotUser($this->secondRecipientTelegramId(), 'Vasya 2', 'vasya 2', new Male(), new Female(), 0, $connection);
-        $this->createBotUser($this->thirdRecipientTelegramId(), 'Vasya 2', 'vasya 2', new Male(), new Female(), 0, $connection);
+        $this->createMaleUserPreferringFemales($this->firstRecipientTelegramId(), 'Vasya', $connection);
+        $this->createMaleUserPreferringFemales($this->secondRecipientTelegramId(), 'Vasya 2', $connection);
+        $this->createMaleUserPreferringFemales($this->thirdRecipientTelegramId(), 'Vasya 3', $connection);
+        $this->createInactiveMaleUserPreferringFemales($this->fourthRecipientTelegramId(), 'Vasya 4', $connection);
 
-        $this->createBotUser($this->firstPairTelegramId(), 'Fedya', 'fedya', new Female(), new Male(), 0, $connection);
-        $this->createBotUser($this->secondPairTelegramId(), 'Anatoly', 'anatol', new Female(), new Male(), 0, $connection);
+        $this->createFemaleUserPreferringMales($this->firstPairTelegramId(), 'Fedya', $connection);
+        $this->createFemaleUserPreferringMales($this->secondPairTelegramId(), 'Anatoly', $connection);
 
         $this->seedPair($this->firstRecipientTelegramId(), $this->firstPairTelegramId(), new Past($now, new NDays(3)), new Like(), $connection);
         $this->seedPair($this->secondRecipientTelegramId(), $this->firstPairTelegramId(), new Past($now, new NDays(3)), new NonExistent(), $connection);
         $this->seedPair($this->thirdRecipientTelegramId(), $this->firstPairTelegramId(), new FromISO8601('2020-10-12T04:39:11+14')/*2020-10-11T09:39:11-05*/, new Dislike(), $connection);
+        $this->seedPair($this->fourthRecipientTelegramId(), $this->firstPairTelegramId(), new Past($now, new NDays(3)), new Like(), $connection);
 
         $transport = new TransportWithNAvatars(2);
         $response = $this->userStory($now, $transport, $connection)->response();
@@ -94,6 +92,11 @@ class SendNewCandidatesToUsersTest extends TestCase
         return new FromInteger(5555555);
     }
 
+    private function fourthRecipientTelegramId(): InternalTelegramUserId
+    {
+        return new FromInteger(6666666);
+    }
+
     private function firstPairTelegramId(): InternalTelegramUserId
     {
         return new FromInteger(22222222);
@@ -104,15 +107,7 @@ class SendNewCandidatesToUsersTest extends TestCase
         return new FromInteger(3333333333333);
     }
 
-    private function createBotUser(
-        InternalTelegramUserId $telegramUserId,
-        string $name,
-        string $handle,
-        Gender $gender,
-        Gender $preferredGender,
-        int $seenQty,
-        OpenConnection $connection
-    )
+    private function createMaleUserPreferringFemales(InternalTelegramUserId $telegramUserId, string $name, OpenConnection $connection)
     {
         (new BotUser($connection))
             ->insert([
@@ -120,15 +115,53 @@ class SendNewCandidatesToUsersTest extends TestCase
                     'id' => Uuid::uuid4()->toString(),
                     'first_name' => $name,
                     'telegram_id' => $telegramUserId->value(),
-                    'telegram_handle' => $handle,
                     'status' => (new Registered())->value(),
 
-                    'gender' => $gender->value(),
-                    'preferred_gender' => $preferredGender->value(),
+                    'gender' => (new Male())->value(),
+                    'preferred_gender' => (new Female())->value(),
+                    'user_mode' => (new Visible())->value(),
+                    'account_paused' => 0,
+
+                    'has_avatar' => 1,
+                ]
+            ]);
+    }
+
+    private function createInactiveMaleUserPreferringFemales(InternalTelegramUserId $telegramUserId, string $name, OpenConnection $connection)
+    {
+        (new BotUser($connection))
+            ->insert([
+                [
+                    'id' => Uuid::uuid4()->toString(),
+                    'first_name' => $name,
+                    'telegram_id' => $telegramUserId->value(),
+                    'status' => (new Registered())->value(),
+
+                    'gender' => (new Male())->value(),
+                    'preferred_gender' => (new Female())->value(),
+                    'user_mode' => (new Visible())->value(),
+                    'account_paused' => 1,
+
+                    'has_avatar' => 1,
+                ]
+            ]);
+    }
+
+    private function createFemaleUserPreferringMales(InternalTelegramUserId $telegramUserId, string $name, OpenConnection $connection)
+    {
+        (new BotUser($connection))
+            ->insert([
+                [
+                    'id' => Uuid::uuid4()->toString(),
+                    'first_name' => $name,
+                    'telegram_id' => $telegramUserId->value(),
+                    'status' => (new Registered())->value(),
+
+                    'gender' => (new Female())->value(),
+                    'preferred_gender' => (new Male())->value(),
                     'user_mode' => (new Visible())->value(),
 
                     'has_avatar' => 1,
-                    'seen_qty' => $seenQty
                 ]
             ]);
     }
@@ -148,6 +181,6 @@ class SendNewCandidatesToUsersTest extends TestCase
 
     private function userStory(ISO8601DateTime $now, HttpTransport $transport, OpenConnection $connection): UserStory
     {
-        return new SendNewCandidatesToUsers($now, $transport, $connection, new DevNull());
+        return new SendNewCandidatesToUsersWhoHaveMadeItToTheEnd($now, $transport, $connection, new DevNull());
     }
 }

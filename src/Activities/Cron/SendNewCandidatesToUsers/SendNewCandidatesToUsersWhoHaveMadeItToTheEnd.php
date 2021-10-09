@@ -7,25 +7,21 @@ namespace TG\Activities\Cron\SendNewCandidatesToUsers;
 use Meringue\ISO8601DateTime;
 use TG\Domain\BotUser\ReadModel\NextCandidateFor;
 use TG\Domain\Pair\WriteModel\SentIfExistsNothingOtherwise;
-use TG\Domain\Pair\WriteModel\SentIfExistsThatIsAllForNowOtherwise;
-use TG\Domain\TelegramBot\InternalTelegramUserId\Impure\FromBotUser as InternalTelegramUserId;
 use TG\Infrastructure\Http\Transport\HttpTransport;
 use TG\Infrastructure\ImpureInteractions\ImpureValue;
 use TG\Infrastructure\Logging\LogItem\FromNonSuccessfulImpureValue;
 use TG\Infrastructure\Logging\LogItem\InformationMessage;
 use TG\Infrastructure\Logging\Logs;
 use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
-use TG\Infrastructure\SqlDatabase\Agnostic\Query;
 use TG\Infrastructure\SqlDatabase\Agnostic\Query\Selecting;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\FromBotUserDatabaseRecord;
-use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\FromImpure as PureInternalTelegramUserId;
 use TG\Infrastructure\UserStory\Body\Emptie;
 use TG\Infrastructure\UserStory\Existent;
 use TG\Infrastructure\UserStory\Response;
 use TG\Infrastructure\UserStory\Response\NonRetryableServerError;
 use TG\Infrastructure\UserStory\Response\Successful;
 
-class SendNewCandidatesToUsers extends Existent
+class SendNewCandidatesToUsersWhoHaveMadeItToTheEnd extends Existent
 {
     private $now;
     private $transport;
@@ -88,12 +84,13 @@ from (
         first_value(vp.reaction) over viewed_pairs as reaction
     from bot_user bu
         join viewed_pair vp on bu.telegram_id = vp.recipient_telegram_id
+    where bu.account_paused = ?
     window viewed_pairs as (partition by vp.recipient_telegram_id order by viewed_at desc)
 ) as latest_recipients_views
 where latest_recipients_views.viewed_at < ?::timestamptz - interval '12 hours' and latest_recipients_views.reaction is not null
 qqqqqqqqqq
                 ,
-                [$this->now->value()],
+                [0, $this->now->value()],
                 $this->connection
             ))
                 ->response();

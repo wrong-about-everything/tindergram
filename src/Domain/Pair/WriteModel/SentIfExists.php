@@ -11,7 +11,6 @@ use TG\Domain\BotUser\ReadModel\BotUser;
 use TG\Domain\BotUser\WriteModel\IncrementedViewsQty;
 use TG\Domain\TelegramBot\InlineKeyboardButton\Single\ThumbsDown;
 use TG\Domain\TelegramBot\InlineKeyboardButton\Single\ThumbsUp;
-use TG\Domain\TelegramBot\MessageToUser\ThatsAllForNow;
 use TG\Infrastructure\Http\Transport\HttpTransport;
 use TG\Infrastructure\ImpureInteractions\ImpureValue;
 use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
@@ -21,8 +20,7 @@ use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\FromImpure;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId;
 use TG\Infrastructure\TelegramBot\MessageToUser\Emptie;
 use TG\Infrastructure\TelegramBot\MessageToUser\FromString;
-use TG\Infrastructure\TelegramBot\SentReplyToUser\DefaultWithInlineKeyboardAndRemovedKeyboard;
-use TG\Infrastructure\TelegramBot\SentReplyToUser\DefaultWithNoKeyboard;
+use TG\Infrastructure\TelegramBot\SentReplyToUser\DefaultWithInlineKeyboard;
 use TG\Infrastructure\TelegramBot\SentReplyToUser\MessageSentToUser;
 use TG\Infrastructure\TelegramBot\UserAvatars\InboundModel\FirstN;
 use TG\Infrastructure\TelegramBot\UserAvatars\InboundModel\FromTelegram;
@@ -123,7 +121,7 @@ class SentIfExists implements Pair
     private function sentInfoAndRatingButtons(InternalTelegramUserId $candidateTelegramId, FirstName $firstName): ImpureValue
     {
         return
-            (new DefaultWithInlineKeyboardAndRemovedKeyboard(
+            (new DefaultWithInlineKeyboard(
                 $this->recipientTelegramId,
                 new FromString($firstName->value()),
                 new LinedUpInARow([
