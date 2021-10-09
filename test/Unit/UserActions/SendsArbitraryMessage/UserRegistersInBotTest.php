@@ -125,6 +125,7 @@ t
         $this->assertCount(
             4
             + 1/* getProfilePictures for currently registered user */
+            + 1/* congratulations and here is your first pair */
             + 1/* getProfilePictures for a pair */
             + 1/* sendMedia to current user */
             + 1/* sendMessage with name and reaction buttons to current user */,
@@ -135,16 +136,24 @@ t
             (new BasenameFromUrl($transport->sentRequests()[4]->url()))->value()
         );
         $this->assertEquals(
-            (new GetUserProfilePhotos())->value(),
+            (new SendMessage())->value(),
             (new BasenameFromUrl($transport->sentRequests()[5]->url()))->value()
         );
         $this->assertEquals(
-            (new SendMediaGroup())->value(),
+            'Поздравляем, вы зарегистрировались! Вот ваша первая пара:',
+            (new FromQuery(new FromUrl($transport->sentRequests()[5]->url())))->value()['text']
+        );
+        $this->assertEquals(
+            (new GetUserProfilePhotos())->value(),
             (new BasenameFromUrl($transport->sentRequests()[6]->url()))->value()
         );
         $this->assertEquals(
-            (new SendMessage())->value(),
+            (new SendMediaGroup())->value(),
             (new BasenameFromUrl($transport->sentRequests()[7]->url()))->value()
+        );
+        $this->assertEquals(
+            (new SendMessage())->value(),
+            (new BasenameFromUrl($transport->sentRequests()[8]->url()))->value()
         );
     }
 
@@ -197,6 +206,7 @@ t
         $this->assertCount(
             4
             + 1/* getProfilePictures for currently registered user */
+            + 1/* congratulations and here is your first pair */
             + 1/* getProfilePictures for a pair */
             + 1/* sendMedia to current user */
             + 1/* sendMessage with name and reaction buttons to current user */,
@@ -207,16 +217,24 @@ t
             (new BasenameFromUrl($transport->sentRequests()[4]->url()))->value()
         );
         $this->assertEquals(
-            (new GetUserProfilePhotos())->value(),
+            (new SendMessage())->value(),
             (new BasenameFromUrl($transport->sentRequests()[5]->url()))->value()
         );
         $this->assertEquals(
-            (new SendMediaGroup())->value(),
+            'Поздравляем, вы зарегистрировались! Вот ваша первая пара:',
+            (new FromQuery(new FromUrl($transport->sentRequests()[5]->url())))->value()['text']
+        );
+        $this->assertEquals(
+            (new GetUserProfilePhotos())->value(),
             (new BasenameFromUrl($transport->sentRequests()[6]->url()))->value()
         );
         $this->assertEquals(
-            (new SendMessage())->value(),
+            (new SendMediaGroup())->value(),
             (new BasenameFromUrl($transport->sentRequests()[7]->url()))->value()
+        );
+        $this->assertEquals(
+            (new SendMessage())->value(),
+            (new BasenameFromUrl($transport->sentRequests()[8]->url()))->value()
         );
     }
 
@@ -267,14 +285,37 @@ t
         $this->assertUserIsRegistered($this->userId(), $connection);
         $this->assertUserHasNoAvatars($this->userId(), $connection);
         $this->assertUserIsInVisibleMode($this->userId(), $connection);
-        $this->assertCount(4, $transportWithNoAvatarsForUserJustRegisteredAndTwoAvatarsForPair->sentRequests());
+        $this->assertCount(
+            1/* getProfilePictures for currently registered user */
+            + 1/* congratulations and here is your first pair */
+            + 1/* getProfilePictures for a pair */
+            + 1/* sendMedia to current user */
+            + 1/* sendMessage with name and reaction buttons to current user */,
+            $transportWithNoAvatarsForUserJustRegisteredAndTwoAvatarsForPair->sentRequests()
+        );
         $this->assertEquals(
             (new GetUserProfilePhotos())->value(),
             (new BasenameFromUrl($transportWithNoAvatarsForUserJustRegisteredAndTwoAvatarsForPair->sentRequests()[0]->url()))->value()
         );
         $this->assertEquals(
             (new SendMessage())->value(),
+            (new BasenameFromUrl($transportWithNoAvatarsForUserJustRegisteredAndTwoAvatarsForPair->sentRequests()[1]->url()))->value()
+        );
+        $this->assertEquals(
+            'Поздравляем, вы зарегистрировались! Вот ваша первая пара:',
+            (new FromQuery(new FromUrl($transportWithNoAvatarsForUserJustRegisteredAndTwoAvatarsForPair->sentRequests()[1]->url())))->value()['text']
+        );
+        $this->assertEquals(
+            (new GetUserProfilePhotos())->value(),
+            (new BasenameFromUrl($transportWithNoAvatarsForUserJustRegisteredAndTwoAvatarsForPair->sentRequests()[2]->url()))->value()
+        );
+        $this->assertEquals(
+            (new SendMediaGroup())->value(),
             (new BasenameFromUrl($transportWithNoAvatarsForUserJustRegisteredAndTwoAvatarsForPair->sentRequests()[3]->url()))->value()
+        );
+        $this->assertEquals(
+            (new SendMessage())->value(),
+            (new BasenameFromUrl($transportWithNoAvatarsForUserJustRegisteredAndTwoAvatarsForPair->sentRequests()[4]->url()))->value()
         );
     }
 
