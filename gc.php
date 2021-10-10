@@ -14,6 +14,7 @@ use TG\Activities\User\RatesAPair\RatesAPair;
 use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\ApplicationConnection;
 use TG\Domain\InternalApi\RateCallbackData\RateCallbackData;
 use TG\Domain\TelegramBot\InlineAction\InlineActionType\Rating;
+use TG\Domain\TelegramBot\UserCommand\ProfileSettings;
 use TG\Domain\UserStory\Authorized;
 use TG\Domain\UserStory\Body\TelegramFallbackResponseBody;
 use TG\Infrastructure\Dotenv\EnvironmentDependentEnvFile;
