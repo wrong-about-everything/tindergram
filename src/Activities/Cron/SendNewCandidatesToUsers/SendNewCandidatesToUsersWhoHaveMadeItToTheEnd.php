@@ -6,6 +6,7 @@ namespace TG\Activities\Cron\SendNewCandidatesToUsers;
 
 use Meringue\ISO8601DateTime;
 use TG\Domain\BotUser\ReadModel\NextCandidateFor;
+use TG\Domain\BotUser\UserStatus\Pure\Registered;
 use TG\Domain\Pair\WriteModel\SentIfExistsNothingOtherwise;
 use TG\Infrastructure\Http\Transport\HttpTransport;
 use TG\Infrastructure\ImpureInteractions\ImpureValue;
@@ -84,13 +85,13 @@ from (
         first_value(vp.reaction) over viewed_pairs as reaction
     from bot_user bu
         join viewed_pair vp on bu.telegram_id = vp.recipient_telegram_id
-    where bu.account_paused = ?
+    where bu.status = ?
     window viewed_pairs as (partition by vp.recipient_telegram_id order by viewed_at desc)
 ) as latest_recipients_views
 where latest_recipients_views.viewed_at < ?::timestamptz - interval '12 hours' and latest_recipients_views.reaction is not null
 qqqqqqqqqq
                 ,
-                [0, $this->now->value()],
+                [(new Registered())->value(), $this->now->value()],
                 $this->connection
             ))
                 ->response();

@@ -11,6 +11,7 @@ use Meringue\Timeline\Point\Past;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 use TG\Activities\Cron\SendNewCandidatesToUsers\SendNewCandidatesToUsersWhoHaveMadeItToTheEnd;
+use TG\Domain\BotUser\UserStatus\Pure\Inactive;
 use TG\Domain\BotUser\UserStatus\Pure\Registered;
 use TG\Domain\Gender\Pure\Female;
 use TG\Domain\Gender\Pure\Male;
@@ -120,7 +121,6 @@ class SendNewCandidatesToUsersWhoHaveMadeItToTheEndTest extends TestCase
                     'gender' => (new Male())->value(),
                     'preferred_gender' => (new Female())->value(),
                     'user_mode' => (new Visible())->value(),
-                    'account_paused' => 0,
 
                     'has_avatar' => 1,
                 ]
@@ -135,12 +135,11 @@ class SendNewCandidatesToUsersWhoHaveMadeItToTheEndTest extends TestCase
                     'id' => Uuid::uuid4()->toString(),
                     'first_name' => $name,
                     'telegram_id' => $telegramUserId->value(),
-                    'status' => (new Registered())->value(),
+                    'status' => (new Inactive())->value(),
 
                     'gender' => (new Male())->value(),
                     'preferred_gender' => (new Female())->value(),
                     'user_mode' => (new Visible())->value(),
-                    'account_paused' => 1,
 
                     'has_avatar' => 1,
                 ]

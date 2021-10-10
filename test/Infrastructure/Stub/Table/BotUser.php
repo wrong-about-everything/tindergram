@@ -7,7 +7,6 @@ namespace TG\Tests\Infrastructure\Stub\Table;
 use Exception;
 use Meringue\Timeline\Point\Now;
 use Ramsey\Uuid\Uuid;
-use TG\Domain\ABTesting\Pure\SwitchToVisibleModeOnUpvote;
 use TG\Domain\UserMode\Pure\Visible;
 use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
 use TG\Infrastructure\SqlDatabase\Agnostic\Query\SingleMutatingQueryWithMultipleValueSets;
@@ -29,14 +28,14 @@ class BotUser
 insert into bot_user (
   id, first_name, last_name, telegram_id, telegram_handle,
 
-  preferred_gender, gender, status, registered_at, user_mode, account_paused,
+  preferred_gender, gender, status, registered_at, user_mode,
 
   has_avatar, seen_qty, last_seen_at, like_qty, dislike_qty, variant_id
 )
 values (
   ?, ?, ?, ?, ?,
 
-  ?, ?, ?, ?, ?, ?,
+  ?, ?, ?, ?, ?,
 
   ?, ?, ?, ?, ?, ?
 )
@@ -48,7 +47,7 @@ q
                         return [
                             $v['id'], $v['first_name'], $v['last_name'], $v['telegram_id'], $v['telegram_handle'],
 
-                            $v['preferred_gender'] ?? null, $v['gender'] ?? null, $v['status'] ?? null, $v['registered_at'] ?? null, $v['user_mode'], $v['account_paused'],
+                            $v['preferred_gender'] ?? null, $v['gender'] ?? null, $v['status'] ?? null, $v['registered_at'] ?? null, $v['user_mode'],
 
                             $v['has_avatar'], $v['seen_qty'], $v['last_seen_at'], $v['like_qty'], $v['dislike_qty'], $v['variant_id'] ?? null,
                         ];
@@ -73,7 +72,6 @@ q
             'telegram_handle' => 'vasya',
 
             'user_mode' => (new Visible())->value(),
-            'account_paused' => 0,
 
             'has_avatar' => 1,
             'seen_qty' => 0,

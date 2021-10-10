@@ -7,6 +7,9 @@ namespace TG\Tests\Unit\Activities\User\BansBot;
 use PHPUnit\Framework\TestCase;
 use TG\Activities\User\BansBot\BansBot;
 use TG\Domain\BotUser\ReadModel\ByInternalTelegramUserId;
+use TG\Domain\BotUser\UserStatus\Impure\FromBotUser;
+use TG\Domain\BotUser\UserStatus\Impure\FromPure;
+use TG\Domain\BotUser\UserStatus\Pure\Inactive;
 use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\ApplicationConnection;
 use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\RootConnection;
 use TG\Infrastructure\Logging\Logs\DevNull;
@@ -50,6 +53,11 @@ class BansBotTest extends TestCase
     private function assertBotUserIsInactive(InternalTelegramUserId $internalTelegramUserId, OpenConnection $connection)
     {
         $botUser = new ByInternalTelegramUserId($internalTelegramUserId, $connection);
-        $this->assertTrue($botUser->value()->pure()->raw()['account_paused']);
+        $this->assertTrue(
+            (new FromBotUser($botUser))
+                ->equals(
+                    new FromPure(new Inactive())
+                )
+        );
     }
 }

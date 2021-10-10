@@ -28,6 +28,7 @@ class FromInteger extends UserStatus
         return [
             (new RegistrationIsInProgress())->value() => new RegistrationIsInProgress(),
             (new Registered())->value() => new Registered(),
+            (new Inactive())->value() => new Inactive(),
         ];
     }
 }

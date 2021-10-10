@@ -6,6 +6,7 @@ namespace TG\Tests\Unit\Domain\BotUser\ReadModel;
 
 use PHPUnit\Framework\TestCase;
 use TG\Domain\BotUser\ReadModel\NextCandidateFor;
+use TG\Domain\BotUser\UserStatus\Pure\Inactive;
 use TG\Domain\BotUser\UserStatus\Pure\Registered;
 use TG\Domain\BotUser\UserStatus\Pure\RegistrationIsInProgress;
 use TG\Domain\Gender\Pure\Female;
@@ -132,7 +133,6 @@ class NextCandidateForTest extends TestCase
                     'gender' => (new Male())->value(),
                     'status' => (new Registered())->value(),
                     'user_mode' => (new Visible())->value(),
-                    'account_paused' => 0,
 
                     'has_avatar' => 1
                 ]
@@ -150,7 +150,6 @@ class NextCandidateForTest extends TestCase
                     'gender' => (new Female())->value(),
                     'status' => (new Registered())->value(),
                     'user_mode' => (new Visible())->value(),
-                    'account_paused' => 0,
 
                     'has_avatar' => 1
                 ]
@@ -192,7 +191,6 @@ class NextCandidateForTest extends TestCase
                     'gender' => (new Male())->value(),
                     'status' => (new RegistrationIsInProgress())->value(),
                     'user_mode' => null,
-                    'account_paused' => 0,
 
                     'has_avatar' => null
                 ]
@@ -208,9 +206,8 @@ class NextCandidateForTest extends TestCase
 
                     'preferred_gender' => (new Female())->value(),
                     'gender' => (new Male())->value(),
-                    'status' => (new Registered())->value(),
+                    'status' => (new Inactive())->value(),
                     'user_mode' => (new Visible())->value(),
-                    'account_paused' => 1,
 
                     'has_avatar' => 1
                 ]
@@ -228,7 +225,6 @@ class NextCandidateForTest extends TestCase
                     'gender' => (new Male())->value(),
                     'status' => (new Registered())->value(),
                     'user_mode' => (new Visible())->value(),
-                    'account_paused' => 0,
 
                     'has_avatar' => 0
                 ]
@@ -246,7 +242,6 @@ class NextCandidateForTest extends TestCase
                     'gender' => (new Male())->value(),
                     'status' => (new Registered())->value(),
                     'user_mode' => (new Invisible())->value(),
-                    'account_paused' => 0,
 
                     'has_avatar' => 1
                 ]

@@ -101,6 +101,12 @@ function entryPoint(ServerRequestInterface $request): ResponseInterface
                             }
                         ],
                         [
+                            new RouteByTelegramBotCommand(new ProfileSettings()),
+                            function (array $parsedTelegramMessage) use ($transport, $logs) {
+                                return new PressesStart($parsedTelegramMessage, $transport, new ApplicationConnection(), $logs);
+                            }
+                        ],
+                        [
                             new ArbitraryTelegramUserMessageRoute(),
                             function (array $parsedTelegramMessage) use ($transport, $logs) {
                                 return new SendsArbitraryMessage($parsedTelegramMessage, $transport, new ApplicationConnection(), $logs);

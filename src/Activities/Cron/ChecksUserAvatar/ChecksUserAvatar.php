@@ -78,12 +78,12 @@ class ChecksUserAvatar extends Existent
 select bu.*
 from bot_user bu
     left join bot_user_avatar_check buac on bu.telegram_id = buac.telegram_id and buac.date = ?::date
-where buac.telegram_id is null and bu.account_paused = ? and bu.status = ? and bu.user_mode = ?
+where buac.telegram_id is null and bu.status = ? and bu.user_mode = ?
 order by bu.telegram_id asc
 limit 1700 -- (1000 / 35) * 60
 qqqq
                 ,
-                [$this->now->value(), 0, (new Registered())->value(), (new Visible())->value()],
+                [$this->now->value(), (new Registered())->value(), (new Visible())->value()],
                 $this->connection
             ))
                 ->response()->pure()->raw();

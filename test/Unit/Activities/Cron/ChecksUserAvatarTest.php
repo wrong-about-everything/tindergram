@@ -11,6 +11,7 @@ use Meringue\Timeline\Point\Past;
 use PHPUnit\Framework\TestCase;
 use TG\Activities\Cron\ChecksUserAvatar\ChecksUserAvatar;
 use TG\Domain\BotUser\ReadModel\ByInternalTelegramUserId;
+use TG\Domain\BotUser\UserStatus\Pure\Inactive;
 use TG\Domain\BotUser\UserStatus\Pure\Registered;
 use TG\Domain\BotUser\UserStatus\Pure\RegistrationIsInProgress;
 use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\ApplicationConnection;
@@ -113,7 +114,7 @@ class ChecksUserAvatarTest extends TestCase
     {
         (new BotUser($connection))
             ->insert([
-                ['telegram_id' => $telegramUserId->value(), 'status' => (new Registered())->value(), 'has_avatar' => 1, 'account_paused' => 0, 'user_mode' => (new Visible())->value()]
+                ['telegram_id' => $telegramUserId->value(), 'status' => (new Registered())->value(), 'has_avatar' => 1, 'user_mode' => (new Visible())->value()]
             ]);
     }
 
@@ -121,7 +122,7 @@ class ChecksUserAvatarTest extends TestCase
     {
         (new BotUser($connection))
             ->insert([
-                ['telegram_id' => $telegramUserId->value(), 'status' => (new Registered())->value(), 'account_paused' => 1, 'user_mode' => (new Visible())->value()]
+                ['telegram_id' => $telegramUserId->value(), 'status' => (new Inactive())->value(), 'user_mode' => (new Visible())->value()]
             ]);
     }
 
@@ -129,7 +130,7 @@ class ChecksUserAvatarTest extends TestCase
     {
         (new BotUser($connection))
             ->insert([
-                ['telegram_id' => $telegramUserId->value(), 'status' => (new Registered())->value(), 'account_paused' => 0, 'user_mode' => (new Invisible())->value()]
+                ['telegram_id' => $telegramUserId->value(), 'status' => (new Registered())->value(), 'user_mode' => (new Invisible())->value()]
             ]);
     }
 
@@ -137,7 +138,7 @@ class ChecksUserAvatarTest extends TestCase
     {
         (new BotUser($connection))
             ->insert([
-                ['telegram_id' => $telegramUserId->value(), 'status' => (new RegistrationIsInProgress())->value(), 'account_paused' => 0, 'user_mode' => null]
+                ['telegram_id' => $telegramUserId->value(), 'status' => (new RegistrationIsInProgress())->value(), 'user_mode' => null]
             ]);
     }
 

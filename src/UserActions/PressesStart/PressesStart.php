@@ -4,13 +4,21 @@ declare(strict_types=1);
 
 namespace TG\UserActions\PressesStart;
 
+use TG\Domain\BotUser\ReadModel\BotUser;
 use TG\Domain\BotUser\ReadModel\FromWriteModel;
+use TG\Domain\BotUser\ReadModel\NextCandidateFor;
+use TG\Domain\BotUser\UserStatus\Pure\Inactive;
+use TG\Domain\BotUser\WriteModel\TurnedActive;
+use TG\Domain\Pair\WriteModel\Pair;
+use TG\Domain\Pair\WriteModel\SentIfExistsThatIsAllForNowOtherwise;
 use TG\Domain\SentReplyToUser\InCaseOfAnyUncertainty;
 use TG\Domain\BotUser\UserStatus\Impure\FromBotUser;
 use TG\Domain\BotUser\UserStatus\Impure\FromPure as ImpureUserStatusFromPure;
 use TG\Domain\BotUser\UserStatus\Impure\UserStatus;
 use TG\Domain\BotUser\UserStatus\Pure\Registered;
 use TG\Domain\BotUser\UserStatus\Pure\RegistrationIsInProgress;
+use TG\Domain\TelegramBot\InternalTelegramUserId\Impure\FromWriteModelBotUser;
+use TG\Infrastructure\ImpureInteractions\ImpureValue;
 use TG\Infrastructure\Logging\LogItem\FromNonSuccessfulImpureValue;
 use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
 use TG\Infrastructure\Http\Transport\HttpTransport;
@@ -18,12 +26,17 @@ use TG\Infrastructure\Logging\LogItem\InformationMessage;
 use TG\Infrastructure\Logging\Logs;
 use TG\Domain\SentReplyToUser\Sorry;
 use TG\Domain\BotUser\WriteModel\AddedIfNotYet;
+use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Impure\FromPure;
+use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Impure\InternalTelegramUserId;
+use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\FromImpure;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\FromParsedTelegramMessage;
 use TG\Infrastructure\TelegramBot\MessageToUser\FillInYourUserNameAndFirstName;
+use TG\Infrastructure\TelegramBot\MessageToUser\FromString;
 use TG\Infrastructure\TelegramBot\SentReplyToUser\DefaultWithNoKeyboard;
 use TG\Infrastructure\UserStory\Body\Emptie;
 use TG\Infrastructure\UserStory\Existent;
 use TG\Infrastructure\UserStory\Response;
+use TG\Infrastructure\UserStory\Response\NonRetryableServerError;
 use TG\Infrastructure\UserStory\Response\Successful;
 use TG\Activities\User\RegistersInBot\UserStories\NonRegisteredUserPressesStart\NonRegisteredUserPressesStart;
 
@@ -67,11 +80,26 @@ class PressesStart extends Existent
             ))
                 ->response();
         } elseif ($userStatus->equals(new ImpureUserStatusFromPure(new Registered()))) {
-            $userIsAlreadyRegisteredValue = $this->replyInCaseOfAnyUncertainty()->value();
-            if (!$userIsAlreadyRegisteredValue->isSuccessful()) {
-                $this->logs->receive(new FromNonSuccessfulImpureValue($userIsAlreadyRegisteredValue));
-                $this->sorry()->value();
-                return new Successful(new Emptie());
+            $nextPairValue =
+                $this->nextPairIfExists(
+                    new FromPure(
+                        new FromParsedTelegramMessage($this->message)
+                    )
+                );
+            if (!$nextPairValue->isSuccessful()) {
+                $this->logs->receive(new FromNonSuccessfulImpureValue($nextPairValue));
+                return new NonRetryableServerError(new Emptie());
+            }
+        } elseif ($userStatus->equals(new ImpureUserStatusFromPure(new Inactive()))) {
+            $nextPairValue =
+                $this->welcomeBack(
+                    new FromWriteModelBotUser(
+                        new TurnedActive(new FromParsedTelegramMessage($this->message), $this->connection)
+                    )
+                );
+            if (!$nextPairValue->isSuccessful()) {
+                $this->logs->receive(new FromNonSuccessfulImpureValue($nextPairValue));
+                return new NonRetryableServerError(new Emptie());
             }
         }
 
@@ -105,13 +133,45 @@ class PressesStart extends Existent
             );
     }
 
-    private function replyInCaseOfAnyUncertainty()
+    private function nextPairIfExists(InternalTelegramUserId $forUser): ImpureValue
     {
         return
-            new InCaseOfAnyUncertainty(
-                new FromParsedTelegramMessage($this->message),
+            (new SentIfExistsThatIsAllForNowOtherwise(
+                new NextCandidateFor(
+                    new FromParsedTelegramMessage($this->message),
+                    $this->connection
+                ),
+                new FromImpure($forUser),
+                $this->httpTransport,
+                $this->connection
+            ))
+                ->value();
+    }
+
+    private function welcomeBack(InternalTelegramUserId $forUser): ImpureValue
+    {
+        $welcomeBack =
+            (new DefaultWithNoKeyboard(
+                new FromImpure($forUser),
+                new FromString('Ваш аккаунт снова активен!'),
                 $this->httpTransport
-            );
+            ))
+                ->value();
+        if (!$welcomeBack->isSuccessful()) {
+            return $welcomeBack;
+        }
+
+        return
+            (new SentIfExistsThatIsAllForNowOtherwise(
+                new NextCandidateFor(
+                    new FromParsedTelegramMessage($this->message),
+                    $this->connection
+                ),
+                new FromImpure($forUser),
+                $this->httpTransport,
+                $this->connection
+            ))
+                ->value();
     }
 
     private function fillInYourUsernameAndFirstName()

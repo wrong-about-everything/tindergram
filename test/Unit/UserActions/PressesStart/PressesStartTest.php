@@ -5,6 +5,12 @@ declare(strict_types=1);
 namespace TG\Tests\Unit\UserActions\PressesStart;
 
 use PHPUnit\Framework\TestCase;
+use Ramsey\Uuid\Uuid;
+use TG\Domain\BotUser\UserStatus\Impure\FromBotUser;
+use TG\Domain\BotUser\UserStatus\Impure\FromPure;
+use TG\Domain\BotUser\UserStatus\Pure\Inactive;
+use TG\Domain\Gender\Pure\Female;
+use TG\Domain\Gender\Pure\Gender;
 use TG\Domain\Gender\Pure\Male;
 use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\ApplicationConnection;
 use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\RootConnection;
@@ -13,6 +19,9 @@ use TG\Domain\BotUser\UserId\FromUuid as UserIdFromUuid;
 use TG\Domain\BotUser\UserId\BotUserId;
 use TG\Domain\BotUser\UserStatus\Pure\Registered;
 use TG\Domain\BotUser\UserStatus\Pure\RegistrationIsInProgress;
+use TG\Domain\TelegramBot\InlineKeyboardButton\Single\ThumbsDown as ThumbsDownButton;
+use TG\Domain\TelegramBot\InlineKeyboardButton\Single\ThumbsUp as ThumbsUpButton;
+use TG\Domain\UserMode\Pure\Visible;
 use TG\Infrastructure\Http\Request\Url\ParsedQuery\FromQuery;
 use TG\Infrastructure\Http\Request\Url\Query\FromUrl;
 use TG\Infrastructure\Http\Transport\HttpTransport;
@@ -24,6 +33,7 @@ use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUs
 use TG\Infrastructure\UserStory\UserStory;
 use TG\Infrastructure\Uuid\FromString;
 use TG\Tests\Infrastructure\Environment\Reset;
+use TG\Tests\Infrastructure\Http\Transport\TransportWithNAvatars;
 use TG\Tests\Infrastructure\Stub\TelegramMessage\StartCommandMessage;
 use TG\Tests\Infrastructure\Stub\Table\BotUser;
 use TG\Tests\Infrastructure\Stub\TelegramMessage\StartCommandMessageWithEmptyUsername;
@@ -31,6 +41,39 @@ use TG\UserActions\PressesStart\PressesStart;
 
 class PressesStartTest extends TestCase
 {
+    public function testWhenInactiveUserPressesStartThenHeBecomesActive()
+    {
+        $connection = new ApplicationConnection();
+        $transport = new TransportWithNAvatars(2);
+        $this->seedInactiveMaleBotUser($this->telegramUserId(), $connection);
+        $this->createFemaleBotUserWithAvatarAndInVisibleMode($this->secondPairTelegramId(), 'Anatoly', $connection);
+
+        $response =
+            (new PressesStart(
+                (new StartCommandMessage($this->telegramUserId()))->value(),
+                $transport,
+                $connection,
+                new DevNull()
+            ))
+                ->response();
+
+        $this->assertTrue($response->isSuccessful());
+        $this->assertUserIsRegistered($this->telegramUserId(), $connection);
+        $this->assertCount(4, $transport->sentRequests());
+        $this->assertEquals(
+            'Ваш аккаунт снова активен!',
+            (new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['text']
+        );
+        $this->assertEquals(
+            'Anatoly',
+            (new FromQuery(new FromUrl($transport->sentRequests()[3]->url())))->value()['text']
+        );
+        $this->assertEquals(
+            [(new ThumbsDownButton($this->secondPairTelegramId()))->value(), (new ThumbsUpButton($this->secondPairTelegramId()))->value()],
+            json_decode((new FromQuery(new FromUrl($transport->sentRequests()[3]->url())))->value()['reply_markup'], true)['inline_keyboard'][0]
+        );
+    }
+
     public function testWhenNewUserDoesNotHaveUsernameThenHeSeesAPromptMessageToSetIt()
     {
         $connection = new ApplicationConnection();
@@ -120,7 +163,7 @@ class PressesStartTest extends TestCase
         $this->assertUserExists($this->telegramUserId(), $connection);
         $this->assertCount(1, $transport->sentRequests());
         $this->assertEquals(
-            'Хотите что-то уточнить? Смело пишите на @flurr_support_bot!',
+            'На сегодня пока всё, а то вы такими темпами все лайки себе заберёте.',
             (new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['text']
         );
 
@@ -130,7 +173,7 @@ class PressesStartTest extends TestCase
         $this->assertUserExists($this->telegramUserId(), $connection);
         $this->assertCount(2, $transport->sentRequests());
         $this->assertEquals(
-            'Хотите что-то уточнить? Смело пишите на @flurr_support_bot!',
+            'На сегодня пока всё, а то вы такими темпами все лайки себе заберёте.',
             (new FromQuery(new FromUrl($transport->sentRequests()[1]->url())))->value()['text']
         );
     }
@@ -157,7 +200,7 @@ class PressesStartTest extends TestCase
         $this->assertUserExists($this->telegramUserId(), $connection);
         $this->assertCount(1, $transport->sentRequests());
         $this->assertEquals(
-            'Хотите что-то уточнить? Смело пишите на @flurr_support_bot!',
+            'На сегодня пока всё, а то вы такими темпами все лайки себе заберёте.',
             (new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['text']
         );
     }
@@ -183,14 +226,9 @@ class PressesStartTest extends TestCase
         return new FromInteger(654987);
     }
 
-    private function firstRegistrationQuestionId()
+    private function secondPairTelegramId(): InternalTelegramUserId
     {
-        return 'a2737a5d-9f02-4a62-886d-6f29cfbbccef';
-    }
-
-    private function secondRegistrationQuestionId()
-    {
-        return 'ddd7969c-02a3-447e-ab34-42cbea41a5d3';
+        return new FromInteger(3333333333333);
     }
 
     private function userId(): BotUserId
@@ -203,6 +241,42 @@ class PressesStartTest extends TestCase
         (new BotUser($connection))
             ->insert([
                 ['first_name' => 'Vadim', 'last_name' => 'Samokhin', 'telegram_handle' => 'dremuchee_bydlo', 'telegram_id' => $telegramUserId->value(), 'status' => (new RegistrationIsInProgress())->value(), 'preferred_gender' => (new Male())->value()]
+            ]);
+    }
+
+    private function seedInactiveMaleBotUser(InternalTelegramUserId $telegramUserId, OpenConnection $connection)
+    {
+        (new BotUser($connection))
+            ->insert([
+                [
+                    'first_name' => 'Vadim',
+                    'last_name' => 'Samokhin',
+                    'telegram_handle' => 'dremuchee_bydlo',
+                    'telegram_id' => $telegramUserId->value(),
+                    'status' => (new Inactive())->value(),
+                    'gender' => (new Male())->value(),
+                    'preferred_gender' => (new Female())->value(),
+                ]
+            ]);
+    }
+
+    private function createFemaleBotUserWithAvatarAndInVisibleMode(InternalTelegramUserId $telegramUserId, string $name, OpenConnection $connection)
+    {
+        (new BotUser($connection))
+            ->insert([
+                [
+                    'id' => Uuid::uuid4()->toString(),
+                    'first_name' => $name,
+                    'telegram_id' => $telegramUserId->value(),
+                    'telegram_handle' => 'trol',
+                    'status' => (new Registered())->value(),
+
+                    'gender' => (new Female())->value(),
+                    'preferred_gender' => (new Male())->value(),
+                    'user_mode' => (new Visible())->value(),
+
+                    'has_avatar' => 1,
+                ]
             ]);
     }
 
@@ -221,6 +295,18 @@ class PressesStartTest extends TestCase
         $this->assertEquals('Vadim', $user->pure()->raw()['first_name']);
         $this->assertEquals('Samokhin', $user->pure()->raw()['last_name']);
         $this->assertEquals('dremuchee_bydlo', $user->pure()->raw()['telegram_handle']);
+    }
+
+    private function assertUserIsRegistered(InternalTelegramUserId $telegramUserId, OpenConnection $connection)
+    {
+        $user = new ByInternalTelegramUserId($telegramUserId, $connection);
+        $this->assertTrue($user->value()->pure()->isPresent());
+        $this->assertTrue(
+            (new FromBotUser($user))
+                ->equals(
+                    new FromPure(new Registered())
+                )
+        );
     }
 
     private function assertUserDoesNotExist(InternalTelegramUserId $telegramUserId, OpenConnection $connection)
