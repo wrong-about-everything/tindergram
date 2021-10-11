@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace TG\Domain\BotUser\WriteModel;
 
-use TG\Domain\BotUser\UserStatus\Pure\Registered;
+use TG\Domain\BotUser\ReadModel\ByInternalTelegramUserId;
+use TG\Domain\BotUser\UserStatus\Impure\ActiveFromInactive;
 use TG\Infrastructure\ImpureInteractions\ImpureValue;
 use TG\Infrastructure\ImpureInteractions\ImpureValue\Successful;
 use TG\Infrastructure\ImpureInteractions\PureValue\Present;
@@ -12,7 +13,7 @@ use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
 use TG\Infrastructure\SqlDatabase\Agnostic\Query\SingleMutating;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId;
 
-class TurnedActive implements BotUser
+class TurnedActiveFromInactive implements BotUser
 {
     private $telegramUserId;
     private $connection;
@@ -40,7 +41,13 @@ class TurnedActive implements BotUser
         $response =
             (new SingleMutating(
                 'update bot_user set status = ? where telegram_id = ?',
-                [(new Registered())->value(), $this->telegramUserId->value()],
+                [
+                    (new ActiveFromInactive(
+                        new ByInternalTelegramUserId($this->telegramUserId, $this->connection)
+                    ))
+                        ->value()->pure()->raw(),
+                    $this->telegramUserId->value()
+                ],
                 $this->connection
             ))
                 ->response();

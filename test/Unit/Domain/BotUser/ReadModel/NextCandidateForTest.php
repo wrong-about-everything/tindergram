@@ -6,7 +6,7 @@ namespace TG\Tests\Unit\Domain\BotUser\ReadModel;
 
 use PHPUnit\Framework\TestCase;
 use TG\Domain\BotUser\ReadModel\NextCandidateFor;
-use TG\Domain\BotUser\UserStatus\Pure\Inactive;
+use TG\Domain\BotUser\UserStatus\Pure\InactiveAfterRegistered;
 use TG\Domain\BotUser\UserStatus\Pure\Registered;
 use TG\Domain\BotUser\UserStatus\Pure\RegistrationIsInProgress;
 use TG\Domain\Gender\Pure\Female;
@@ -206,7 +206,7 @@ class NextCandidateForTest extends TestCase
 
                     'preferred_gender' => (new Female())->value(),
                     'gender' => (new Male())->value(),
-                    'status' => (new Inactive())->value(),
+                    'status' => (new InactiveAfterRegistered())->value(),
                     'user_mode' => (new Visible())->value(),
 
                     'has_avatar' => 1

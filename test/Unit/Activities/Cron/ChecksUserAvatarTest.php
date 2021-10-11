@@ -11,7 +11,7 @@ use Meringue\Timeline\Point\Past;
 use PHPUnit\Framework\TestCase;
 use TG\Activities\Cron\ChecksUserAvatar\ChecksUserAvatar;
 use TG\Domain\BotUser\ReadModel\ByInternalTelegramUserId;
-use TG\Domain\BotUser\UserStatus\Pure\Inactive;
+use TG\Domain\BotUser\UserStatus\Pure\InactiveAfterRegistered;
 use TG\Domain\BotUser\UserStatus\Pure\Registered;
 use TG\Domain\BotUser\UserStatus\Pure\RegistrationIsInProgress;
 use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\ApplicationConnection;
@@ -122,7 +122,7 @@ class ChecksUserAvatarTest extends TestCase
     {
         (new BotUser($connection))
             ->insert([
-                ['telegram_id' => $telegramUserId->value(), 'status' => (new Inactive())->value(), 'user_mode' => (new Visible())->value()]
+                ['telegram_id' => $telegramUserId->value(), 'status' => (new InactiveAfterRegistered())->value(), 'user_mode' => (new Visible())->value()]
             ]);
     }
 

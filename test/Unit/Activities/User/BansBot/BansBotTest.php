@@ -9,7 +9,11 @@ use TG\Activities\User\BansBot\BansBot;
 use TG\Domain\BotUser\ReadModel\ByInternalTelegramUserId;
 use TG\Domain\BotUser\UserStatus\Impure\FromBotUser;
 use TG\Domain\BotUser\UserStatus\Impure\FromPure;
-use TG\Domain\BotUser\UserStatus\Pure\Inactive;
+use TG\Domain\BotUser\UserStatus\Pure\InactiveAfterRegistered;
+use TG\Domain\BotUser\UserStatus\Pure\InactiveBeforeRegistered;
+use TG\Domain\BotUser\UserStatus\Pure\Registered;
+use TG\Domain\BotUser\UserStatus\Pure\RegistrationIsInProgress;
+use TG\Domain\BotUser\UserStatus\Pure\UserStatus;
 use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\ApplicationConnection;
 use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\RootConnection;
 use TG\Infrastructure\Logging\Logs\DevNull;
@@ -21,15 +25,26 @@ use TG\Tests\Infrastructure\Stub\Table\BotUser;
 
 class BansBotTest extends TestCase
 {
-    public function test()
+    public function testWhenNotYetRegisteredUserBansBotThenHeBecomesInactive()
     {
         $connection = new ApplicationConnection();
-        $this->seedBotUser($this->telegramUserId(), $connection);
+        $this->seedBotUser($this->telegramUserId(), new RegistrationIsInProgress(), $connection);
 
         $response = (new BansBot($this->telegramUserId(), $connection, new DevNull()))->response();
 
         $this->assertTrue($response->isSuccessful());
-        $this->assertBotUserIsInactive($this->telegramUserId(), $connection);
+        $this->assertBotUserIsInactive($this->telegramUserId(), new InactiveBeforeRegistered(), $connection);
+    }
+
+    public function testWhenRegisteredUserBansBotThenHeBecomesInactive()
+    {
+        $connection = new ApplicationConnection();
+        $this->seedBotUser($this->telegramUserId(), new Registered(), $connection);
+
+        $response = (new BansBot($this->telegramUserId(), $connection, new DevNull()))->response();
+
+        $this->assertTrue($response->isSuccessful());
+        $this->assertBotUserIsInactive($this->telegramUserId(), new InactiveAfterRegistered(), $connection);
     }
 
     protected function setUp(): void
@@ -37,11 +52,11 @@ class BansBotTest extends TestCase
         (new Reset(new RootConnection()))->run();
     }
 
-    private function seedBotUser(InternalTelegramUserId $internalTelegramUserId, OpenConnection $connection)
+    private function seedBotUser(InternalTelegramUserId $internalTelegramUserId, UserStatus $status, OpenConnection $connection)
     {
         (new BotUser($connection))
             ->insert([
-                ['telegram_id' => $internalTelegramUserId->value()]
+                ['telegram_id' => $internalTelegramUserId->value(), 'status' => $status->value()]
             ]);
     }
 
@@ -50,13 +65,13 @@ class BansBotTest extends TestCase
         return new FromInteger(1234);
     }
 
-    private function assertBotUserIsInactive(InternalTelegramUserId $internalTelegramUserId, OpenConnection $connection)
+    private function assertBotUserIsInactive(InternalTelegramUserId $internalTelegramUserId, UserStatus $status, OpenConnection $connection)
     {
         $botUser = new ByInternalTelegramUserId($internalTelegramUserId, $connection);
         $this->assertTrue(
             (new FromBotUser($botUser))
                 ->equals(
-                    new FromPure(new Inactive())
+                    new FromPure($status)
                 )
         );
     }

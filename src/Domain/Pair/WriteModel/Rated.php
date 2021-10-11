@@ -50,17 +50,44 @@ class Rated implements Pair
         if (!$this->pairTelegramId->exists()->isSuccessful() || $this->pairTelegramId->exists()->pure()->raw() !== true) {
             return $this->pairTelegramId->exists();
         }
-        $viewedPairResponse =
+
+        $updatedRecipientUser = $this->updatedRecipientUser();
+        if (!$updatedRecipientUser->isSuccessful()) {
+            return $updatedRecipientUser;
+        }
+
+        $persistedReactionResponse = $this->persistedReaction();
+        if (!$persistedReactionResponse->isSuccessful()) {
+            return $persistedReactionResponse;
+        }
+
+        return $this->updatedPairUser();
+    }
+
+    private function updatedRecipientUser(): ImpureValue
+    {
+        return
+            (new SingleMutating(
+                'update bot_user set last_seen_at = now() where telegram_id = ?',
+                [$this->recipientTelegramId->value()->pure()->raw()],
+                $this->connection
+            ))
+                ->response();
+    }
+
+    private function persistedReaction(): ImpureValue
+    {
+        return
             (new SingleMutating(
                 'update viewed_pair set reaction = ? where recipient_telegram_id = ? and pair_telegram_id = ?',
                 [$this->reaction->value(), $this->recipientTelegramId->value()->pure()->raw(), $this->pairTelegramId->value()->pure()->raw()],
                 $this->connection
             ))
                 ->response();
-        if (!$viewedPairResponse->isSuccessful()) {
-            return $viewedPairResponse;
-        }
+    }
 
+    private function updatedPairUser(): ImpureValue
+    {
         if ($this->reaction->equals(new Like())) {
             return
                 (new SingleMutating(

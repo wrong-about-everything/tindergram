@@ -11,7 +11,7 @@ use TG\Infrastructure\Logging\LogItem\FromNonSuccessfulImpureValue;
 use TG\Infrastructure\Logging\LogItem\InformationMessage;
 use TG\Infrastructure\Logging\Logs;
 use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
-use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\FromParsedTelegramMessage;
+use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Pure\InternalTelegramUserId;
 use TG\Infrastructure\TelegramBot\MessageToUser\Sorry;
 use TG\Infrastructure\TelegramBot\SentReplyToUser\DefaultWithNoKeyboard;
 use TG\Infrastructure\TelegramBot\SentReplyToUser\MessageSentToUser;
@@ -22,14 +22,14 @@ use TG\Infrastructure\UserStory\Response\Successful;
 
 class NonRegisteredUserPressesStart extends Existent
 {
-    private $message;
+    private $internalTelegramUserId;
     private $httpTransport;
     private $connection;
     private $logs;
 
-    public function __construct(array $message, HttpTransport $httpTransport, OpenConnection $connection, Logs $logs)
+    public function __construct(InternalTelegramUserId $internalTelegramUserId, HttpTransport $httpTransport, OpenConnection $connection, Logs $logs)
     {
-        $this->message = $message;
+        $this->internalTelegramUserId = $internalTelegramUserId;
         $this->httpTransport = $httpTransport;
         $this->connection = $connection;
         $this->logs = $logs;
@@ -54,7 +54,7 @@ class NonRegisteredUserPressesStart extends Existent
     {
         return
             (new NextRegistrationQuestionSentToUser(
-                new FromParsedTelegramMessage($this->message),
+                $this->internalTelegramUserId,
                 $this->connection,
                 $this->httpTransport
             ))
@@ -65,7 +65,7 @@ class NonRegisteredUserPressesStart extends Existent
     {
         return
             new DefaultWithNoKeyboard(
-                new FromParsedTelegramMessage($this->message),
+                $this->internalTelegramUserId,
                 new Sorry(),
                 $this->httpTransport
             );

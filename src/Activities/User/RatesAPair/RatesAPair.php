@@ -64,7 +64,7 @@ class RatesAPair extends Existent
             $this->logs->receive(new InformationMessage('Someone rated a pair one more time'));
             $this->youCanNotRateAUserMoreThatOnce();
         } else {
-            $persistentPair = $this->persistentPair($voterBotUser);
+            $persistentPair = $this->ratedPair($voterBotUser);
             if (!$persistentPair->value()->isSuccessful()) {
                 $this->logs->receive(new FromNonSuccessfulImpureValue($persistentPair->value()));
             } else {
@@ -105,7 +105,7 @@ class RatesAPair extends Existent
                 ->value();
     }
 
-    private function persistentPair(BotUser $voterBotUser): Pair
+    private function ratedPair(BotUser $voterBotUser): Pair
     {
         return
             new Rated(

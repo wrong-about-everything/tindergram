@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace TG\Activities\User\BansBot;
 
-use TG\Domain\BotUser\WriteModel\Inactive;
+use TG\Domain\BotUser\WriteModel\TurnedInactiveFromActive;
 use TG\Infrastructure\Logging\LogItem\FromNonSuccessfulImpureValue;
 use TG\Infrastructure\Logging\LogItem\InformationMessage;
 use TG\Infrastructure\Logging\Logs;
@@ -32,7 +32,7 @@ class BansBot extends Existent
     {
         $this->logs->receive(new InformationMessage('User bans bot scenario started'));
 
-        $botUserValue = (new Inactive($this->internalTelegramUserId, $this->connection))->value();
+        $botUserValue = (new TurnedInactiveFromActive($this->internalTelegramUserId, $this->connection))->value();
         if (!$botUserValue->isSuccessful()) {
             $this->logs->receive(new FromNonSuccessfulImpureValue($botUserValue));
         }

@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace TG\Domain\BotUser\UserStatus\Pure;
 
-class Inactive extends UserStatus
+class InactiveBeforeRegistered extends UserStatus
 {
     public function value(): int
     {
-        return 20;
+        return 30;
     }
 
     public function exists(): bool

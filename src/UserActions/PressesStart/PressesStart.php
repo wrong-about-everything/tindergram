@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace TG\UserActions\PressesStart;
 
-use TG\Domain\BotUser\ReadModel\BotUser;
 use TG\Domain\BotUser\ReadModel\FromWriteModel;
 use TG\Domain\BotUser\ReadModel\NextCandidateFor;
-use TG\Domain\BotUser\UserStatus\Pure\Inactive;
-use TG\Domain\BotUser\WriteModel\TurnedActive;
-use TG\Domain\Pair\WriteModel\Pair;
+use TG\Domain\BotUser\UserStatus\Pure\InactiveAfterRegistered;
+use TG\Domain\BotUser\UserStatus\Pure\InactiveBeforeRegistered;
+use TG\Domain\BotUser\WriteModel\TurnedActiveFromInactive;
 use TG\Domain\Pair\WriteModel\SentIfExistsThatIsAllForNowOtherwise;
-use TG\Domain\SentReplyToUser\InCaseOfAnyUncertainty;
 use TG\Domain\BotUser\UserStatus\Impure\FromBotUser;
 use TG\Domain\BotUser\UserStatus\Impure\FromPure as ImpureUserStatusFromPure;
 use TG\Domain\BotUser\UserStatus\Impure\UserStatus;
@@ -24,7 +22,6 @@ use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
 use TG\Infrastructure\Http\Transport\HttpTransport;
 use TG\Infrastructure\Logging\LogItem\InformationMessage;
 use TG\Infrastructure\Logging\Logs;
-use TG\Domain\SentReplyToUser\Sorry;
 use TG\Domain\BotUser\WriteModel\AddedIfNotYet;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Impure\FromPure;
 use TG\Infrastructure\TelegramBot\InternalTelegramUserId\Impure\InternalTelegramUserId;
@@ -67,13 +64,12 @@ class PressesStart extends Existent
         $userStatus = $this->userStatus();
         if (!$userStatus->value()->isSuccessful()) {
             $this->logs->receive(new FromNonSuccessfulImpureValue($userStatus->value()));
-            $this->sorry()->value();
-            return new Successful(new Emptie());
+            return new NonRetryableServerError(new Emptie());
         }
 
         if ($userStatus->equals(new ImpureUserStatusFromPure(new RegistrationIsInProgress()))) {
             (new NonRegisteredUserPressesStart(
-                $this->message,
+                new FromParsedTelegramMessage($this->message),
                 $this->httpTransport,
                 $this->connection,
                 $this->logs
@@ -90,17 +86,32 @@ class PressesStart extends Existent
                 $this->logs->receive(new FromNonSuccessfulImpureValue($nextPairValue));
                 return new NonRetryableServerError(new Emptie());
             }
-        } elseif ($userStatus->equals(new ImpureUserStatusFromPure(new Inactive()))) {
+        } elseif ($userStatus->equals(new ImpureUserStatusFromPure(new InactiveAfterRegistered()))) {
             $nextPairValue =
                 $this->welcomeBack(
                     new FromWriteModelBotUser(
-                        new TurnedActive(new FromParsedTelegramMessage($this->message), $this->connection)
+                        new TurnedActiveFromInactive(new FromParsedTelegramMessage($this->message), $this->connection)
                     )
                 );
             if (!$nextPairValue->isSuccessful()) {
                 $this->logs->receive(new FromNonSuccessfulImpureValue($nextPairValue));
                 return new NonRetryableServerError(new Emptie());
             }
+        } elseif ($userStatus->equals(new ImpureUserStatusFromPure(new InactiveBeforeRegistered()))) {
+            (new NonRegisteredUserPressesStart(
+                new FromImpure(
+                    new FromWriteModelBotUser(
+                        new TurnedActiveFromInactive(
+                            new FromParsedTelegramMessage($this->message),
+                            $this->connection
+                        )
+                    )
+                ),
+                $this->httpTransport,
+                $this->connection,
+                $this->logs
+            ))
+                ->response();
         }
 
         $this->logs->receive(new InformationMessage('User presses start scenario finished'));
@@ -180,15 +191,6 @@ class PressesStart extends Existent
             new DefaultWithNoKeyboard(
                 new FromParsedTelegramMessage($this->message),
                 new FillInYourUserNameAndFirstName(),
-                $this->httpTransport
-            );
-    }
-
-    private function sorry()
-    {
-        return
-            new Sorry(
-                new FromParsedTelegramMessage($this->message),
                 $this->httpTransport
             );
     }

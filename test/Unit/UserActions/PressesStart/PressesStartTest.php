@@ -8,9 +8,10 @@ use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 use TG\Domain\BotUser\UserStatus\Impure\FromBotUser;
 use TG\Domain\BotUser\UserStatus\Impure\FromPure;
-use TG\Domain\BotUser\UserStatus\Pure\Inactive;
+use TG\Domain\BotUser\UserStatus\Pure\InactiveAfterRegistered;
+use TG\Domain\BotUser\UserStatus\Pure\InactiveBeforeRegistered;
+use TG\Domain\BotUser\UserStatus\Pure\UserStatus;
 use TG\Domain\Gender\Pure\Female;
-use TG\Domain\Gender\Pure\Gender;
 use TG\Domain\Gender\Pure\Male;
 use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\ApplicationConnection;
 use TG\Domain\Infrastructure\SqlDatabase\Agnostic\Connection\RootConnection;
@@ -41,11 +42,11 @@ use TG\UserActions\PressesStart\PressesStart;
 
 class PressesStartTest extends TestCase
 {
-    public function testWhenInactiveUserPressesStartThenHeBecomesActive()
+    public function testWhenUserWhoHasBannedBotAfterRegistrationPressesStartThenHeBecomesActive()
     {
         $connection = new ApplicationConnection();
         $transport = new TransportWithNAvatars(2);
-        $this->seedInactiveMaleBotUser($this->telegramUserId(), $connection);
+        $this->seedMaleBotUserWhoBannedBotAfterRegistration($this->telegramUserId(), $connection);
         $this->createFemaleBotUserWithAvatarAndInVisibleMode($this->secondPairTelegramId(), 'Anatoly', $connection);
 
         $response =
@@ -71,6 +72,30 @@ class PressesStartTest extends TestCase
         $this->assertEquals(
             [(new ThumbsDownButton($this->secondPairTelegramId()))->value(), (new ThumbsUpButton($this->secondPairTelegramId()))->value()],
             json_decode((new FromQuery(new FromUrl($transport->sentRequests()[3]->url())))->value()['reply_markup'], true)['inline_keyboard'][0]
+        );
+    }
+
+    public function testWhenUserWhoHasBannedBotBeforeRegistrationPressesStartThenHeSeesFirstUnansweredQuestion()
+    {
+        $connection = new ApplicationConnection();
+        $transport = new TransportWithNAvatars(2);
+        $this->seedMaleBotUserWhoBannedBotBeforeRegistration($this->telegramUserId(), $connection);
+
+        $response =
+            (new PressesStart(
+                (new StartCommandMessage($this->telegramUserId()))->value(),
+                $transport,
+                $connection,
+                new DevNull()
+            ))
+                ->response();
+
+        $this->assertTrue($response->isSuccessful());
+        $this->assertUserIsRegistering($this->telegramUserId(), $connection);
+        $this->assertCount(1, $transport->sentRequests());
+        $this->assertEquals(
+            'Какие аккаунты вам показывать?',
+            (new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['text']
         );
     }
 
@@ -244,7 +269,7 @@ class PressesStartTest extends TestCase
             ]);
     }
 
-    private function seedInactiveMaleBotUser(InternalTelegramUserId $telegramUserId, OpenConnection $connection)
+    private function seedMaleBotUserWhoBannedBotAfterRegistration(InternalTelegramUserId $telegramUserId, OpenConnection $connection)
     {
         (new BotUser($connection))
             ->insert([
@@ -253,9 +278,25 @@ class PressesStartTest extends TestCase
                     'last_name' => 'Samokhin',
                     'telegram_handle' => 'dremuchee_bydlo',
                     'telegram_id' => $telegramUserId->value(),
-                    'status' => (new Inactive())->value(),
+                    'status' => (new InactiveAfterRegistered())->value(),
                     'gender' => (new Male())->value(),
                     'preferred_gender' => (new Female())->value(),
+                ]
+            ]);
+    }
+
+    private function seedMaleBotUserWhoBannedBotBeforeRegistration(InternalTelegramUserId $telegramUserId, OpenConnection $connection)
+    {
+        (new BotUser($connection))
+            ->insert([
+                [
+                    'first_name' => 'Vadim',
+                    'last_name' => 'Samokhin',
+                    'telegram_handle' => 'dremuchee_bydlo',
+                    'telegram_id' => $telegramUserId->value(),
+                    'status' => (new InactiveBeforeRegistered())->value(),
+                    'gender' => (new Male())->value(),
+                    'preferred_gender' => null,
                 ]
             ]);
     }
@@ -305,6 +346,18 @@ class PressesStartTest extends TestCase
             (new FromBotUser($user))
                 ->equals(
                     new FromPure(new Registered())
+                )
+        );
+    }
+
+    private function assertUserIsRegistering(InternalTelegramUserId $telegramUserId, OpenConnection $connection)
+    {
+        $user = new ByInternalTelegramUserId($telegramUserId, $connection);
+        $this->assertTrue($user->value()->pure()->isPresent());
+        $this->assertTrue(
+            (new FromBotUser($user))
+                ->equals(
+                    new FromPure(new RegistrationIsInProgress())
                 )
         );
     }
