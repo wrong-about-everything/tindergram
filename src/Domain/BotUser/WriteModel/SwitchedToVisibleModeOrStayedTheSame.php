@@ -15,6 +15,8 @@ use TG\Infrastructure\ABTesting\Impure\FromPure;
 use TG\Infrastructure\ImpureInteractions\ImpureValue;
 use TG\Infrastructure\ImpureInteractions\ImpureValue\Successful;
 use TG\Infrastructure\ImpureInteractions\PureValue\Present;
+use TG\Infrastructure\Logging\LogItem\InformationMessage;
+use TG\Infrastructure\Logging\Logs;
 use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
 use TG\Infrastructure\SqlDatabase\Agnostic\Query\SingleMutating;
 
@@ -22,13 +24,15 @@ class SwitchedToVisibleModeOrStayedTheSame implements BotUser
 {
     private $botUser;
     private $reaction;
+    private $logs;
     private $connection;
     private $cached;
 
-    public function __construct(ReadModelBotUser $botUser, Reaction $reaction, OpenConnection $connection)
+    public function __construct(ReadModelBotUser $botUser, Reaction $reaction, Logs $logs, OpenConnection $connection)
     {
         $this->botUser = $botUser;
         $this->reaction = $reaction;
+        $this->logs = $logs;
         $this->connection = $connection;
 
         $this->cached = null;
@@ -45,7 +49,14 @@ class SwitchedToVisibleModeOrStayedTheSame implements BotUser
 
     private function doValue(): ImpureValue
     {
-        if ($this->reaction->equals(new Like()) && (new ExperimentVariantFromBotUser($this->botUser))->exists()->pure()->raw() && (new ExperimentVariantFromBotUser($this->botUser))->equals(new FromPure(new SwitchToVisibleModeOnUpvote()))) {
+        if (
+            $this->reaction->equals(new Like())
+                &&
+            (new ExperimentVariantFromBotUser($this->botUser))->exists()->pure()->raw()
+                &&
+            (new ExperimentVariantFromBotUser($this->botUser))->equals(new FromPure(new SwitchToVisibleModeOnUpvote()))
+        ) {
+            $this->logs->receive(new InformationMessage('User turned visible'));
             $response =
                 (new SingleMutating(
                     'update bot_user set user_mode = ? where telegram_id = ?',

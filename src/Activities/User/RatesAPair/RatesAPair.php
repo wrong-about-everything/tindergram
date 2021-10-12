@@ -113,6 +113,7 @@ class RatesAPair extends Existent
                     new SwitchedToVisibleModeOrStayedTheSame(
                         $voterBotUser,
                         new FromAction(new FromRateCallbackData($this->rateCallbackData)),
+                        $this->logs,
                         $this->connection
                     )
                 ),
