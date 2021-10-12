@@ -52,8 +52,10 @@ class SendNewCandidatesToUsersWhoHaveMadeItToTheEndTest extends TestCase
 
         $this->createFemaleUserPreferringMales($this->firstPairTelegramId(), 'Fedya', $connection);
         $this->createFemaleUserPreferringMales($this->secondPairTelegramId(), 'Anatoly', $connection);
+        $this->createFemaleUserPreferringMales($this->thirdPairTelegramId(), 'Trol', $connection);
 
         $this->seedPair($this->firstRecipientTelegramId(), $this->firstPairTelegramId(), new Past($now, new NDays(3)), new Like(), $connection);
+        $this->seedPair($this->firstRecipientTelegramId(), $this->thirdPairTelegramId(), new Past($now, new NDays(3)), new Like(), $connection);
         $this->seedPair($this->secondRecipientTelegramId(), $this->firstPairTelegramId(), new Past($now, new NDays(3)), new NonExistent(), $connection);
         $this->seedPair($this->thirdRecipientTelegramId(), $this->firstPairTelegramId(), new FromISO8601('2020-10-12T04:39:11+14')/*2020-10-11T09:39:11-05*/, new Dislike(), $connection);
         $this->seedPair($this->fourthRecipientTelegramId(), $this->firstPairTelegramId(), new Past($now, new NDays(3)), new Like(), $connection);
@@ -106,6 +108,11 @@ class SendNewCandidatesToUsersWhoHaveMadeItToTheEndTest extends TestCase
     private function secondPairTelegramId(): InternalTelegramUserId
     {
         return new FromInteger(3333333333333);
+    }
+
+    private function thirdPairTelegramId(): InternalTelegramUserId
+    {
+        return new FromInteger(44444444);
     }
 
     private function createMaleUserPreferringFemales(InternalTelegramUserId $telegramUserId, string $name, OpenConnection $connection)

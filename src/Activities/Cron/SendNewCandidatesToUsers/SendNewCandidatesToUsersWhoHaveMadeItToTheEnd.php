@@ -79,7 +79,7 @@ class SendNewCandidatesToUsersWhoHaveMadeItToTheEnd extends Existent
                 <<<qqqqqqqqqq
 select *
 from (
-    select
+    select distinct
         bu.telegram_id,
         first_value(vp.viewed_at) over viewed_pairs as viewed_at,
         first_value(vp.reaction) over viewed_pairs as reaction
