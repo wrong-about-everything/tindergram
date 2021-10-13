@@ -42,7 +42,7 @@ class FromRegistrationQuestion extends RegistrationAnswerOptions
                 return new Successful(new Present([(new Male())->value(), (new Female())->value()]));
 
             case (new AreYouReadyToRegister())->id():
-                return new Successful(new Present([(new RegisterInVisibleMode())->value(), (new RegisterInInvisibleMode())->value()]));
+                return new Successful(new Present([(new RegisterInVisibleMode())->value()]));
         }
 
         throw new Exception(sprintf('Registration question "%s" is unknown', $this->registrationQuestionId->id()->pure()->raw()));

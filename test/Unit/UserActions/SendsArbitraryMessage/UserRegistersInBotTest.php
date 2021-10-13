@@ -105,15 +105,13 @@ class UserRegistersInBotTest extends TestCase
 Вот фотографии, которые увидят другие пользователи.
 Бот всегда показывает первые пять ваших аватарок из telegram. Сам он эти фото не хранит. Поэтому, если вы удалите какую-то аватарку в самом telegram, бот перестанет её видеть и не сможет никому показать. А если загрузите новую, её будут видеть другие пользователи.
 
-Если вы не хотите, чтобы ваш профиль кто-то увидел, но хотите посмотреть другие, вы можете зарегистрироваться в режиме невидимки. Но будьте внимательны: как только вы кого-то лайкнете, ваш профиль станет видимым для всех пользователей. Чтобы снова стать невидимкой, напишите в наш бот поддержки — @flurr_support_bot.
-
 Если вас что-то беспокоит или у вас возникла проблема, в @flurr_support_bot вы можете задать любые вопросы.
 t
             ,
             json_decode((new FromQuery(new FromUrl($transport->sentRequests()[2]->url())))->value()['media'], true)[0]['caption']
         );
         $this->assertEquals(
-            [['text' => (new RegisterInVisibleMode())->value()], ['text' => (new RegisterInInvisibleMode())->value()]],
+            [['text' => (new RegisterInVisibleMode())->value()]],
             json_decode((new FromQuery(new FromUrl($transport->sentRequests()[3]->url())))->value()['reply_markup'], true)['keyboard'][0]
         );
 
@@ -122,87 +120,6 @@ t
         $this->assertUserIsRegistered($this->userId(), $connection);
         $this->assertUserHasAvatars($this->userId(), $connection);
         $this->assertUserIsInVisibleMode($this->userId(), $connection);
-        $this->assertCount(
-            4
-            + 1/* getProfilePictures for currently registered user */
-            + 1/* congratulations and here is your first pair */
-            + 1/* getProfilePictures for a pair */
-            + 1/* sendMedia to current user */
-            + 1/* sendMessage with name and reaction buttons to current user */,
-            $transport->sentRequests()
-        );
-        $this->assertEquals(
-            (new GetUserProfilePhotos())->value(),
-            (new BasenameFromUrl($transport->sentRequests()[4]->url()))->value()
-        );
-        $this->assertEquals(
-            (new SendMessage())->value(),
-            (new BasenameFromUrl($transport->sentRequests()[5]->url()))->value()
-        );
-        $this->assertEquals(
-            'Поздравляем, вы зарегистрировались! Вот ваша первая пара:',
-            (new FromQuery(new FromUrl($transport->sentRequests()[5]->url())))->value()['text']
-        );
-        $this->assertEquals(
-            (new GetUserProfilePhotos())->value(),
-            (new BasenameFromUrl($transport->sentRequests()[6]->url()))->value()
-        );
-        $this->assertEquals(
-            (new SendMediaGroup())->value(),
-            (new BasenameFromUrl($transport->sentRequests()[7]->url()))->value()
-        );
-        $this->assertEquals(
-            (new SendMessage())->value(),
-            (new BasenameFromUrl($transport->sentRequests()[8]->url()))->value()
-        );
-    }
-
-    public function testNewUserWithTwoAvatarsRegistersInInvisibleMode()
-    {
-        $connection = new ApplicationConnection();
-        $this->createNonRegisteredBotUser($this->userId(), $this->telegramUserId(), $connection);
-        $this->createRegisteredGayMale($this->pairUserId(), $this->pairTelegramUserId(), $connection);
-        $transport = new TransportWithNAvatars(2);
-
-        $this->userReply((new Men())->value(), $transport, $connection)->response();
-
-        $this->assertCount(1, $transport->sentRequests());
-        $this->assertUserPreferredGender($this->userId(), new MaleGender(), $connection);
-        $this->assertEquals(
-            'Укажите свой пол',
-            (new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['text']
-        );
-        $this->assertEquals(
-            [['text' => 'Мужской'], ['text' => 'Женский']],
-            json_decode((new FromQuery(new FromUrl($transport->sentRequests()[0]->url())))->value()['reply_markup'], true)['keyboard'][0]
-        );
-
-        $this->userReply((new Male())->value(), $transport, $connection)->response();
-
-        $this->assertCount(1 + 1/* getProfilePictures */ + 1/* sendMedia */ + 1/* Поехали? */, $transport->sentRequests());
-        $this->assertUserHasGender($this->userId(), new MaleGender(), $connection);
-        $this->assertEquals(
-            <<<t
-Вот фотографии, которые увидят другие пользователи.
-Бот всегда показывает первые пять ваших аватарок из telegram. Сам он эти фото не хранит. Поэтому, если вы удалите какую-то аватарку в самом telegram, бот перестанет её видеть и не сможет никому показать. А если загрузите новую, её будут видеть другие пользователи.
-
-Если вы не хотите, чтобы ваш профиль кто-то увидел, но хотите посмотреть другие, вы можете зарегистрироваться в режиме невидимки. Но будьте внимательны: как только вы кого-то лайкнете, ваш профиль станет видимым для всех пользователей. Чтобы снова стать невидимкой, напишите в наш бот поддержки — @flurr_support_bot.
-
-Если вас что-то беспокоит или у вас возникла проблема, в @flurr_support_bot вы можете задать любые вопросы.
-t
-            ,
-            json_decode((new FromQuery(new FromUrl($transport->sentRequests()[2]->url())))->value()['media'], true)[0]['caption']
-        );
-        $this->assertEquals(
-            [['text' => (new RegisterInVisibleMode())->value()], ['text' => (new RegisterInInvisibleMode())->value()]],
-            json_decode((new FromQuery(new FromUrl($transport->sentRequests()[3]->url())))->value()['reply_markup'], true)['keyboard'][0]
-        );
-
-        $this->userReply((new RegisterInInvisibleMode())->value(), $transport, $connection)->response();
-
-        $this->assertUserIsRegistered($this->userId(), $connection);
-        $this->assertUserHasAvatars($this->userId(), $connection);
-        $this->assertUserIsInInvisibleMode($this->userId(), $connection);
         $this->assertCount(
             4
             + 1/* getProfilePictures for currently registered user */
@@ -275,7 +192,7 @@ t
             (new FromQuery(new FromUrl($transport->sentRequests()[2]->url())))->value()['text']
         );
         $this->assertEquals(
-            [['text' => (new RegisterInVisibleMode())->value()], ['text' => (new RegisterInInvisibleMode())->value()]],
+            [['text' => (new RegisterInVisibleMode())->value()]],
             json_decode((new FromQuery(new FromUrl($transport->sentRequests()[2]->url())))->value()['reply_markup'], true)['keyboard'][0]
         );
 
