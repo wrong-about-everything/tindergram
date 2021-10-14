@@ -11,8 +11,6 @@ use Meringue\Timeline\Point\Past;
 use PHPUnit\Framework\TestCase;
 use TG\Activities\Cron\ChecksUserAvatar\ChecksUserAvatar;
 use TG\Domain\BotUser\ReadModel\ByInternalTelegramUserId;
-use TG\Domain\BotUser\UserStatus\Impure\FromBotUser;
-use TG\Domain\BotUser\UserStatus\Impure\FromPure;
 use TG\Domain\BotUser\UserStatus\Pure\InactiveAfterRegistered;
 use TG\Domain\BotUser\UserStatus\Pure\Registered;
 use TG\Domain\BotUser\UserStatus\Pure\RegistrationIsInProgress;
@@ -31,7 +29,6 @@ use TG\Infrastructure\Uuid\RandomUUID;
 use TG\Tests\Infrastructure\Environment\Reset;
 use TG\Tests\Infrastructure\Http\Response\Inbound\EmptyGetUserProfilePhotosResponse;
 use TG\Tests\Infrastructure\Http\Response\Inbound\GetUserProfilePhotosResponse;
-use TG\Tests\Infrastructure\Http\Response\Inbound\ResourceIsForbidden;
 use TG\Tests\Infrastructure\Http\Transport\ConfiguredByTelegramUserIdAndTelegramMethod;
 use TG\Tests\Infrastructure\Stub\Table\BotUser;
 use TG\Tests\Infrastructure\Stub\Table\BotUserAvatarCheck;
@@ -98,38 +95,6 @@ class ChecksUserAvatarTest extends TestCase
         $this->assertCount(2, $transport->sentRequests());
         $this->assertUserHasAvatar($this->secondTelegramUserId(), $connection);
         $this->assertUserDoesNotHaveAvatar($this->firstTelegramUserId(), $connection);
-    }
-
-    public function testWhenUserBannedMyBotThenHeIsMarkedAsBanned()
-    {
-        $connection = new ApplicationConnection();
-        $this->createBotUserAvatarCheck($this->firstTelegramUserId(), new Past(new Now(), new OneDay()), $connection);
-        $this->createBotUserAvatarCheck($this->secondTelegramUserId(), new Past(new Now(), new OneDay()), $connection);
-        $this->createActiveVisibleRegisteredBotUserWithAvatar($this->firstTelegramUserId(), $connection);
-        $this->createActiveVisibleRegisteredBotUserWithoutAvatar($this->secondTelegramUserId(), $connection);
-        $this->createNonActiveVisibleRegisteredBotUser($this->thirdTelegramUserId(), $connection);
-        $this->createActiveInvisibleRegisteredBotUser($this->fourthTelegramUserId(), $connection);
-        $this->createActiveNonRegisteredBotUser($this->fifthTelegramUserId(), $connection);
-
-        $transport =
-            new ConfiguredByTelegramUserIdAndTelegramMethod([
-                $this->firstTelegramUserId()->value() => [(new GetUserProfilePhotos())->value() => new ResourceIsForbidden()],
-                $this->secondTelegramUserId()->value() => [(new GetUserProfilePhotos())->value() => new ResourceIsForbidden()],
-            ]);
-
-        $response = (new ChecksUserAvatar(new Now(), $transport, $connection, new DevNull()))->response();
-
-        $this->assertTrue($response->isSuccessful());
-        $this->assertCount(2, $transport->sentRequests());
-        $this->assertUserHasBannedMyBot($this->firstTelegramUserId(), $connection);
-        $this->assertUserHasBannedMyBot($this->secondTelegramUserId(), $connection);
-
-        $secondTimeResponse = (new ChecksUserAvatar(new Now(), $transport, $connection, new DevNull()))->response();
-
-        $this->assertTrue($secondTimeResponse->isSuccessful());
-        $this->assertCount(2, $transport->sentRequests());
-        $this->assertUserHasBannedMyBot($this->firstTelegramUserId(), $connection);
-        $this->assertUserHasBannedMyBot($this->secondTelegramUserId(), $connection);
     }
 
     protected function setUp(): void
@@ -215,18 +180,6 @@ class ChecksUserAvatarTest extends TestCase
         $this->assertTrue(
             (new ByInternalTelegramUserId($internalTelegramUserId, $connection))
                 ->value()->pure()->raw()['has_avatar']
-        );
-    }
-
-    private function assertUserHasBannedMyBot(InternalTelegramUserId $internalTelegramUserId, OpenConnection $connection)
-    {
-        $this->assertTrue(
-            (new FromBotUser(
-                new ByInternalTelegramUserId($internalTelegramUserId, $connection)
-            ))
-                ->equals(
-                    new FromPure(new InactiveAfterRegistered())
-                )
         );
     }
 

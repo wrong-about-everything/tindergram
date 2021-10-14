@@ -7,7 +7,7 @@ namespace TG\Infrastructure\ImpureInteractions\Error;
 use TG\Infrastructure\ImpureInteractions\Error;
 use TG\Infrastructure\ImpureInteractions\Severity;
 
-class Composite extends Error
+class Composite implements Error
 {
     private $userMessage;
     private $severity;

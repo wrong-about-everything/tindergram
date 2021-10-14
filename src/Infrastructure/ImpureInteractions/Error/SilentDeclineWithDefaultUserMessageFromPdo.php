@@ -9,7 +9,7 @@ use TG\Infrastructure\ImpureInteractions\Error;
 use TG\Infrastructure\ImpureInteractions\Severity;
 use TG\Infrastructure\ImpureInteractions\Severity\Info;
 
-class SilentDeclineWithDefaultUserMessageFromPdo extends Error
+class SilentDeclineWithDefaultUserMessageFromPdo implements Error
 {
     private $pdo;
 

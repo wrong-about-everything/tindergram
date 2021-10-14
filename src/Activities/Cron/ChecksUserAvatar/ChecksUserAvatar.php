@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace TG\Activities\Cron\ChecksUserAvatar;
 
 use Meringue\Timeline\Point\Now;
-use TG\Domain\BotUser\UserStatus\Pure\InactiveAfterRegistered;
 use TG\Domain\BotUser\UserStatus\Pure\Registered;
-use TG\Domain\ImpureInteractions\Error\UserBannedMyBot;
 use TG\Domain\UserMode\Pure\Visible;
 use TG\Infrastructure\Http\Transport\HttpTransport;
 use TG\Infrastructure\Logging\LogItem\FromNonSuccessfulImpureValue;
@@ -107,19 +105,6 @@ qqqq
     private function updateHasAvatar(InternalTelegramUserId $telegramId)
     {
         $userAvatars = $this->userAvatars($telegramId)->value();
-
-        if (!$userAvatars->isSuccessful() && $userAvatars->error()->equals(new UserBannedMyBot())) {
-            return
-                (new SingleMutating(
-                    'update bot_user set status = ? where telegram_id = ?',
-                    [
-                        (new InactiveAfterRegistered())->value(),
-                        $telegramId->value()
-                    ],
-                    $this->connection
-                ))
-                    ->response();
-        }
 
         return
             (new SingleMutating(

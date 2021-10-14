@@ -7,7 +7,7 @@ namespace TG\Infrastructure\ImpureInteractions\Error;
 use TG\Infrastructure\ImpureInteractions\Error;
 use TG\Infrastructure\ImpureInteractions\Severity;
 
-class SilentDeclineWithDefaultUserMessage extends Error
+class SilentDeclineWithDefaultUserMessage implements Error
 {
     private $error;
 

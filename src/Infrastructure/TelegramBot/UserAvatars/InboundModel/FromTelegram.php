@@ -4,16 +4,13 @@ declare(strict_types=1);
 
 namespace TG\Infrastructure\TelegramBot\UserAvatars\InboundModel;
 
-use TG\Domain\ImpureInteractions\Error\UserBannedMyBot;
 use TG\Infrastructure\Http\Request\Method\Post;
 use TG\Infrastructure\Http\Request\Outbound\OutboundRequest;
 use TG\Infrastructure\Http\Request\Url\Query\FromArray;
 use TG\Infrastructure\Http\Response\Code\Ok;
-use TG\Infrastructure\Http\Response\Code\ResourceIsForbidden;
 use TG\Infrastructure\Http\Response\Inbound\Response;
 use TG\Infrastructure\Http\Transport\HttpTransport;
 use TG\Infrastructure\ImpureInteractions\Error\AlarmDeclineWithDefaultUserMessage;
-use TG\Infrastructure\ImpureInteractions\Error\SilentDeclineWithDefaultUserMessage;
 use TG\Infrastructure\ImpureInteractions\ImpureValue;
 use TG\Infrastructure\ImpureInteractions\ImpureValue\Failed;
 use TG\Infrastructure\ImpureInteractions\ImpureValue\Successful;
@@ -47,13 +44,7 @@ class FromTelegram implements UserAvatarIds
     private function doValue(): ImpureValue
     {
         $response = $this->response();
-        if (!$response->isAvailable()) {
-            return new Failed(new SilentDeclineWithDefaultUserMessage('getUserProfilePhotos request is not available', []));
-        }
-        if ($response->code()->equals(new ResourceIsForbidden())) {
-            return new Failed(new UserBannedMyBot());
-        }
-        if (!$response->code()->equals(new Ok())) {
+        if (!$response->isAvailable() || !$response->code()->equals(new Ok())) {
             return new Failed(new AlarmDeclineWithDefaultUserMessage('getUserProfilePhotos request is not successful', []));
         }
 
