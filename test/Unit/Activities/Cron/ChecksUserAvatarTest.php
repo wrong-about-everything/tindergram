@@ -58,18 +58,14 @@ class ChecksUserAvatarTest extends TestCase
         $this->assertTrue($response->isSuccessful());
         $this->assertCount(2, $transport->sentRequests());
         $this->assertUserHasAvatar($this->secondTelegramUserId(), $connection);
-        $this->assertUserIsRegistered($this->secondTelegramUserId(), $connection);
         $this->assertUserDoesNotHaveAvatar($this->firstTelegramUserId(), $connection);
-        $this->assertUserIsRegistered($this->firstTelegramUserId(), $connection);
 
         $secondTimeResponse = (new ChecksUserAvatar(new Now(), $transport, $connection, new DevNull()))->response();
 
         $this->assertTrue($secondTimeResponse->isSuccessful());
         $this->assertCount(2, $transport->sentRequests());
         $this->assertUserHasAvatar($this->secondTelegramUserId(), $connection);
-        $this->assertUserIsRegistered($this->secondTelegramUserId(), $connection);
         $this->assertUserDoesNotHaveAvatar($this->firstTelegramUserId(), $connection);
-        $this->assertUserIsRegistered($this->firstTelegramUserId(), $connection);
     }
 
     public function testGivenThereAreUsersCheckedYesterdayWhenThereAreNonCheckedUsersTodayThenCheckThem()
@@ -95,8 +91,6 @@ class ChecksUserAvatarTest extends TestCase
         $this->assertCount(2, $transport->sentRequests());
         $this->assertUserHasAvatar($this->secondTelegramUserId(), $connection);
         $this->assertUserDoesNotHaveAvatar($this->firstTelegramUserId(), $connection);
-        $this->assertUserIsRegistered($this->secondTelegramUserId(), $connection);
-        $this->assertUserIsRegistered($this->firstTelegramUserId(), $connection);
 
         $secondTimeResponse = (new ChecksUserAvatar(new Now(), $transport, $connection, new DevNull()))->response();
 
@@ -221,18 +215,6 @@ class ChecksUserAvatarTest extends TestCase
         $this->assertTrue(
             (new ByInternalTelegramUserId($internalTelegramUserId, $connection))
                 ->value()->pure()->raw()['has_avatar']
-        );
-    }
-
-    private function assertUserIsRegistered(InternalTelegramUserId $internalTelegramUserId, OpenConnection $connection)
-    {
-        $this->assertTrue(
-            (new FromBotUser(
-                new ByInternalTelegramUserId($internalTelegramUserId, $connection)
-            ))
-                ->equals(
-                    new FromPure(new Registered())
-                )
         );
     }
 
