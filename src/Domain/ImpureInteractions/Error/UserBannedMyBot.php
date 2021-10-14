@@ -2,25 +2,17 @@
 
 declare(strict_types=1);
 
-namespace TG\Infrastructure\ImpureInteractions\Error;
+namespace TG\Domain\ImpureInteractions\Error;
 
-use PDO;
 use TG\Infrastructure\ImpureInteractions\Error;
 use TG\Infrastructure\ImpureInteractions\Severity;
 use TG\Infrastructure\ImpureInteractions\Severity\Info;
 
-class SilentDeclineWithDefaultUserMessageFromPdo extends Error
+class UserBannedMyBot extends Error
 {
-    private $pdo;
-
-    public function __construct(PDO $pdo)
-    {
-        $this->pdo = $pdo;
-    }
-
     public function userMessage(): string
     {
-        return 'Internal server error';
+        return 'User banned my bot';
     }
 
     public function severity(): Severity
@@ -30,11 +22,11 @@ class SilentDeclineWithDefaultUserMessageFromPdo extends Error
 
     public function logMessage(): string
     {
-        return 'Error from PDO driver';
+        return 'User banned my bot';
     }
 
     public function context(): array
     {
-        return $this->pdo->errorInfo();
+        return [];
     }
 }

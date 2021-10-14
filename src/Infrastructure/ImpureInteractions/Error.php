@@ -4,13 +4,26 @@ declare(strict_types=1);
 
 namespace TG\Infrastructure\ImpureInteractions;
 
-interface Error
+abstract class Error
 {
-    public function userMessage(): string;
+    abstract public function userMessage(): string;
 
-    public function severity(): Severity;
+    abstract public function severity(): Severity;
 
-    public function logMessage(): string;
+    abstract public function logMessage(): string;
 
-    public function context(): array;
+    abstract public function context(): array;
+
+    final public function equals(Error $error): bool
+    {
+        return
+            $this->userMessage() === $error->userMessage()
+                &&
+            $this->severity()->equals($error->severity())
+                &&
+            $this->logMessage() === $error->logMessage()
+                &&
+            $this->context() === $error->context()
+        ;
+    }
 }

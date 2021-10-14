@@ -8,7 +8,7 @@ use TG\Infrastructure\ImpureInteractions\Error;
 use TG\Infrastructure\ImpureInteractions\Severity;
 use TG\Infrastructure\ImpureInteractions\Severity\Alarm;
 
-class AlarmDecline implements Error
+class AlarmDecline extends Error
 {
     private $error;
 
