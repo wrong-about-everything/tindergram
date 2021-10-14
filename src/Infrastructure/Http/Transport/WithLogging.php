@@ -52,7 +52,7 @@ class WithLogging implements HttpTransport
                                     '%s seconds',
                                     (new TotalSecondsWithMilliseconds(new FromRange($everyNow, $andThen)))->value()
                                 ),
-                            'code' => $response->code(),
+                            'code' => $response->code()->value(),
                             'headers' => $response->headers(),
                             'body' => $response->body(),
                         ]
