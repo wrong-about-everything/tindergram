@@ -43,7 +43,7 @@ class InactiveFromActive extends UserStatus
     private function doConcrete(): UserStatus
     {
         return
-            (new FromBotUser($this->botUser))->equals(new FromPure(new Registered()))
+            (new FromBotUser($this->botUser))->exists()->pure()->raw() && (new FromBotUser($this->botUser))->equals(new FromPure(new Registered()))
                 ? new FromPure(new InactiveAfterRegistered())
                 : new FromPure(new InactiveBeforeRegistered())
             ;
