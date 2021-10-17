@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace TG\Tests\Unit\UserActions\SendsArbitraryMessage;
 
 use PHPUnit\Framework\TestCase;
-use TG\Domain\ABTesting\Pure\SwitchToVisibleModeOnUpvote;
 use TG\Domain\Gender\Impure\BotUserPreferredGender;
 use TG\Domain\BotUser\ReadModel\ById;
 use TG\Domain\BotUser\UserStatus\Impure\FromPure;
@@ -20,7 +19,6 @@ use TG\Domain\BotUser\UserId\BotUserId;
 use TG\Domain\BotUser\UserStatus\Impure\FromBotUser as UserStatusFromBotUser;
 use TG\Domain\BotUser\UserStatus\Pure\Registered;
 use TG\Domain\BotUser\UserStatus\Pure\RegistrationIsInProgress;
-use TG\Domain\RegistrationAnswerOption\Single\Pure\AreYouReadyToRegister\RegisterInInvisibleMode;
 use TG\Domain\RegistrationAnswerOption\Single\Pure\AreYouReadyToRegister\RegisterInVisibleMode;
 use TG\Domain\RegistrationAnswerOption\Single\Pure\WhatDoYouPrefer\Men;
 use TG\Domain\RegistrationAnswerOption\Single\Pure\WhatIsYourGender\Male;
@@ -272,8 +270,6 @@ t
                     'telegram_id' => $telegramUserId->value(),
                     'telegram_handle' => 'dremuchee_bydlo',
                     'status' => (new RegistrationIsInProgress())->value(),
-
-                    'variant_id' => (new SwitchToVisibleModeOnUpvote())->value(),
                 ]
             ]);
     }

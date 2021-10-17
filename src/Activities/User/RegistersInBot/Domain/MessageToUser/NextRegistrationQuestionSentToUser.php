@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace TG\Activities\User\RegistersInBot\Domain\MessageToUser;
 
-use TG\Domain\ABTesting\Impure\FromBotUser;
 use TG\Domain\BotUser\ReadModel\BotUser;
 use TG\Domain\BotUser\ReadModel\ByInternalTelegramUserId;
 use TG\Domain\RegistrationAnswerOption\Multiple\Impure\FromRegistrationQuestion;
@@ -15,7 +14,6 @@ use TG\Domain\RegistrationQuestion\Single\Pure\FromImpure as PureRegistrationQue
 use TG\Domain\RegistrationQuestion\Single\Impure\FromPure;
 use TG\Domain\RegistrationQuestion\Single\Pure\AreYouReadyToRegister;
 use TG\Domain\TelegramBot\KeyboardButtons\KeyboardFromAnswerOptions;
-use TG\Infrastructure\ABTesting\Pure\FromImpure as PureVariantIdFromImpure;
 use TG\Infrastructure\Http\Transport\HttpTransport;
 use TG\Infrastructure\ImpureInteractions\ImpureValue;
 use TG\Infrastructure\SqlDatabase\Agnostic\OpenConnection;
@@ -104,11 +102,7 @@ class NextRegistrationQuestionSentToUser implements MessageSentToUser
     {
         $sentToUserResult =
             (new SentToUser(
-                new VariantDependentQuestionToUserWithAvatarsWhetherHeIsReadyToRegister(
-                    new PureVariantIdFromImpure(
-                        new FromBotUser($botUser)
-                    )
-                ),
+                new QuestionToUserWithAvatarsWhetherHeIsReadyToRegister(),
                 $firstFiveAvatars,
                 $this->internalTelegramUserId,
                 $this->httpTransport
