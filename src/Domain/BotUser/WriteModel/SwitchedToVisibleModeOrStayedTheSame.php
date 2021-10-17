@@ -10,6 +10,9 @@ use TG\Domain\BotUser\ReadModel\BotUser as ReadModelBotUser;
 use TG\Domain\Reaction\Pure\Like;
 use TG\Domain\Reaction\Pure\Reaction;
 use TG\Domain\TelegramBot\InternalTelegramUserId\Impure\FromBotUser;
+use TG\Domain\UserMode\Impure\FromBotUser as BotUserMode;
+use TG\Domain\UserMode\Impure\FromPure as ImpureMode;
+use TG\Domain\UserMode\Pure\Invisible;
 use TG\Domain\UserMode\Pure\Visible;
 use TG\Infrastructure\ABTesting\Impure\FromPure;
 use TG\Infrastructure\ImpureInteractions\ImpureValue;
@@ -51,6 +54,10 @@ class SwitchedToVisibleModeOrStayedTheSame implements BotUser
     {
         if (
             $this->reaction->equals(new Like())
+                &&
+            (new BotUserMode($this->botUser))->exists()->pure()->isPresent()
+                &&
+            (new BotUserMode($this->botUser))->equals(new ImpureMode(new Invisible()))
                 &&
             (new ExperimentVariantFromBotUser($this->botUser))->exists()->pure()->raw()
                 &&
