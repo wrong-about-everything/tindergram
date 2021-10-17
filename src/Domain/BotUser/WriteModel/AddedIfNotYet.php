@@ -58,8 +58,8 @@ class AddedIfNotYet implements BotUser
         $registerUserResponse =
             (new SingleMutating(
                 <<<q
-insert into bot_user (id, first_name, last_name, telegram_id, telegram_handle, status, variant_id)
-values (?, ?, ?, ?, ?, ?, ?)
+insert into bot_user (id, first_name, last_name, telegram_id, telegram_handle, status)
+values (?, ?, ?, ?, ?, ?)
 q
                 ,
                 [
@@ -68,8 +68,7 @@ q
                     $this->lastName,
                     $this->telegramUserId->value(),
                     $this->telegramHandle,
-                    (new RegistrationIsInProgress())->value(),
-                    time() % 2 === 0 ? (new SwitchToVisibleModeOnUpvote())->value() : (new SwitchToVisibleModeOnRequest())->value()
+                    (new RegistrationIsInProgress())->value()
                 ],
                 $this->connection
             ))
